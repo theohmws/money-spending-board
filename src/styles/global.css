@@ -1,3 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@100;200;300;400;500;600;700&display=swap");
+* {
+  font-family: "IBM Plex Sans Thai", sans-serif;
+}
 @tailwind base;
 
 a {
@@ -6,6 +10,29 @@ a {
 
 a:hover {
   @apply border-b-2 border-blue-700;
+}
+
+:root {
+  --tw-border-opacity: 1;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 7px;
+}
+
+*::-webkit-scrollbar-track {
+  border-radius: 7px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgb(242 242 242 / var(--tw-border-opacity));
+  border-radius: 14px;
 }
 
 @tailwind components;
