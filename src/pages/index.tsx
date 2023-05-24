@@ -1,184 +1,58 @@
-import { useRouter } from 'next/router';
-
+import { Card } from '@/components/Card';
 import { Meta } from '@/layouts/Meta';
 import { Main } from '@/templates/Main';
 
 const Index = () => {
-  const router = useRouter();
-
   return (
     <Main
       meta={
-        <Meta
-          title="Next.js Boilerplate Presentation"
-          description="Next js Boilerplate is the perfect starter code for your project. Build your React application with the Next.js framework."
-        />
+        <Meta title="💰Money Spending" description="Money Spending Board." />
       }
     >
-      <a href="https://github.com/ixartz/Next-js-Boilerplate">
-        <img
-          src={`${router.basePath}/assets/images/nextjs-starter-banner.png`}
-          alt="Nextjs starter banner"
-        />
-      </a>
-      <h2 className="text-2xl font-bold">
-        Boilerplate code for your Nextjs project with Tailwind CSS
-      </h2>
-      <p>
-        <span role="img" aria-label="rocket">
-          🚀
-        </span>{' '}
-        Next.js Boilerplate is a starter code for your Next js project by
-        putting developer experience first .{' '}
-        <span role="img" aria-label="zap">
-          ⚡️
-        </span>{' '}
-        Made with Next.js, TypeScript, ESLint, Prettier, Husky, Lint-Staged,
-        VSCode, Netlify, PostCSS, Tailwind CSS.
-      </p>
-      <h3 className="text-lg font-semibold">Next js Boilerplate Features</h3>
-      <p>Developer experience first:</p>
-      <ul>
-        <li>
-          <span role="img" aria-label="fire">
-            🔥
-          </span>{' '}
-          <a href="https://nextjs.org" rel="nofollow">
-            Next.js
-          </a>{' '}
-          for Static Site Generator
-        </li>
-        <li>
-          <span role="img" aria-label="art">
-            🎨
-          </span>{' '}
-          Integrate with{' '}
-          <a href="https://tailwindcss.com" rel="nofollow">
-            Tailwind CSS
-          </a>
-        </li>
-        <li>
-          <span role="img" aria-label="nail_care">
-            💅
-          </span>{' '}
-          PostCSS for processing Tailwind CSS
-        </li>
-        <li>
-          <span role="img" aria-label="tada">
-            🎉
-          </span>{' '}
-          Type checking Typescript
-        </li>
-        <li>
-          <span role="img" aria-label="pencil2">
-            ✏️
-          </span>{' '}
-          Linter with{' '}
-          <a href="https://eslint.org" rel="nofollow">
-            ESLint
-          </a>
-        </li>
-        <li>
-          <span role="img" aria-label="hammer_and_wrench">
-            🛠
-          </span>{' '}
-          Code Formatter with{' '}
-          <a href="https://prettier.io" rel="nofollow">
-            Prettier
-          </a>
-        </li>
-        <li>
-          <span role="img" aria-label="fox_face">
-            🦊
-          </span>{' '}
-          Husky for Git Hooks
-        </li>
-        <li>
-          <span role="img" aria-label="no_entry_sign">
-            🚫
-          </span>{' '}
-          Lint-staged for running linters on Git staged files
-        </li>
-        <li>
-          <span role="img" aria-label="no_entry_sign">
-            🗂
-          </span>{' '}
-          VSCode configuration: Debug, Settings, Tasks and extension for
-          PostCSS, ESLint, Prettier, TypeScript
-        </li>
-        <li>
-          <span role="img" aria-label="robot">
-            🤖
-          </span>{' '}
-          SEO metadata, JSON-LD and Open Graph tags with Next SEO
-        </li>
-        <li>
-          <span role="img" aria-label="robot">
-            ⚙️
-          </span>{' '}
-          <a
-            href="https://www.npmjs.com/package/@next/bundle-analyzer"
-            rel="nofollow"
-          >
-            Bundler Analyzer
-          </a>
-        </li>
-        <li>
-          <span role="img" aria-label="rainbow">
-            🌈
-          </span>{' '}
-          Include a FREE minimalist theme
-        </li>
-        <li>
-          <span role="img" aria-label="hundred">
-            💯
-          </span>{' '}
-          Maximize lighthouse score
-        </li>
-      </ul>
-      <p>Built-in feature from Next.js:</p>
-      <ul>
-        <li>
-          <span role="img" aria-label="coffee">
-            ☕
-          </span>{' '}
-          Minify HTML &amp; CSS
-        </li>
-        <li>
-          <span role="img" aria-label="dash">
-            💨
-          </span>{' '}
-          Live reload
-        </li>
-        <li>
-          <span role="img" aria-label="white_check_mark">
-            ✅
-          </span>{' '}
-          Cache busting
-        </li>
-      </ul>
-      <h3 className="text-lg font-semibold">Our Stater code Philosophy</h3>
-      <ul>
-        <li>Minimal code</li>
-        <li>SEO-friendly</li>
-        <li>
-          <span role="img" aria-label="rocket">
-            🚀
-          </span>{' '}
-          Production-ready
-        </li>
-      </ul>
-      <p>
-        Check our GitHub project for more information about{' '}
-        <a href="https://github.com/ixartz/Next-js-Boilerplate">
-          Nextjs Boilerplate
-        </a>
-        . You can also browse our{' '}
-        <a href="https://creativedesignsguru.com/category/nextjs/">
-          Premium NextJS Templates
-        </a>{' '}
-        on our website to support this project.
-      </p>
+      <div className="flex flex-row-reverse">
+        <div className="pb-3">สรุปประจำเดือน {`{}`} บาท</div>
+      </div>
+      <Card className="h-96">
+        <div className="flex h-full">
+          <div className="mr-1 h-full w-1/2 border-2 bg-pink-300 p-1">
+            <span className="font-semibold text-black">ความจำเป็น 50%</span>
+            <div className="h-90% overflow-y-auto pb-3">
+              {[
+                1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+                19, 20,
+              ].map((item) => (
+                <div key={item}>{item}</div>
+              ))}
+            </div>
+          </div>
+          <div className="ml-1 flex h-full w-1/2 flex-col">
+            <div className="mb-1 h-2/5 w-full border-2 bg-green-300 p-1">
+              <div className="h-5/6 flex-row">
+                <div className="font-semibold text-black">ออม 20%</div>
+                <div className="h-5/6 overflow-y-auto">
+                  {[
+                    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+                    18, 19, 20,
+                  ].map((item) => (
+                    <div key={item}>{item}</div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="mt-1 h-3/5 w-full border-2 bg-amber-300 p-1">
+              <span className="font-semibold text-black">ความต้องการ 30%</span>
+              <div className="h-5/6 overflow-y-auto pb-3">
+                {[
+                  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+                  19, 20,
+                ].map((item) => (
+                  <div key={item}>{item}</div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
     </Main>
   );
 };

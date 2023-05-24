@@ -38,6 +38,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
+      "@/lib/*": ["./lib/*"],
+      "@/translations/*": ["./translations/*"],
       "@/public/*": ["./public/*"]
     }
   },

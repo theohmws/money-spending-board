@@ -39,6 +39,9 @@ module.exports = {
           900: '#2a4365',
         },
       },
+      height: {
+        '90%': '90%',
+      },
     },
   },
   plugins: [],
