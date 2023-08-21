@@ -1,0 +1,11 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Get the current branch name
+branch=$(git rev-parse --abbrev-ref HEAD)
+
+# Check if the current branch is "main"
+if [ "$branch" = "dev" ]; then
+  # Run the generateVersion.js script to update version no
+  npm --no-git-tag-version version minor && git add ./package.json
+fi
