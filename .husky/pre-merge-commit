@@ -8,5 +8,5 @@ branch=$(git rev-parse --abbrev-ref HEAD)
 if [ "$branch" = "main" ]; then
   # Run the generateVersion.js script to update version no
   version=$(npm --no-git-tag-version version patch)
-  git add ./package* && git commit -m "update version $version"
+  git add ./package* && git commit -m "build: update version $version"
 fi
