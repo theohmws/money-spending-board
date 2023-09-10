@@ -5,7 +5,7 @@
 branch=$(git rev-parse --abbrev-ref HEAD)
 
 # Check if the current branch is "main"
-if [ "$branch" = "dev" ]; then
+if [ "$branch" = "main" ]; then
   # Run the generateVersion.js script to update version no
   npm --no-git-tag-version version minor && git add ./package.json
 fi
