@@ -1,1 +1,1 @@
-test-pre-merge-commit version
+test-pre-merge-commit version 2
