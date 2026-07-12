@@ -11,14 +11,13 @@ const customJestConfig = {
     '^@/(.*)$': '<rootDir>/src/$1',
 
     '^@/public/(.*)$': '<rootDir>/public/$1',
-
-    '^__mocks__/(.*)$': '<rootDir>/__mocks__/$1',
   },
   setupFilesAfterEnv: ['./jest.setup.ts'],
   clearMocks: true,
   collectCoverage: true,
   collectCoverageFrom: [
     './src/**/*.{js,jsx,ts,tsx}',
+    './app/**/*.{js,jsx,ts,tsx}',
     '!./src/**/_*.{js,jsx,ts,tsx}',
     '!./src/**/*.stories.{js,jsx,ts,tsx}',
     '!**/*.d.ts',

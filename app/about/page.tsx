@@ -1,8 +1,14 @@
-import { Meta } from '@/layouts/Meta';
+import type { Metadata } from 'next';
+
 import { Main } from '@/templates/Main';
 
+export const metadata: Metadata = {
+  title: 'About',
+  description: 'About',
+};
+
 const About = () => (
-  <Main meta={<Meta title="About" description="About" />}>
+  <Main>
     <p>
       <span role="img" aria-label="party-popper">
         🎉

@@ -1,10 +1,15 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
-import { Meta } from '@/layouts/Meta';
 import { Main } from '@/templates/Main';
 
+export const metadata: Metadata = {
+  title: 'Lorem ipsum',
+  description: 'Lorem ipsum',
+};
+
 const Blog = () => (
-  <Main meta={<Meta title="Lorem ipsum" description="Lorem ipsum" />}>
+  <Main>
     <p>
       Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ratione fuga
       recusandae quidem. Quaerat molestiae blanditiis doloremque possimus labore

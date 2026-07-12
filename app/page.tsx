@@ -1,14 +1,16 @@
+import type { Metadata } from 'next';
+
 import { Card } from '@/components/Card';
-import { Meta } from '@/layouts/Meta';
 import { Main } from '@/templates/Main';
+
+export const metadata: Metadata = {
+  title: '💰Money Spending',
+  description: 'Money Spending Board.',
+};
 
 const Index = () => {
   return (
-    <Main
-      meta={
-        <Meta title="💰Money Spending" description="Money Spending Board." />
-      }
-    >
+    <Main>
       <div className="flex flex-row-reverse">
         <div className="pb-3">สรุปประจำเดือน {`{}`} บาท</div>
       </div>
