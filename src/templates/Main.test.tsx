@@ -9,24 +9,18 @@ describe('Main template', () => {
 
       const menuItemList = screen.getAllByRole('listitem');
 
-      expect(menuItemList).toHaveLength(4);
+      expect(menuItemList).toHaveLength(3);
     });
 
-    it('should have a link to support creativedesignsguru.com', () => {
+    it('should have a link to the site author', () => {
       render(<Main>{null}</Main>);
 
       const copyrightSection = screen.getByText(/© Copyright/);
       const copyrightLink = within(copyrightSection).getByRole('link');
 
-      /*
-       * PLEASE READ THIS SECTION
-       * We'll really appreciate if you could have a link to our website
-       * The link doesn't need to appear on every pages, one link on one page is enough.
-       * Thank you for your support it'll mean a lot for us.
-       */
       expect(copyrightLink).toHaveAttribute(
         'href',
-        'https://creativedesignsguru.com'
+        'https://soycoder.github.io/'
       );
     });
   });
