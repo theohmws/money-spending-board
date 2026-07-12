@@ -42,6 +42,18 @@ module.exports = {
       height: {
         '90%': '90%',
       },
+      spacing: {
+        4.5: '1.125rem',
+        5.5: '1.375rem',
+        6.5: '1.625rem',
+        7.5: '1.875rem',
+        8.5: '2.125rem',
+        9.5: '2.375rem',
+      },
+      fontFamily: {
+        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        manrope: ['var(--font-manrope)', 'sans-serif'],
+      },
     },
   },
   plugins: [],
