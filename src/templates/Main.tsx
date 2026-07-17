@@ -4,14 +4,11 @@ import type { ReactNode } from 'react';
 import { AppConfig } from '@/utils/AppConfig';
 
 type IMainProps = {
-  meta: ReactNode;
   children: ReactNode;
 };
 
 const Main = (props: IMainProps) => (
   <div className="w-full px-1 text-gray-700 antialiased">
-    {props.meta}
-
     <div className="mx-auto flex h-screen max-w-screen-lg flex-col justify-between">
       <header className="border-b border-gray-300">
         <div className="py-4">
