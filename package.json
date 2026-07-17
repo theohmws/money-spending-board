@@ -1,6 +1,9 @@
 {
   "name": "money-spending-board",
   "version": "0.0.3",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
