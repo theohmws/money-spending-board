@@ -31,7 +31,6 @@ import type { ThemeTokens } from '@/utils/boardHelpers';
 import {
   fmtMoney,
   monthKey,
-  seedDemoTransactions,
   themeTokens,
   todayStr,
   uid,
@@ -57,7 +56,6 @@ const GRID_ROWS: Record<CategoryId, string> = {
 const categoryMetaKey = (email: string | undefined) => `msb_catmeta_${email}`;
 const profileKey = (email: string | undefined) => `msb_profile_${email}`;
 const ratioKey = (email: string | undefined) => `msb_ratios_${email}`;
-const demoTxKey = (email: string | undefined) => `msb_demo_tx_${email}`;
 
 const readJSON = <T>(key: string): T | null => {
   try {
@@ -71,9 +69,12 @@ const readJSON = <T>(key: string): T | null => {
 export const useSpendingBoard = () => {
   const clientRef = useRef<SupabaseClient | null>(null);
 
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const configMissing = !supabaseUrl || !supabaseAnonKey;
+
   const [booting, setBooting] = useState(true);
   const [session, setSession] = useState<BoardSession | null>(null);
-  const [isDemoMode, setIsDemoMode] = useState(true);
 
   const [lang, setLang] = useState<Lang>('th');
   const [theme, setThemeState] = useState<Theme>('light');
@@ -82,9 +83,6 @@ export const useSpendingBoard = () => {
   const [authForm, setAuthForm] = useState({ email: '', password: '' });
   const [authError, setAuthError] = useState('');
   const [authLoading, setAuthLoading] = useState(false);
-
-  const [showConnectModal, setShowConnectModal] = useState(false);
-  const [configForm, setConfigForm] = useState({ url: '', key: '' });
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [selectedMonth, setSelectedMonth] = useState(todayStr().slice(0, 7));
@@ -120,28 +118,15 @@ export const useSpendingBoard = () => {
 
   const email = session?.user.email;
 
-  const loadTransactions = useCallback(
-    (client: SupabaseClient | null, currentEmail: string | undefined) => {
-      if (client) {
-        client
-          .from('transactions')
-          .select('*')
-          .order('date', { ascending: false })
-          .then(({ data, error }) => {
-            if (!error && data) setTransactions(data as Transaction[]);
-          });
-        return;
-      }
-      const key = demoTxKey(currentEmail);
-      let list = readJSON<Transaction[]>(key);
-      if (!list) {
-        list = seedDemoTransactions();
-        localStorage.setItem(key, JSON.stringify(list));
-      }
-      setTransactions(list);
-    },
-    []
-  );
+  const loadTransactions = useCallback((client: SupabaseClient) => {
+    client
+      .from('transactions')
+      .select('*')
+      .order('date', { ascending: false })
+      .then(({ data, error }) => {
+        if (!error && data) setTransactions(data as Transaction[]);
+      });
+  }, []);
 
   const loadRatios = useCallback((currentEmail: string | undefined) => {
     setRatios(readJSON<RatioMap>(ratioKey(currentEmail)) ?? DEFAULT_RATIOS);
@@ -159,8 +144,8 @@ export const useSpendingBoard = () => {
   }, []);
 
   const loadUserData = useCallback(
-    (client: SupabaseClient | null, currentEmail: string | undefined) => {
-      loadTransactions(client, currentEmail);
+    (client: SupabaseClient, currentEmail: string | undefined) => {
+      loadTransactions(client);
       loadRatios(currentEmail);
       loadProfile(currentEmail);
       loadCategoryMeta(currentEmail);
@@ -183,47 +168,40 @@ export const useSpendingBoard = () => {
       setLang(savedLang);
     }
 
-    const config = readJSON<{ url: string; key: string }>(
-      'msb_supabase_config'
-    );
-
-    if (config?.url && config?.key) {
-      setIsDemoMode(false);
-      const client = createClient(config.url, config.key);
-      clientRef.current = client;
-
-      client.auth.getSession().then(({ data }) => {
-        const nextSession = data.session
-          ? {
-              user: {
-                email: data.session.user.email ?? '',
-                id: data.session.user.id,
-              },
-            }
-          : null;
-        setSession(nextSession);
-        setBooting(false);
-        if (nextSession) loadUserData(client, nextSession.user.email);
-      });
-
-      client.auth.onAuthStateChange((_event, nextAuthSession) => {
-        const nextSession = nextAuthSession
-          ? {
-              user: {
-                email: nextAuthSession.user.email ?? '',
-                id: nextAuthSession.user.id,
-              },
-            }
-          : null;
-        setSession(nextSession);
-        if (nextSession) loadUserData(client, nextSession.user.email);
-      });
-    } else {
-      const demoSession = readJSON<BoardSession>('msb_demo_session');
-      setSession(demoSession);
+    if (!supabaseUrl || !supabaseAnonKey) {
       setBooting(false);
-      if (demoSession) loadUserData(null, demoSession.user.email);
+      return () => window.removeEventListener('resize', onResize);
     }
+
+    const client = createClient(supabaseUrl, supabaseAnonKey);
+    clientRef.current = client;
+
+    client.auth.getSession().then(({ data }) => {
+      const nextSession = data.session
+        ? {
+            user: {
+              email: data.session.user.email ?? '',
+              id: data.session.user.id,
+            },
+          }
+        : null;
+      setSession(nextSession);
+      setBooting(false);
+      if (nextSession) loadUserData(client, nextSession.user.email);
+    });
+
+    client.auth.onAuthStateChange((_event, nextAuthSession) => {
+      const nextSession = nextAuthSession
+        ? {
+            user: {
+              email: nextAuthSession.user.email ?? '',
+              id: nextAuthSession.user.id,
+            },
+          }
+        : null;
+      setSession(nextSession);
+      if (nextSession) loadUserData(client, nextSession.user.email);
+    });
 
     return () => window.removeEventListener('resize', onResize);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -268,97 +246,42 @@ export const useSpendingBoard = () => {
       setAuthError(t.enterEmailPassword);
       return;
     }
+    const client = clientRef.current;
+    if (!client) return;
+
     setAuthLoading(true);
     setAuthError('');
-
-    const client = clientRef.current;
-    if (client) {
-      try {
-        const { data, error } =
-          authMode === 'signin'
-            ? await client.auth.signInWithPassword({
-                email: formEmail,
-                password,
-              })
-            : await client.auth.signUp({ email: formEmail, password });
-        if (error) throw error;
-        const nextSession = data.session
-          ? {
-              user: {
-                email: data.session.user.email ?? '',
-                id: data.session.user.id,
-              },
-            }
-          : null;
-        setSession(nextSession);
-        setAuthLoading(false);
-        if (nextSession) loadUserData(client, nextSession.user.email);
-      } catch (err) {
-        setAuthError(err instanceof Error ? err.message : t.authFailed);
-        setAuthLoading(false);
-      }
-      return;
-    }
-
-    const users = readJSON<Record<string, string>>('msb_demo_users') ?? {};
-    if (authMode === 'signup') {
-      if (users[formEmail]) {
-        setAuthError(t.accountExists);
-        setAuthLoading(false);
-        return;
-      }
-      users[formEmail] = password;
-      localStorage.setItem('msb_demo_users', JSON.stringify(users));
-    } else if (users[formEmail] && users[formEmail] !== password) {
-      setAuthError(t.incorrectPassword);
+    try {
+      const { data, error } =
+        authMode === 'signin'
+          ? await client.auth.signInWithPassword({
+              email: formEmail,
+              password,
+            })
+          : await client.auth.signUp({ email: formEmail, password });
+      if (error) throw error;
+      const nextSession = data.session
+        ? {
+            user: {
+              email: data.session.user.email ?? '',
+              id: data.session.user.id,
+            },
+          }
+        : null;
+      setSession(nextSession);
       setAuthLoading(false);
-      return;
-    } else if (!users[formEmail]) {
-      users[formEmail] = password;
-      localStorage.setItem('msb_demo_users', JSON.stringify(users));
+      if (nextSession) loadUserData(client, nextSession.user.email);
+    } catch (err) {
+      setAuthError(err instanceof Error ? err.message : t.authFailed);
+      setAuthLoading(false);
     }
-
-    const nextSession: BoardSession = { user: { email: formEmail } };
-    localStorage.setItem('msb_demo_session', JSON.stringify(nextSession));
-    setSession(nextSession);
-    setAuthLoading(false);
-    loadUserData(null, formEmail);
   }, [authForm, authMode, loadUserData, t]);
 
   const signOut = useCallback(async () => {
-    const client = clientRef.current;
-    if (client) {
-      await client.auth.signOut();
-    } else {
-      localStorage.removeItem('msb_demo_session');
-    }
+    await clientRef.current?.auth.signOut();
     setSession(null);
     setTransactions([]);
   }, []);
-
-  const openConnectModal = useCallback(() => {
-    setConfigForm({ url: '', key: '' });
-    setShowConnectModal(true);
-  }, []);
-  const closeConnectModal = useCallback(() => setShowConnectModal(false), []);
-  const onConfigUrlChange = useCallback(
-    (value: string) => setConfigForm((prev) => ({ ...prev, url: value })),
-    []
-  );
-  const onConfigKeyChange = useCallback(
-    (value: string) => setConfigForm((prev) => ({ ...prev, key: value })),
-    []
-  );
-  const useDemoModeAction = useCallback(() => {
-    localStorage.removeItem('msb_supabase_config');
-    setShowConnectModal(false);
-  }, []);
-  const saveConfig = useCallback(() => {
-    const { url, key } = configForm;
-    if (!url || !key) return;
-    localStorage.setItem('msb_supabase_config', JSON.stringify({ url, key }));
-    window.location.reload();
-  }, [configForm]);
 
   const onMonthChange = useCallback(
     (value: string) => setSelectedMonth(value),
@@ -473,22 +396,10 @@ export const useSpendingBoard = () => {
     []
   );
 
-  const deleteTx = useCallback(
-    async (id: string) => {
-      const client = clientRef.current;
-      if (client) {
-        await client.from('transactions').delete().eq('id', id);
-      }
-      setTransactions((prev) => {
-        const list = prev.filter((tx) => tx.id !== id);
-        if (!client) {
-          localStorage.setItem(demoTxKey(email), JSON.stringify(list));
-        }
-        return list;
-      });
-    },
-    [email]
-  );
+  const deleteTx = useCallback(async (id: string) => {
+    await clientRef.current?.from('transactions').delete().eq('id', id);
+    setTransactions((prev) => prev.filter((tx) => tx.id !== id));
+  }, []);
 
   const saveTransaction = useCallback(async () => {
     const amount = parseFloat(txForm.amount);
@@ -504,28 +415,20 @@ export const useSpendingBoard = () => {
     };
 
     const client = clientRef.current;
-    if (client && session?.user.id) {
-      const { data, error } = await client
-        .from('transactions')
-        .insert({ ...tx, user_id: session.user.id })
-        .select();
-      if (!error) {
-        setTransactions((prev) => [
-          (data?.[0] as Transaction | undefined) ?? tx,
-          ...prev,
-        ]);
-      }
-      setShowAddModal(false);
-      return;
-    }
+    if (!client || !session?.user.id) return;
 
-    setTransactions((prev) => {
-      const list = [tx, ...prev];
-      localStorage.setItem(demoTxKey(email), JSON.stringify(list));
-      return list;
-    });
+    const { data, error } = await client
+      .from('transactions')
+      .insert({ ...tx, user_id: session.user.id })
+      .select();
+    if (!error) {
+      setTransactions((prev) => [
+        (data?.[0] as Transaction | undefined) ?? tx,
+        ...prev,
+      ]);
+    }
     setShowAddModal(false);
-  }, [email, session, t, txForm, txType]);
+  }, [session, t, txForm, txType]);
 
   const groupsLocalized = useMemo(
     () =>
@@ -732,9 +635,9 @@ export const useSpendingBoard = () => {
     isDesktop,
 
     booting,
-    showLogin: !booting && !session,
-    showApp: !booting && !!session,
-    isDemoMode,
+    showConfigError: !booting && configMissing,
+    showLogin: !booting && !configMissing && !session,
+    showApp: !booting && !configMissing && !!session,
 
     authMode,
     authForm,
@@ -745,15 +648,6 @@ export const useSpendingBoard = () => {
     toggleAuthMode,
     submitAuth,
     signOut,
-
-    showConnectModal,
-    openConnectModal,
-    closeConnectModal,
-    configForm,
-    onConfigUrlChange,
-    onConfigKeyChange,
-    useDemoModeAction,
-    saveConfig,
 
     showRuleInfo,
     toggleRuleInfo,

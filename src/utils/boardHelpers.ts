@@ -1,4 +1,4 @@
-import type { Theme, Transaction } from '@/utils/BoardConfig';
+import type { Theme } from '@/utils/BoardConfig';
 
 export type ThemeTokens = {
   mode: Theme;
@@ -53,50 +53,4 @@ export const themeTokens = (mode: Theme): ThemeTokens => {
       ? 'linear-gradient(180deg, rgba(22,29,23,0), #161D17 30%)'
       : 'linear-gradient(180deg, rgba(255,255,255,0), #FFFFFF 30%)',
   };
-};
-
-export const seedDemoTransactions = (): Transaction[] => {
-  const month = todayStr().slice(0, 7);
-  return [
-    {
-      id: uid(),
-      type: 'income',
-      category: null,
-      note: 'Paycheck',
-      amount: 2400,
-      date: `${month}-01`,
-    },
-    {
-      id: uid(),
-      type: 'expense',
-      category: 'needs',
-      note: 'Groceries',
-      amount: 64.2,
-      date: `${month}-03`,
-    },
-    {
-      id: uid(),
-      type: 'expense',
-      category: 'needs',
-      note: 'Internet bill',
-      amount: 55,
-      date: `${month}-05`,
-    },
-    {
-      id: uid(),
-      type: 'expense',
-      category: 'wants',
-      note: 'Movie night',
-      amount: 24,
-      date: `${month}-06`,
-    },
-    {
-      id: uid(),
-      type: 'expense',
-      category: 'savings',
-      note: 'Auto-transfer to savings',
-      amount: 200,
-      date: `${month}-02`,
-    },
-  ];
 };

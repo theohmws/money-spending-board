@@ -5,8 +5,6 @@ type Props = Pick<
   | 't'
   | 'lang'
   | 'toggleLang'
-  | 'openConnectModal'
-  | 'isDemoMode'
   | 'authMode'
   | 'authForm'
   | 'onAuthEmailChange'
@@ -22,8 +20,6 @@ export const AuthScreen = ({
   t,
   lang,
   toggleLang,
-  openConnectModal,
-  isDemoMode,
   authMode,
   authForm,
   onAuthEmailChange,
@@ -56,14 +52,6 @@ export const AuthScreen = ({
           >
             {lang === 'th' ? 'EN' : 'TH'}
           </button>
-          <button
-            type="button"
-            onClick={openConnectModal}
-            className="py-1.5 text-sm"
-            style={{ color: '#7A857D' }}
-          >
-            {isDemoMode ? t.connectSupabase : t.connected}
-          </button>
         </div>
       </div>
 
@@ -81,15 +69,6 @@ export const AuthScreen = ({
           {authMode === 'signin' ? t.signInSubtitle : t.signUpSubtitle}
         </div>
       </div>
-
-      {isDemoMode && (
-        <div
-          className="mt-4.5 rounded-xl px-3.5 py-3 text-[12.5px] leading-relaxed"
-          style={{ background: '#F4F0DE', color: '#7A6A2E' }}
-        >
-          {t.demoModeBanner}
-        </div>
-      )}
 
       <div className="mt-6 flex flex-col gap-3.5">
         <div>

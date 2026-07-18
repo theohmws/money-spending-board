@@ -120,13 +120,11 @@ export const CAT_ITEMS: Record<CategoryId, Record<Lang, string[]>> = {
 
 export type I18nDict = {
   loadingLabel: string;
-  connectSupabase: string;
-  connected: string;
+  configMissing: string;
   welcomeBack: string;
   createBoard: string;
   signInSubtitle: string;
   signUpSubtitle: string;
-  demoModeBanner: string;
   email: string;
   password: string;
   signIn: string;
@@ -159,12 +157,6 @@ export type I18nDict = {
   categoryIconsColors: string;
   categoryIconsDesc: string;
   saveCategories: string;
-  connectDesc: string;
-  projectUrl: string;
-  anonKey: string;
-  requiredTable: string;
-  useDemoModeBtn: string;
-  saveReload: string;
   profileTitle: string;
   name: string;
   monthlyIncome: string;
@@ -181,22 +173,18 @@ export type I18nDict = {
   dark: string;
   saveProfileBtn: string;
   enterEmailPassword: string;
-  accountExists: string;
-  incorrectPassword: string;
   authFailed: string;
 };
 
 export const I18N: Record<Lang, I18nDict> = {
   th: {
     loadingLabel: 'กำลังโหลด…',
-    connectSupabase: 'เชื่อมต่อ Supabase',
-    connected: 'เชื่อมต่อแล้ว',
+    configMissing:
+      'ยังไม่ได้ตั้งค่าโปรเจกต์ Supabase — กรุณาตั้งค่า NEXT_PUBLIC_SUPABASE_URL และ NEXT_PUBLIC_SUPABASE_ANON_KEY แล้วสร้างแอปใหม่',
     welcomeBack: 'ยินดีต้อนรับกลับ',
     createBoard: 'สร้างบอร์ดของคุณ',
     signInSubtitle: 'เข้าสู่ระบบเพื่อดูรายรับรายจ่ายของคุณ',
     signUpSubtitle: 'สมัครสมาชิกเพื่อเริ่มติดตามรายจ่าย',
-    demoModeBanner:
-      'โหมดทดลอง — ยังไม่ได้เชื่อมต่อโปรเจกต์ Supabase เข้าสู่ระบบด้วยอีเมล/รหัสผ่านใดก็ได้เพื่อทดลองใช้ หรือแตะ "เชื่อมต่อ Supabase" ด้านบนเพื่อใช้โปรเจกต์ของคุณเอง',
     email: 'อีเมล',
     password: 'รหัสผ่าน',
     signIn: 'เข้าสู่ระบบ',
@@ -231,13 +219,6 @@ export const I18N: Record<Lang, I18nDict> = {
     categoryIconsColors: 'ไอคอนและสีของหมวดหมู่',
     categoryIconsDesc: 'เลือกไอคอนและสีให้แต่ละหมวดหมู่งบประมาณของคุณ',
     saveCategories: 'บันทึกหมวดหมู่',
-    connectDesc:
-      'วาง Project URL และ anon key ของคุณ การเข้าสู่ระบบและรายการต่างๆ จะทำงานกับโปรเจกต์ Supabase จริงของคุณแทนโหมดทดลอง',
-    projectUrl: 'Project URL',
-    anonKey: 'Anon public key',
-    requiredTable: 'ตารางที่ต้องมี (SQL editor)',
-    useDemoModeBtn: 'ใช้โหมดทดลอง',
-    saveReload: 'บันทึกและโหลดใหม่',
     profileTitle: 'โปรไฟล์',
     name: 'ชื่อ',
     monthlyIncome: 'รายรับต่อเดือน',
@@ -255,20 +236,16 @@ export const I18N: Record<Lang, I18nDict> = {
     dark: 'มืด',
     saveProfileBtn: 'บันทึกโปรไฟล์',
     enterEmailPassword: 'กรุณากรอกอีเมลและรหัสผ่าน',
-    accountExists: 'มีบัญชีนี้อยู่แล้ว — กรุณาเข้าสู่ระบบ',
-    incorrectPassword: 'รหัสผ่านไม่ถูกต้อง',
     authFailed: 'การเข้าสู่ระบบล้มเหลว',
   },
   en: {
     loadingLabel: 'Loading…',
-    connectSupabase: 'Connect Supabase',
-    connected: 'Connected',
+    configMissing:
+      'No Supabase project configured — set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY and rebuild the app.',
     welcomeBack: 'Welcome back',
     createBoard: 'Create your board',
     signInSubtitle: 'Sign in to see your spending.',
     signUpSubtitle: 'Sign up to start tracking your spending.',
-    demoModeBanner:
-      'Demo mode — no Supabase project connected yet. Sign in with any email/password to try it, or tap "Connect Supabase" above to use your own project.',
     email: 'Email',
     password: 'Password',
     signIn: 'Sign in',
@@ -304,13 +281,6 @@ export const I18N: Record<Lang, I18nDict> = {
     categoryIconsDesc:
       'Pick an icon and color for each of your budget categories.',
     saveCategories: 'Save categories',
-    connectDesc:
-      'Paste your project URL and anon key. Auth and transactions will then run against your real Supabase project instead of demo mode.',
-    projectUrl: 'Project URL',
-    anonKey: 'Anon public key',
-    requiredTable: 'Required table (SQL editor)',
-    useDemoModeBtn: 'Use demo mode',
-    saveReload: 'Save & reload',
     profileTitle: 'Profile',
     name: 'Name',
     monthlyIncome: 'Monthly income',
@@ -328,22 +298,6 @@ export const I18N: Record<Lang, I18nDict> = {
     dark: 'Dark',
     saveProfileBtn: 'Save profile',
     enterEmailPassword: 'Enter email and password.',
-    accountExists: 'Account already exists — sign in instead.',
-    incorrectPassword: 'Incorrect password.',
     authFailed: 'Authentication failed.',
   },
 };
-
-export const SQL_SNIPPET = `create table transactions (
-  id uuid default gen_random_uuid() primary key,
-  user_id uuid references auth.users not null,
-  type text not null,
-  category text,
-  note text,
-  amount numeric not null,
-  date date not null,
-  created_at timestamptz default now()
-);
-alter table transactions enable row level security;
-create policy "own rows" on transactions
-  for all using (auth.uid() = user_id);`;

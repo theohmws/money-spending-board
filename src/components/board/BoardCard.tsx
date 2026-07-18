@@ -7,7 +7,6 @@ import { AuthScreen } from './AuthScreen';
 import { BoardHeader } from './BoardHeader';
 import { BudgetSplit } from './BudgetSplit';
 import { CategorySettingsModal } from './CategorySettingsModal';
-import { ConnectSupabaseModal } from './ConnectSupabaseModal';
 import { ProfileModal } from './ProfileModal';
 import { RatioModal } from './RatioModal';
 import { TransactionList } from './TransactionList';
@@ -47,13 +46,20 @@ export const BoardCard = () => {
             </div>
           )}
 
+          {board.showConfigError && (
+            <div
+              className="flex flex-1 items-center justify-center px-8 text-center text-sm leading-relaxed"
+              style={{ color: themeTokens.subtext2 }}
+            >
+              {board.t.configMissing}
+            </div>
+          )}
+
           {board.showLogin && (
             <AuthScreen
               t={board.t}
               lang={board.lang}
               toggleLang={board.toggleLang}
-              openConnectModal={board.openConnectModal}
-              isDemoMode={board.isDemoMode}
               authMode={board.authMode}
               authForm={board.authForm}
               onAuthEmailChange={board.onAuthEmailChange}
@@ -148,17 +154,6 @@ export const BoardCard = () => {
         closeCategorySettings={board.closeCategorySettings}
         categorySettingsRows={board.categorySettingsRows}
         saveCategoryMeta={board.saveCategoryMeta}
-        themeTokens={themeTokens}
-      />
-      <ConnectSupabaseModal
-        t={board.t}
-        showConnectModal={board.showConnectModal}
-        closeConnectModal={board.closeConnectModal}
-        configForm={board.configForm}
-        onConfigUrlChange={board.onConfigUrlChange}
-        onConfigKeyChange={board.onConfigKeyChange}
-        useDemoModeAction={board.useDemoModeAction}
-        saveConfig={board.saveConfig}
         themeTokens={themeTokens}
       />
       <ProfileModal
