@@ -1,6 +1,6 @@
 # 💰 Money Spending Board
 
-A personal budgeting app built with Next.js 16 (App Router), TypeScript, and Tailwind CSS. Track transactions, split your budget across an editable needs/savings/wants ratio (50/30/20 by default), and switch between Thai and English — all backed by Supabase, with a fully offline **demo mode** for trying it out without any setup.
+A personal budgeting app built with Next.js 16 (App Router), TypeScript, and Tailwind CSS. Track transactions, split your budget across an editable needs/savings/wants ratio (50/30/20 by default), and switch between Thai and English — all backed by a fixed Supabase project configured via environment variables.
 
 ### Features
 
@@ -9,7 +9,6 @@ A personal budgeting app built with Next.js 16 (App Router), TypeScript, and Tai
 - 📊 Editable needs/savings/wants budget split (defaults to 50/30/20, must sum to 100)
 - 🌗 Light/dark theme toggle
 - 🇹🇭 🇬🇧 Thai/English language toggle
-- 🧪 **Demo mode** — no Supabase project required. Sign in with any email/password and everything persists to `localStorage`
 - 📱 Responsive, self-contained board UI (`app/page.tsx`)
 
 ### Tech stack
@@ -17,7 +16,7 @@ A personal budgeting app built with Next.js 16 (App Router), TypeScript, and Tai
 - [Next.js 16](https://nextjs.org) App Router, statically exported (`output: 'export'` in `next.config.js`)
 - TypeScript in strict mode
 - Tailwind CSS v3
-- [Supabase](https://supabase.com) (`@supabase/supabase-js`) for auth + data, optional
+- [Supabase](https://supabase.com) (`@supabase/supabase-js`) for auth + data, required at build time
 - Jest + React Testing Library, Storybook 10, Cypress (e2e)
 - ESLint (Airbnb + Next.js config) + Prettier, Husky + lint-staged, Commitlint + Commitizen, semantic-release
 
@@ -35,13 +34,19 @@ cd money-spending-board
 npm install
 ```
 
+Copy `.env.example` to `.env.local` and fill in your Supabase project's publishable key (`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` — from Project Settings → API Keys in the Supabase dashboard). These are required at build time; there's no in-app config flow or offline fallback.
+
+```shell
+cp .env.example .env.local
+```
+
 Then run the dev server:
 
 ```shell
 npm run dev
 ```
 
-Open http://localhost:3000 — the board loads straight into **demo mode**: sign in with any email/password and start adding transactions, no backend needed. To connect a real Supabase project instead, use the "Connect Supabase" option in the app to set your project URL and anon key (stored in `localStorage`, no rebuild required).
+Open http://localhost:3000.
 
 ### Project structure
 

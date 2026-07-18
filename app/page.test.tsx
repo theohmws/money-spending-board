@@ -82,16 +82,16 @@ describe('Index page', () => {
 
   describe('when Supabase env vars are missing', () => {
     const originalUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const originalKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const originalKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
     afterEach(() => {
       process.env.NEXT_PUBLIC_SUPABASE_URL = originalUrl;
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = originalKey;
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = originalKey;
     });
 
     it('shows a config-missing message instead of the sign-in screen', async () => {
       delete process.env.NEXT_PUBLIC_SUPABASE_URL;
-      delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      delete process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
       render(<Index />);
 

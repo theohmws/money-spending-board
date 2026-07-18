@@ -180,7 +180,7 @@ export const I18N: Record<Lang, I18nDict> = {
   th: {
     loadingLabel: 'กำลังโหลด…',
     configMissing:
-      'ยังไม่ได้ตั้งค่าโปรเจกต์ Supabase — กรุณาตั้งค่า NEXT_PUBLIC_SUPABASE_URL และ NEXT_PUBLIC_SUPABASE_ANON_KEY แล้วสร้างแอปใหม่',
+      'ยังไม่ได้ตั้งค่าโปรเจกต์ Supabase — กรุณาตั้งค่า NEXT_PUBLIC_SUPABASE_URL และ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY แล้วสร้างแอปใหม่',
     welcomeBack: 'ยินดีต้อนรับกลับ',
     createBoard: 'สร้างบอร์ดของคุณ',
     signInSubtitle: 'เข้าสู่ระบบเพื่อดูรายรับรายจ่ายของคุณ',
@@ -241,7 +241,7 @@ export const I18N: Record<Lang, I18nDict> = {
   en: {
     loadingLabel: 'Loading…',
     configMissing:
-      'No Supabase project configured — set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY and rebuild the app.',
+      'No Supabase project configured — set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY and rebuild the app.',
     welcomeBack: 'Welcome back',
     createBoard: 'Create your board',
     signInSubtitle: 'Sign in to see your spending.',

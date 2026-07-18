@@ -70,8 +70,9 @@ export const useSpendingBoard = () => {
   const clientRef = useRef<SupabaseClient | null>(null);
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  const configMissing = !supabaseUrl || !supabaseAnonKey;
+  const supabasePublishableKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  const configMissing = !supabaseUrl || !supabasePublishableKey;
 
   const [booting, setBooting] = useState(true);
   const [session, setSession] = useState<BoardSession | null>(null);
@@ -168,12 +169,12 @@ export const useSpendingBoard = () => {
       setLang(savedLang);
     }
 
-    if (!supabaseUrl || !supabaseAnonKey) {
+    if (!supabaseUrl || !supabasePublishableKey) {
       setBooting(false);
       return () => window.removeEventListener('resize', onResize);
     }
 
-    const client = createClient(supabaseUrl, supabaseAnonKey);
+    const client = createClient(supabaseUrl, supabasePublishableKey);
     clientRef.current = client;
 
     client.auth.getSession().then(({ data }) => {
