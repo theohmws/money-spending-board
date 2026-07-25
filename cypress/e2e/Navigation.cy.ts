@@ -1,34 +1,27 @@
 describe('Navigation', () => {
   describe('Static pages', () => {
-    it('should navigate to the about page', () => {
-      // Start from the index page
-      cy.visit('/');
+    it('should navigate between the about and blog pages via the nav bar', () => {
+      // The board (index page) is self-contained and has no nav bar, so
+      // navigation can only be exercised starting from a Main-wrapped page.
+      cy.visit('/about');
 
-      // The index page should contain an h1
-      cy.findByRole('heading', {
-        name: 'Boilerplate code for your Nextjs project with Tailwind CSS',
-      });
+      // Main renders the app title as an h1
+      cy.findByRole('heading', { name: 'Money Spending Board' });
 
-      // Find a link containing "About" text and click it
-      cy.findByRole('link', { name: 'About' }).click();
+      // Find a link containing "Blog" text and click it
+      cy.findByRole('link', { name: 'Blog' }).click();
 
-      // The new url should include "/about"
-      cy.url().should('include', '/about');
-
-      // The new page should contain two "lorem ipsum" paragraphs
-      cy.findAllByText('Lorem ipsum dolor sit amet', { exact: false }).should(
-        'have.length',
-        2
-      );
+      // The new url should include "/blog"
+      cy.url().should('include', '/blog');
     });
 
     it('should take screenshot of the homepage', () => {
       cy.visit('/');
 
-      // Wait until the page is displayed
-      cy.findByRole('heading', {
-        name: 'Boilerplate code for your Nextjs project with Tailwind CSS',
-      });
+      // The board renders a transient loading state on mount before
+      // settling into auth/config/app content — wait it out so the
+      // snapshot doesn't race the boot sequence.
+      cy.contains(/Loading…|กำลังโหลด/).should('not.exist');
 
       cy.percySnapshot('Homepage');
     });
