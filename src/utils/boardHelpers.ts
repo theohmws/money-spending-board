@@ -33,6 +33,15 @@ export const fmtMoney = (amount: number) => {
 
 export const monthKey = (date: string) => date.slice(0, 7);
 
+export const readJSON = <T>(key: string): T | null => {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as T) : null;
+  } catch {
+    return null;
+  }
+};
+
 export const themeTokens = (mode: Theme): ThemeTokens => {
   const isDark = mode === 'dark';
   return {
