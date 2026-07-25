@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-Money Spending Board is a personal budgeting app (Supabase auth + transactions, editable 50/30/20 needs/savings/wants split, Thai/English i18n) built on Next.js 16 App Router + TypeScript + Tailwind CSS, originally scaffolded from the [Next.js Boilerplate](https://github.com/ixartz/Next-js-Boilerplate) template. The home page (`app/page.tsx`) is the actual product; `about`/`blog` remain unmodified boilerplate placeholders (Lorem ipsum). `src/utils/AppConfig.ts` is still marked `FIXME` with template-derived site metadata.
+Money Spending Board is a personal budgeting app (Supabase auth + transactions, editable 50/30/20 needs/savings/wants split, Thai/English i18n) built on Next.js 16 App Router + TypeScript + Tailwind CSS, originally scaffolded from the [Next.js Boilerplate](https://github.com/ixartz/Next-js-Boilerplate) template. The home page (`app/page.tsx`) is the actual product; `about`/`blog` remain unmodified boilerplate placeholders (Lorem ipsum). `src/utils/AppConfig.ts` now carries real app metadata (no longer template-derived).
 
 The app is statically exported (`output: 'export'` in `next.config.js`) — see `build-prod` below.
 
@@ -72,3 +72,17 @@ CI (`.github/workflows/CI.yml`) runs on Node 20/22 for `build-prod`, and on Node
 - **TypeScript**: strict mode is on (`strict`, `noUncheckedIndexedAccess`, `noUnusedLocals`, `noUnusedParameters`, etc.) — `npm run check-types` must stay clean. `moduleResolution: "bundler"` (required for modern `exports`-map packages like Storybook 10); `target: "es2017"`.
 - Component prop types use the `I`-prefixed interface/type naming convention in the original boilerplate files (`ICard`, `IMainProps`); the board's newer files instead derive prop types from the hook's return shape (`Pick<ReturnType<typeof useSpendingBoard>, 'foo' | 'bar'>`) rather than hand-duplicating them — follow whichever convention matches the file you're in.
 - Function components are typically defined with `const X = (props) => (...)` and exported via a trailing named `export { X }` (not `export default`), except Next.js route files which require `export default`.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues (theohmws/money-spending-board), via `gh` CLI. External PRs are not a triage surface. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default label vocabulary (needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix) — no repo-specific overrides. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context — one `CONTEXT.md` + `docs/adr/` at repo root (neither exists yet; created lazily by `/domain-modeling`). See `docs/agents/domain.md`.
