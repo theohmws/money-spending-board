@@ -12,9 +12,31 @@ type Props = Pick<
   | 'authError'
   | 'authLoading'
   | 'submitAuth'
+  | 'signInWithGoogle'
   | 'toggleAuthMode'
   | 'themeTokens'
 >;
+
+const GoogleLogo = () => (
+  <svg viewBox="0 0 24 24" className="size-4.5" aria-hidden="true">
+    <path
+      fill="#4285F4"
+      d="M23.52 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.47a5.53 5.53 0 0 1-2.4 3.63v2.99h3.87c2.27-2.09 3.58-5.17 3.58-8.81z"
+    />
+    <path
+      fill="#34A853"
+      d="M12 24c3.24 0 5.96-1.07 7.94-2.92l-3.87-2.99c-1.08.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.95H1.27v3.09A12 12 0 0 0 12 24z"
+    />
+    <path
+      fill="#FBBC05"
+      d="M5.27 14.29a7.2 7.2 0 0 1 0-4.58V6.62H1.27a12 12 0 0 0 0 10.76z"
+    />
+    <path
+      fill="#EA4335"
+      d="M12 4.75c1.76 0 3.34.61 4.58 1.79l3.44-3.44C17.95 1.19 15.24 0 12 0A12 12 0 0 0 1.27 6.62l4 3.09C6.22 6.86 8.87 4.75 12 4.75z"
+    />
+  </svg>
+);
 
 export const AuthScreen = ({
   t,
@@ -27,6 +49,7 @@ export const AuthScreen = ({
   authError,
   authLoading,
   submitAuth,
+  signInWithGoogle,
   toggleAuthMode,
   themeTokens,
 }: Props) => {
@@ -70,7 +93,35 @@ export const AuthScreen = ({
         </div>
       </div>
 
-      <div className="mt-6 flex flex-col gap-3.5">
+      <button
+        type="button"
+        onClick={signInWithGoogle}
+        disabled={authLoading}
+        className="mt-6 flex items-center justify-center gap-2.5 rounded-xl border p-4 text-[15px] font-semibold"
+        style={{
+          borderColor: themeTokens.inputBorder,
+          color: themeTokens.text,
+        }}
+      >
+        <GoogleLogo />
+        {t.continueWithGoogle}
+      </button>
+
+      <div className="mt-4.5 flex items-center gap-3">
+        <div
+          className="h-px flex-1"
+          style={{ background: themeTokens.inputBorder }}
+        />
+        <div className="text-[12.5px]" style={{ color: themeTokens.subtext }}>
+          {t.authDividerOr}
+        </div>
+        <div
+          className="h-px flex-1"
+          style={{ background: themeTokens.inputBorder }}
+        />
+      </div>
+
+      <div className="mt-4.5 flex flex-col gap-3.5">
         <div>
           <label
             htmlFor="auth-email"
