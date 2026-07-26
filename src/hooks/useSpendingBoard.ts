@@ -84,6 +84,7 @@ export const useSpendingBoard = () => {
     onAuthPasswordChange,
     toggleAuthMode,
     submitAuth,
+    signInWithGoogle,
     signOut: authSignOut,
   } = useAuthSession(t, handleSessionResolved);
 
@@ -342,6 +343,7 @@ export const useSpendingBoard = () => {
     onAuthPasswordChange,
     toggleAuthMode,
     submitAuth,
+    signInWithGoogle,
     signOut,
 
     showRuleInfo,

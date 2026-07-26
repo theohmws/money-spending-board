@@ -44,3 +44,6 @@ local
 
 # vercel
 .vercel
+
+# Secret
+secrets/

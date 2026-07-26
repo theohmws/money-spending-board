@@ -146,6 +146,22 @@ export const useAuthSession = (
     }
   }, [authForm, authMode, t]);
 
+  const signInWithGoogle = useCallback(async () => {
+    const client = clientRef.current;
+    if (!client) return;
+
+    setAuthLoading(true);
+    setAuthError('');
+    const { error } = await client.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin },
+    });
+    if (error) {
+      setAuthError(error.message);
+      setAuthLoading(false);
+    }
+  }, []);
+
   const signOut = useCallback(async () => {
     await clientRef.current?.auth.signOut();
     setSession(null);
@@ -165,6 +181,7 @@ export const useAuthSession = (
     onAuthPasswordChange,
     toggleAuthMode,
     submitAuth,
+    signInWithGoogle,
     signOut,
   };
 };

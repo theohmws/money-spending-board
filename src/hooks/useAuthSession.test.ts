@@ -19,6 +19,7 @@ const mockAuth = {
   signUp: jest
     .fn()
     .mockResolvedValue({ data: { session: mockSession }, error: null }),
+  signInWithOAuth: jest.fn().mockResolvedValue({ error: null }),
   signOut: jest.fn().mockResolvedValue({ error: null }),
 };
 
@@ -139,6 +140,40 @@ describe('useAuthSession', () => {
     });
 
     expect(result.current.authError).toBe('Invalid credentials');
+    expect(result.current.authLoading).toBe(false);
+  });
+
+  it('should call signInWithOAuth with the current origin as redirectTo', async () => {
+    const onSessionResolved = jest.fn();
+    const { result } = renderHook(() => useAuthSession(t, onSessionResolved));
+    await waitFor(() => expect(result.current.booting).toBe(false));
+
+    await act(async () => {
+      await result.current.signInWithGoogle();
+    });
+
+    expect(mockAuth.signInWithOAuth).toHaveBeenCalledWith({
+      provider: 'google',
+      options: { redirectTo: window.location.origin },
+    });
+    // authLoading is deliberately left true on success — the browser
+    // navigates away for the OAuth redirect, so there's nothing to reset.
+    expect(result.current.authLoading).toBe(true);
+  });
+
+  it('should surface an error message when signInWithGoogle fails', async () => {
+    mockAuth.signInWithOAuth.mockResolvedValueOnce({
+      error: new Error('OAuth provider misconfigured'),
+    });
+    const onSessionResolved = jest.fn();
+    const { result } = renderHook(() => useAuthSession(t, onSessionResolved));
+    await waitFor(() => expect(result.current.booting).toBe(false));
+
+    await act(async () => {
+      await result.current.signInWithGoogle();
+    });
+
+    expect(result.current.authError).toBe('OAuth provider misconfigured');
     expect(result.current.authLoading).toBe(false);
   });
 
