@@ -144,12 +144,14 @@ export type I18nDict = {
   recentActivity: string;
   noTransactionsYet: string;
   addTransaction: string;
+  editTransaction: string;
   expense: string;
   amount: string;
   category: string;
   note: string;
   date: string;
   saveTransactionBtn: string;
+  updateTransactionBtn: string;
   adjustSplit: string;
   splitDesc: string;
   total: string;
@@ -207,12 +209,14 @@ export const I18N: Record<Lang, I18nDict> = {
     recentActivity: 'กิจกรรมล่าสุด',
     noTransactionsYet: 'ยังไม่มีรายการ',
     addTransaction: 'เพิ่มรายการ',
+    editTransaction: 'แก้ไขรายการ',
     expense: 'รายจ่าย',
     amount: 'จำนวนเงิน',
     category: 'หมวดหมู่',
     note: 'บันทึกช่วยจำ',
     date: 'วันที่',
     saveTransactionBtn: 'บันทึกรายการ',
+    updateTransactionBtn: 'บันทึกการแก้ไข',
     adjustSplit: 'ปรับสัดส่วนของคุณ',
     splitDesc:
       'กำหนดสัดส่วนรายเดือนของคุณเองแทนค่าเริ่มต้น 50/30/20 — ต้องรวมกันได้ 100%',
@@ -270,12 +274,14 @@ export const I18N: Record<Lang, I18nDict> = {
     recentActivity: 'Recent activity',
     noTransactionsYet: 'No transactions yet',
     addTransaction: 'Add transaction',
+    editTransaction: 'Edit transaction',
     expense: 'Expense',
     amount: 'Amount',
     category: 'Category',
     note: 'Note',
     date: 'Date',
     saveTransactionBtn: 'Save transaction',
+    updateTransactionBtn: 'Save changes',
     adjustSplit: 'Adjust your split',
     splitDesc:
       'Set your own monthly split instead of the default 50/30/20 — must add up to 100%.',

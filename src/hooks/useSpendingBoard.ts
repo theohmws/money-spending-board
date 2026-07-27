@@ -150,6 +150,8 @@ export const useSpendingBoard = () => {
     balance,
     showAddModal,
     openAddModal,
+    editingTxId,
+    openEditModal,
     closeAddModal,
     txType,
     setTxType,
@@ -250,9 +252,10 @@ export const useSpendingBoard = () => {
               fmtMoney(tx.amount).replace('-', ''),
             amountColor: tx.type === 'income' ? '#0E8F5F' : themeTokens.text,
             onDelete: () => deleteTx(tx.id),
+            onEdit: () => openEditModal(tx),
           };
         }),
-    [monthTx, catById, categoryMeta, locale, theme, deleteTx]
+    [monthTx, catById, categoryMeta, locale, theme, deleteTx, openEditModal]
   );
 
   const categoryOptions = useMemo(
@@ -362,6 +365,7 @@ export const useSpendingBoard = () => {
 
     showAddModal,
     openAddModal,
+    editingTxId,
     closeAddModal,
     txType,
     setTxType,

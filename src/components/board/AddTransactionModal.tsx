@@ -4,6 +4,7 @@ type Props = Pick<
   ReturnType<typeof useSpendingBoard>,
   | 't'
   | 'showAddModal'
+  | 'editingTxId'
   | 'closeAddModal'
   | 'txType'
   | 'setTxType'
@@ -19,6 +20,7 @@ type Props = Pick<
 export const AddTransactionModal = ({
   t,
   showAddModal,
+  editingTxId,
   closeAddModal,
   txType,
   setTxType,
@@ -33,6 +35,7 @@ export const AddTransactionModal = ({
   if (!showAddModal) return null;
 
   const isExpense = txType === 'expense';
+  const isEditing = editingTxId !== null;
 
   return (
     <div
@@ -48,7 +51,7 @@ export const AddTransactionModal = ({
             className="font-manrope text-lg font-extrabold"
             style={{ color: themeTokens.text }}
           >
-            {t.addTransaction}
+            {isEditing ? t.editTransaction : t.addTransaction}
           </div>
           <button
             type="button"
@@ -197,7 +200,7 @@ export const AddTransactionModal = ({
           className="mt-5.5 w-full rounded-xl p-4 text-[15px] font-bold"
           style={{ background: '#132119', color: '#EFFCF4' }}
         >
-          {t.saveTransactionBtn}
+          {isEditing ? t.updateTransactionBtn : t.saveTransactionBtn}
         </button>
       </div>
     </div>

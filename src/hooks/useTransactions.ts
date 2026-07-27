@@ -28,6 +28,7 @@ export const useTransactions = (
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [selectedMonth, setSelectedMonth] = useState(todayStr().slice(0, 7));
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editingTxId, setEditingTxId] = useState<string | null>(null);
   const [txType, setTxType] = useState<TxType>('expense');
   const [txForm, setTxForm] = useState<TxForm>({
     amount: '',
@@ -89,11 +90,26 @@ export const useTransactions = (
   const balance = income - expense;
 
   const openAddModal = useCallback(() => {
+    setEditingTxId(null);
     setTxType('expense');
     setTxForm({ amount: '', note: '', category: 'needs', date: todayStr() });
     setShowAddModal(true);
   }, []);
-  const closeAddModal = useCallback(() => setShowAddModal(false), []);
+  const openEditModal = useCallback((tx: Transaction) => {
+    setEditingTxId(tx.id);
+    setTxType(tx.type);
+    setTxForm({
+      amount: String(tx.amount),
+      note: tx.note,
+      category: tx.category ?? 'needs',
+      date: tx.date,
+    });
+    setShowAddModal(true);
+  }, []);
+  const closeAddModal = useCallback(() => {
+    setShowAddModal(false);
+    setEditingTxId(null);
+  }, []);
   const onTxAmountChange = useCallback(
     (value: string) => setTxForm((prev) => ({ ...prev, amount: value })),
     []
@@ -124,7 +140,7 @@ export const useTransactions = (
     if (!amount || amount <= 0) return;
 
     const tx: Transaction = {
-      id: uid(),
+      id: editingTxId ?? uid(),
       type: txType,
       category: txType === 'expense' ? txForm.category : null,
       note: txForm.note || (txType === 'income' ? t.income : t.expense),
@@ -135,18 +151,34 @@ export const useTransactions = (
     const client = clientRef.current;
     if (!client || !userId) return;
 
-    const { data, error } = await client
-      .from('transactions')
-      .insert({ ...tx, user_id: userId })
-      .select();
+    const { data, error } = editingTxId
+      ? await client
+          .from('transactions')
+          .update({
+            type: tx.type,
+            category: tx.category,
+            note: tx.note,
+            amount: tx.amount,
+            date: tx.date,
+          })
+          .eq('id', editingTxId)
+          .select()
+      : await client
+          .from('transactions')
+          .insert({ ...tx, user_id: userId })
+          .select();
+
     if (!error) {
-      setTransactions((prev) => [
-        (data?.[0] as Transaction | undefined) ?? tx,
-        ...prev,
-      ]);
+      const saved = (data?.[0] as Transaction | undefined) ?? tx;
+      setTransactions((prev) =>
+        editingTxId
+          ? prev.map((row) => (row.id === editingTxId ? saved : row))
+          : [saved, ...prev]
+      );
     }
+    setEditingTxId(null);
     setShowAddModal(false);
-  }, [clientRef, t, txForm, txType, userId]);
+  }, [clientRef, editingTxId, t, txForm, txType, userId]);
 
   return {
     selectedMonth,
@@ -158,6 +190,8 @@ export const useTransactions = (
     balance,
     showAddModal,
     openAddModal,
+    editingTxId,
+    openEditModal,
     closeAddModal,
     txType,
     setTxType,

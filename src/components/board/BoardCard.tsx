@@ -130,6 +130,7 @@ export const BoardCard = () => {
       <AddTransactionModal
         t={board.t}
         showAddModal={board.showAddModal}
+        editingTxId={board.editingTxId}
         closeAddModal={board.closeAddModal}
         txType={board.txType}
         setTxType={board.setTxType}

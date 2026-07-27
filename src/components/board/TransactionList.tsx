@@ -28,7 +28,16 @@ export const TransactionList = ({ t, transactionRows, themeTokens }: Props) => (
       {transactionRows.map((tx) => (
         <div
           key={tx.id}
-          className="flex items-center gap-3 border-b py-3"
+          role="button"
+          tabIndex={0}
+          onClick={tx.onEdit}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              tx.onEdit();
+            }
+          }}
+          className="flex cursor-pointer items-center gap-3 border-b py-3 text-left"
           style={{ borderColor: themeTokens.divider }}
         >
           <div
@@ -59,7 +68,10 @@ export const TransactionList = ({ t, transactionRows, themeTokens }: Props) => (
           </div>
           <button
             type="button"
-            onClick={tx.onDelete}
+            onClick={(e) => {
+              e.stopPropagation();
+              tx.onDelete();
+            }}
             className="px-0.5 py-1 text-base"
             style={{ color: themeTokens.subtext2 }}
           >
