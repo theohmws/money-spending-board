@@ -1,6 +1,6 @@
 'use client';
 
-import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Provider, SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@supabase/supabase-js';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -10,8 +10,14 @@ export type BoardSession = {
   user: { email: string; id?: string };
 };
 
+export type BoardSupabaseClient = SupabaseClient<
+  any,
+  'public',
+  'spending_board'
+>;
+
 type OnSessionResolved = (
-  client: SupabaseClient,
+  client: BoardSupabaseClient,
   email: string | undefined,
   userId: string | undefined
 ) => void;
@@ -20,7 +26,7 @@ export const useAuthSession = (
   t: I18nDict,
   onSessionResolved: OnSessionResolved
 ) => {
-  const clientRef = useRef<SupabaseClient | null>(null);
+  const clientRef = useRef<BoardSupabaseClient | null>(null);
   const onSessionResolvedRef = useRef(onSessionResolved);
 
   useEffect(() => {
@@ -31,6 +37,13 @@ export const useAuthSession = (
   const supabasePublishableKey =
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   const configMissing = !supabaseUrl || !supabasePublishableKey;
+
+  const oauthProviders = (
+    process.env.NEXT_PUBLIC_SUPABASE_AUTH_PROVIDERS ?? 'google'
+  )
+    .split(',')
+    .map((provider) => provider.trim())
+    .filter(Boolean) as Provider[];
 
   const [booting, setBooting] = useState(true);
   const [session, setSession] = useState<BoardSession | null>(null);
@@ -46,7 +59,9 @@ export const useAuthSession = (
       return;
     }
 
-    const client = createClient(supabaseUrl, supabasePublishableKey);
+    const client = createClient(supabaseUrl, supabasePublishableKey, {
+      db: { schema: 'spending_board' },
+    });
     clientRef.current = client;
 
     client.auth.getSession().then(({ data }) => {
@@ -146,14 +161,14 @@ export const useAuthSession = (
     }
   }, [authForm, authMode, t]);
 
-  const signInWithGoogle = useCallback(async () => {
+  const signInWithOAuth = useCallback(async (provider: Provider) => {
     const client = clientRef.current;
     if (!client) return;
 
     setAuthLoading(true);
     setAuthError('');
     const { error } = await client.auth.signInWithOAuth({
-      provider: 'google',
+      provider,
       options: { redirectTo: window.location.origin },
     });
     if (error) {
@@ -172,6 +187,7 @@ export const useAuthSession = (
     booting,
     session,
     configMissing,
+    oauthProviders,
 
     authMode,
     authForm,
@@ -181,7 +197,7 @@ export const useAuthSession = (
     onAuthPasswordChange,
     toggleAuthMode,
     submitAuth,
-    signInWithGoogle,
+    signInWithOAuth,
     signOut,
   };
 };

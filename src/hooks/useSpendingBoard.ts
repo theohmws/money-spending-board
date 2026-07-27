@@ -1,8 +1,8 @@
 'use client';
 
-import type { SupabaseClient } from '@supabase/supabase-js';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import type { BoardSupabaseClient } from '@/hooks/useAuthSession';
 import { useAuthSession } from '@/hooks/useAuthSession';
 import { useCategoryMeta } from '@/hooks/useCategoryMeta';
 import { useI18n } from '@/hooks/useI18n';
@@ -44,7 +44,7 @@ export const useSpendingBoard = () => {
   const [resolvedUserId, setResolvedUserId] = useState<string | undefined>(
     undefined
   );
-  const clientRefLocal = useRef<SupabaseClient | null>(null);
+  const clientRefLocal = useRef<BoardSupabaseClient | null>(null);
 
   const ratiosSlice = useRatios(resolvedEmail);
   const profileSlice = useProfile(resolvedEmail);
@@ -57,7 +57,7 @@ export const useSpendingBoard = () => {
 
   const handleSessionResolved = useCallback(
     (
-      client: SupabaseClient,
+      client: BoardSupabaseClient,
       currentEmail: string | undefined,
       currentUserId: string | undefined
     ) => {
@@ -76,6 +76,7 @@ export const useSpendingBoard = () => {
     booting,
     session,
     configMissing,
+    oauthProviders,
     authMode,
     authForm,
     authError,
@@ -84,7 +85,7 @@ export const useSpendingBoard = () => {
     onAuthPasswordChange,
     toggleAuthMode,
     submitAuth,
-    signInWithGoogle,
+    signInWithOAuth,
     signOut: authSignOut,
   } = useAuthSession(t, handleSessionResolved);
 
@@ -335,6 +336,7 @@ export const useSpendingBoard = () => {
     showLogin: !booting && !configMissing && !session,
     showApp: !booting && !configMissing && !!session,
 
+    oauthProviders,
     authMode,
     authForm,
     authError,
@@ -343,7 +345,7 @@ export const useSpendingBoard = () => {
     onAuthPasswordChange,
     toggleAuthMode,
     submitAuth,
-    signInWithGoogle,
+    signInWithOAuth,
     signOut,
 
     showRuleInfo,

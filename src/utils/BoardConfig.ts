@@ -174,7 +174,7 @@ export type I18nDict = {
   saveProfileBtn: string;
   enterEmailPassword: string;
   authFailed: string;
-  continueWithGoogle: string;
+  continueWithProvider: string;
   authDividerOr: string;
 };
 
@@ -238,7 +238,7 @@ export const I18N: Record<Lang, I18nDict> = {
     dark: 'มืด',
     saveProfileBtn: 'บันทึกโปรไฟล์',
     enterEmailPassword: 'กรุณากรอกอีเมลและรหัสผ่าน',
-    continueWithGoogle: 'ดำเนินการต่อด้วย Google',
+    continueWithProvider: 'ดำเนินการต่อด้วย {provider}',
     authDividerOr: 'หรือ',
     authFailed: 'การเข้าสู่ระบบล้มเหลว',
   },
@@ -303,7 +303,7 @@ export const I18N: Record<Lang, I18nDict> = {
     saveProfileBtn: 'Save profile',
     enterEmailPassword: 'Enter email and password.',
     authFailed: 'Authentication failed.',
-    continueWithGoogle: 'Continue with Google',
+    continueWithProvider: 'Continue with {provider}',
     authDividerOr: 'or',
   },
 };

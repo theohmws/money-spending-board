@@ -33,16 +33,20 @@ describe('useAuthSession', () => {
   const originalUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const originalKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
+  const originalProviders = process.env.NEXT_PUBLIC_SUPABASE_AUTH_PROVIDERS;
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockAuth.getSession.mockResolvedValue({ data: { session: null } });
     process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://example.supabase.co';
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = 'test-key';
+    delete process.env.NEXT_PUBLIC_SUPABASE_AUTH_PROVIDERS;
   });
 
   afterEach(() => {
     process.env.NEXT_PUBLIC_SUPABASE_URL = originalUrl;
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = originalKey;
+    process.env.NEXT_PUBLIC_SUPABASE_AUTH_PROVIDERS = originalProviders;
   });
 
   it('should report configMissing when env vars are absent', async () => {
@@ -143,13 +147,43 @@ describe('useAuthSession', () => {
     expect(result.current.authLoading).toBe(false);
   });
 
+  it('should default oauthProviders to google when the env var is unset', async () => {
+    const onSessionResolved = jest.fn();
+    const { result } = renderHook(() => useAuthSession(t, onSessionResolved));
+    await waitFor(() => expect(result.current.booting).toBe(false));
+
+    expect(result.current.oauthProviders).toEqual(['google']);
+  });
+
+  it('should parse a comma-separated provider list from the env var', async () => {
+    process.env.NEXT_PUBLIC_SUPABASE_AUTH_PROVIDERS = 'google, github ,gitlab';
+    const onSessionResolved = jest.fn();
+    const { result } = renderHook(() => useAuthSession(t, onSessionResolved));
+    await waitFor(() => expect(result.current.booting).toBe(false));
+
+    expect(result.current.oauthProviders).toEqual([
+      'google',
+      'github',
+      'gitlab',
+    ]);
+  });
+
+  it('should return no oauthProviders when the env var is set empty', async () => {
+    process.env.NEXT_PUBLIC_SUPABASE_AUTH_PROVIDERS = '';
+    const onSessionResolved = jest.fn();
+    const { result } = renderHook(() => useAuthSession(t, onSessionResolved));
+    await waitFor(() => expect(result.current.booting).toBe(false));
+
+    expect(result.current.oauthProviders).toEqual([]);
+  });
+
   it('should call signInWithOAuth with the current origin as redirectTo', async () => {
     const onSessionResolved = jest.fn();
     const { result } = renderHook(() => useAuthSession(t, onSessionResolved));
     await waitFor(() => expect(result.current.booting).toBe(false));
 
     await act(async () => {
-      await result.current.signInWithGoogle();
+      await result.current.signInWithOAuth('google');
     });
 
     expect(mockAuth.signInWithOAuth).toHaveBeenCalledWith({
@@ -161,7 +195,7 @@ describe('useAuthSession', () => {
     expect(result.current.authLoading).toBe(true);
   });
 
-  it('should surface an error message when signInWithGoogle fails', async () => {
+  it('should surface an error message when signInWithOAuth fails', async () => {
     mockAuth.signInWithOAuth.mockResolvedValueOnce({
       error: new Error('OAuth provider misconfigured'),
     });
@@ -170,7 +204,7 @@ describe('useAuthSession', () => {
     await waitFor(() => expect(result.current.booting).toBe(false));
 
     await act(async () => {
-      await result.current.signInWithGoogle();
+      await result.current.signInWithOAuth('google');
     });
 
     expect(result.current.authError).toBe('OAuth provider misconfigured');

@@ -67,7 +67,8 @@ export const BoardCard = () => {
               authError={board.authError}
               authLoading={board.authLoading}
               submitAuth={board.submitAuth}
-              signInWithGoogle={board.signInWithGoogle}
+              oauthProviders={board.oauthProviders}
+              signInWithOAuth={board.signInWithOAuth}
               toggleAuthMode={board.toggleAuthMode}
               themeTokens={themeTokens}
             />

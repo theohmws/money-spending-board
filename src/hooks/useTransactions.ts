@@ -1,9 +1,9 @@
 'use client';
 
-import type { SupabaseClient } from '@supabase/supabase-js';
 import type { RefObject } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 
+import type { BoardSupabaseClient } from '@/hooks/useAuthSession';
 import type {
   CategoryId,
   I18nDict,
@@ -20,7 +20,7 @@ type TxForm = {
 };
 
 export const useTransactions = (
-  clientRef: RefObject<SupabaseClient | null>,
+  clientRef: RefObject<BoardSupabaseClient | null>,
   userId: string | undefined,
   t: I18nDict,
   locale: string
@@ -36,7 +36,7 @@ export const useTransactions = (
     date: todayStr(),
   });
 
-  const load = useCallback((client: SupabaseClient) => {
+  const load = useCallback((client: BoardSupabaseClient) => {
     client
       .from('transactions')
       .select('*')

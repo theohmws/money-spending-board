@@ -12,10 +12,14 @@ type Props = Pick<
   | 'authError'
   | 'authLoading'
   | 'submitAuth'
-  | 'signInWithGoogle'
+  | 'oauthProviders'
+  | 'signInWithOAuth'
   | 'toggleAuthMode'
   | 'themeTokens'
 >;
+
+const capitalize = (value: string) =>
+  value.charAt(0).toUpperCase() + value.slice(1);
 
 const GoogleLogo = () => (
   <svg viewBox="0 0 24 24" className="size-4.5" aria-hidden="true">
@@ -49,7 +53,8 @@ export const AuthScreen = ({
   authError,
   authLoading,
   submitAuth,
-  signInWithGoogle,
+  oauthProviders,
+  signInWithOAuth,
   toggleAuthMode,
   themeTokens,
 }: Props) => {
@@ -93,33 +98,38 @@ export const AuthScreen = ({
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={signInWithGoogle}
-        disabled={authLoading}
-        className="mt-6 flex items-center justify-center gap-2.5 rounded-xl border p-4 text-[15px] font-semibold"
-        style={{
-          borderColor: themeTokens.inputBorder,
-          color: themeTokens.text,
-        }}
-      >
-        <GoogleLogo />
-        {t.continueWithGoogle}
-      </button>
+      {oauthProviders.map((provider) => (
+        <button
+          key={provider}
+          type="button"
+          onClick={() => signInWithOAuth(provider)}
+          disabled={authLoading}
+          className="mt-3.5 flex items-center justify-center gap-2.5 rounded-xl border p-4 text-[15px] font-semibold first:mt-6"
+          style={{
+            borderColor: themeTokens.inputBorder,
+            color: themeTokens.text,
+          }}
+        >
+          {provider === 'google' && <GoogleLogo />}
+          {t.continueWithProvider.replace('{provider}', capitalize(provider))}
+        </button>
+      ))}
 
-      <div className="mt-4.5 flex items-center gap-3">
-        <div
-          className="h-px flex-1"
-          style={{ background: themeTokens.inputBorder }}
-        />
-        <div className="text-[12.5px]" style={{ color: themeTokens.subtext }}>
-          {t.authDividerOr}
+      {oauthProviders.length > 0 && (
+        <div className="mt-4.5 flex items-center gap-3">
+          <div
+            className="h-px flex-1"
+            style={{ background: themeTokens.inputBorder }}
+          />
+          <div className="text-[12.5px]" style={{ color: themeTokens.subtext }}>
+            {t.authDividerOr}
+          </div>
+          <div
+            className="h-px flex-1"
+            style={{ background: themeTokens.inputBorder }}
+          />
         </div>
-        <div
-          className="h-px flex-1"
-          style={{ background: themeTokens.inputBorder }}
-        />
-      </div>
+      )}
 
       <div className="mt-4.5 flex flex-col gap-3.5">
         <div>
