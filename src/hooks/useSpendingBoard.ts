@@ -20,13 +20,15 @@ import {
   ICON_MAP,
   PALETTE,
 } from '@/utils/BoardConfig';
-import { fmtMoney } from '@/utils/boardHelpers';
+import { fmtMoney, monthKey, previousMonthKey } from '@/utils/boardHelpers';
 
 const GRID_ROWS: Record<CategoryId, string> = {
   needs: '1 / 3',
   savings: '1',
   wants: '2',
 };
+
+const TREND_MONTH_LIMIT = 6;
 
 export const useSpendingBoard = () => {
   const { lang, toggleLang, t } = useI18n();
@@ -52,6 +54,11 @@ export const useSpendingBoard = () => {
   const txSlice = useTransactions(clientRefLocal, resolvedUserId, t, locale);
 
   const [showRuleInfo, setShowRuleInfo] = useState(false);
+
+  const [activeTab, setActiveTab] = useState<'overview' | 'graph'>('overview');
+  const [activeGraphTab, setActiveGraphTab] = useState<'trend' | 'compare'>(
+    'trend'
+  );
 
   const [viewportWidth, setViewportWidth] = useState(430);
 
@@ -141,6 +148,7 @@ export const useSpendingBoard = () => {
   } = categoryMetaSlice;
 
   const {
+    transactions,
     selectedMonth,
     onMonthChange,
     monthOptions,
@@ -258,6 +266,70 @@ export const useSpendingBoard = () => {
     [monthTx, catById, categoryMeta, locale, theme, deleteTx, openEditModal]
   );
 
+  const monthlyTotals = useMemo(() => {
+    const totalsByMonth = new Map<
+      string,
+      { income: number; expense: number }
+    >();
+    transactions.forEach((tx) => {
+      const key = monthKey(tx.date);
+      const entry = totalsByMonth.get(key) ?? { income: 0, expense: 0 };
+      if (tx.type === 'income') entry.income += Number(tx.amount);
+      else entry.expense += Number(tx.amount);
+      totalsByMonth.set(key, entry);
+    });
+
+    if (!totalsByMonth.has(selectedMonth)) {
+      totalsByMonth.set(selectedMonth, { income: 0, expense: 0 });
+    }
+
+    const sorted = Array.from(totalsByMonth.entries()).sort(([a], [b]) =>
+      a < b ? -1 : 1
+    );
+    const recent = sorted.slice(-TREND_MONTH_LIMIT);
+    const hasSelected = recent.some(([month]) => month === selectedMonth);
+    const withSelected = hasSelected
+      ? recent
+      : [...recent, ...sorted.filter(([month]) => month === selectedMonth)];
+
+    return withSelected
+      .sort(([a], [b]) => (a < b ? -1 : 1))
+      .map(([month, totals]) => ({
+        month,
+        label: new Date(`${month}-02T00:00:00`).toLocaleDateString(locale, {
+          month: 'short',
+          year: 'numeric',
+        }),
+        income: totals.income,
+        expense: totals.expense,
+        isSelected: month === selectedMonth,
+      }));
+  }, [transactions, selectedMonth, locale]);
+
+  const compareRows = useMemo(() => {
+    const prevMonth = previousMonthKey(selectedMonth);
+    const prevMonthTx = transactions.filter(
+      (tx) => monthKey(tx.date) === prevMonth
+    );
+
+    return groupsLocalized.map((group) => {
+      const selectedSpend = monthTx
+        .filter((tx) => tx.type === 'expense' && tx.category === group.id)
+        .reduce((a, tx) => a + Number(tx.amount), 0);
+      const previousSpend = prevMonthTx
+        .filter((tx) => tx.type === 'expense' && tx.category === group.id)
+        .reduce((a, tx) => a + Number(tx.amount), 0);
+
+      return {
+        id: group.id,
+        name: group.name,
+        color: group.color,
+        selectedSpend,
+        previousSpend,
+      };
+    });
+  }, [groupsLocalized, monthTx, transactions, selectedMonth]);
+
   const categoryOptions = useMemo(
     () =>
       groupsLocalized.map((group) => {
@@ -353,6 +425,10 @@ export const useSpendingBoard = () => {
 
     showRuleInfo,
     toggleRuleInfo,
+    activeTab,
+    setActiveTab,
+    activeGraphTab,
+    setActiveGraphTab,
     selectedMonth,
     monthOptions,
     onMonthChange,
@@ -362,6 +438,8 @@ export const useSpendingBoard = () => {
     expenseLabel: fmtMoney(expense),
     categoryCards,
     transactionRows,
+    monthlyTotals,
+    compareRows,
 
     showAddModal,
     openAddModal,

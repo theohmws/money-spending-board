@@ -33,6 +33,15 @@ export const fmtMoney = (amount: number) => {
 
 export const monthKey = (date: string) => date.slice(0, 7);
 
+export const previousMonthKey = (month: string) => {
+  const [yearPart, monthPart] = month.split('-');
+  const year = Number(yearPart);
+  const mon = Number(monthPart);
+  const d = new Date(year, mon - 1, 1);
+  d.setMonth(d.getMonth() - 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+};
+
 export const readJSON = <T>(key: string): T | null => {
   try {
     const raw = localStorage.getItem(key);

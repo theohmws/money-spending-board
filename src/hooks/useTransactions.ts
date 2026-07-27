@@ -181,6 +181,7 @@ export const useTransactions = (
   }, [clientRef, editingTxId, t, txForm, txType, userId]);
 
   return {
+    transactions,
     selectedMonth,
     onMonthChange,
     monthOptions,

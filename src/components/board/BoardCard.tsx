@@ -5,11 +5,14 @@ import { useSpendingBoard } from '@/hooks/useSpendingBoard';
 import { AddTransactionModal } from './AddTransactionModal';
 import { AuthScreen } from './AuthScreen';
 import { BoardHeader } from './BoardHeader';
+import { BoardTabs } from './BoardTabs';
 import { BudgetSplit } from './BudgetSplit';
 import { CategorySettingsModal } from './CategorySettingsModal';
+import { CompareChart } from './CompareChart';
 import { ProfileModal } from './ProfileModal';
 import { RatioModal } from './RatioModal';
 import { TransactionList } from './TransactionList';
+import { TrendChart } from './TrendChart';
 
 export const BoardCard = () => {
   const board = useSpendingBoard();
@@ -94,19 +97,49 @@ export const BoardCard = () => {
               />
 
               <div className="flex-1 overflow-y-auto px-6 pb-[100px] pt-5.5">
-                <BudgetSplit
+                <BoardTabs
                   t={board.t}
-                  showRuleInfo={board.showRuleInfo}
-                  toggleRuleInfo={board.toggleRuleInfo}
-                  openRatioModal={board.openRatioModal}
-                  categoryCards={board.categoryCards}
+                  activeTab={board.activeTab}
+                  setActiveTab={board.setActiveTab}
+                  activeGraphTab={board.activeGraphTab}
+                  setActiveGraphTab={board.setActiveGraphTab}
                   themeTokens={themeTokens}
                 />
-                <TransactionList
-                  t={board.t}
-                  transactionRows={board.transactionRows}
-                  themeTokens={themeTokens}
-                />
+
+                {board.activeTab === 'overview' && (
+                  <div className="mt-5.5">
+                    <BudgetSplit
+                      t={board.t}
+                      showRuleInfo={board.showRuleInfo}
+                      toggleRuleInfo={board.toggleRuleInfo}
+                      openRatioModal={board.openRatioModal}
+                      categoryCards={board.categoryCards}
+                      themeTokens={themeTokens}
+                    />
+                    <TransactionList
+                      t={board.t}
+                      transactionRows={board.transactionRows}
+                      themeTokens={themeTokens}
+                    />
+                  </div>
+                )}
+
+                {board.activeTab === 'graph' && (
+                  <div className="mt-5.5">
+                    {board.activeGraphTab === 'trend' && (
+                      <TrendChart
+                        monthlyTotals={board.monthlyTotals}
+                        themeTokens={themeTokens}
+                      />
+                    )}
+                    {board.activeGraphTab === 'compare' && (
+                      <CompareChart
+                        compareRows={board.compareRows}
+                        themeTokens={themeTokens}
+                      />
+                    )}
+                  </div>
+                )}
               </div>
 
               <div

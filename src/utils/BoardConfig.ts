@@ -178,6 +178,10 @@ export type I18nDict = {
   authFailed: string;
   continueWithProvider: string;
   authDividerOr: string;
+  overviewTab: string;
+  graphTab: string;
+  trendTab: string;
+  compareTab: string;
 };
 
 export const I18N: Record<Lang, I18nDict> = {
@@ -245,6 +249,10 @@ export const I18N: Record<Lang, I18nDict> = {
     continueWithProvider: 'ดำเนินการต่อด้วย {provider}',
     authDividerOr: 'หรือ',
     authFailed: 'การเข้าสู่ระบบล้มเหลว',
+    overviewTab: 'ภาพรวม',
+    graphTab: 'กราฟ',
+    trendTab: 'แนวโน้ม',
+    compareTab: 'เปรียบเทียบ',
   },
   en: {
     loadingLabel: 'Loading…',
@@ -311,5 +319,9 @@ export const I18N: Record<Lang, I18nDict> = {
     authFailed: 'Authentication failed.',
     continueWithProvider: 'Continue with {provider}',
     authDividerOr: 'or',
+    overviewTab: 'Overview',
+    graphTab: 'Graph',
+    trendTab: 'Trend',
+    compareTab: 'Compare',
   },
 };
