@@ -28,7 +28,8 @@ const GRID_ROWS: Record<CategoryId, string> = {
   wants: '2',
 };
 
-const TREND_MONTH_LIMIT = 6;
+export const TREND_MONTH_LIMIT_OPTIONS = [3, 6, 12, 15, 24] as const;
+export type TrendMonthLimit = (typeof TREND_MONTH_LIMIT_OPTIONS)[number];
 
 export const useSpendingBoard = () => {
   const { lang, toggleLang, t } = useI18n();
@@ -58,6 +59,10 @@ export const useSpendingBoard = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'graph'>('overview');
   const [activeGraphTab, setActiveGraphTab] = useState<'trend' | 'compare'>(
     'trend'
+  );
+  const [trendMonthLimit, setTrendMonthLimit] = useState<TrendMonthLimit>(6);
+  const [trendSeries, setTrendSeries] = useState<'income' | 'expense'>(
+    'expense'
   );
 
   const [viewportWidth, setViewportWidth] = useState(430);
@@ -267,26 +272,47 @@ export const useSpendingBoard = () => {
   );
 
   const monthlyTotals = useMemo(() => {
+    const emptyCategorySpend = (): Record<CategoryId, number> => ({
+      needs: 0,
+      savings: 0,
+      wants: 0,
+    });
     const totalsByMonth = new Map<
       string,
-      { income: number; expense: number }
+      {
+        income: number;
+        expense: number;
+        categorySpend: Record<CategoryId, number>;
+      }
     >();
     transactions.forEach((tx) => {
       const key = monthKey(tx.date);
-      const entry = totalsByMonth.get(key) ?? { income: 0, expense: 0 };
-      if (tx.type === 'income') entry.income += Number(tx.amount);
-      else entry.expense += Number(tx.amount);
+      const entry = totalsByMonth.get(key) ?? {
+        income: 0,
+        expense: 0,
+        categorySpend: emptyCategorySpend(),
+      };
+      if (tx.type === 'income') {
+        entry.income += Number(tx.amount);
+      } else {
+        entry.expense += Number(tx.amount);
+        if (tx.category) entry.categorySpend[tx.category] += Number(tx.amount);
+      }
       totalsByMonth.set(key, entry);
     });
 
     if (!totalsByMonth.has(selectedMonth)) {
-      totalsByMonth.set(selectedMonth, { income: 0, expense: 0 });
+      totalsByMonth.set(selectedMonth, {
+        income: 0,
+        expense: 0,
+        categorySpend: emptyCategorySpend(),
+      });
     }
 
     const sorted = Array.from(totalsByMonth.entries()).sort(([a], [b]) =>
       a < b ? -1 : 1
     );
-    const recent = sorted.slice(-TREND_MONTH_LIMIT);
+    const recent = sorted.slice(-trendMonthLimit);
     const hasSelected = recent.some(([month]) => month === selectedMonth);
     const withSelected = hasSelected
       ? recent
@@ -303,8 +329,14 @@ export const useSpendingBoard = () => {
         income: totals.income,
         expense: totals.expense,
         isSelected: month === selectedMonth,
+        categoryBreakdown: groupsLocalized.map((group) => ({
+          id: group.id,
+          name: group.name,
+          color: group.color,
+          amount: totals.categorySpend[group.id],
+        })),
       }));
-  }, [transactions, selectedMonth, locale]);
+  }, [transactions, selectedMonth, locale, trendMonthLimit, groupsLocalized]);
 
   const compareRows = useMemo(() => {
     const prevMonth = previousMonthKey(selectedMonth);
@@ -429,6 +461,10 @@ export const useSpendingBoard = () => {
     setActiveTab,
     activeGraphTab,
     setActiveGraphTab,
+    trendMonthLimit,
+    setTrendMonthLimit,
+    trendSeries,
+    setTrendSeries,
     selectedMonth,
     monthOptions,
     onMonthChange,

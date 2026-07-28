@@ -128,12 +128,18 @@ export const BoardCard = () => {
                   <div className="mt-5.5">
                     {board.activeGraphTab === 'trend' && (
                       <TrendChart
+                        t={board.t}
                         monthlyTotals={board.monthlyTotals}
+                        trendMonthLimit={board.trendMonthLimit}
+                        setTrendMonthLimit={board.setTrendMonthLimit}
+                        trendSeries={board.trendSeries}
+                        setTrendSeries={board.setTrendSeries}
                         themeTokens={themeTokens}
                       />
                     )}
                     {board.activeGraphTab === 'compare' && (
                       <CompareChart
+                        t={board.t}
                         compareRows={board.compareRows}
                         themeTokens={themeTokens}
                       />

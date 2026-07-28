@@ -194,6 +194,100 @@ describe('useSpendingBoard', () => {
         result.current.monthlyTotals.find((m) => m.month === '2024-01')
       ).toMatchObject({ isSelected: true });
     });
+
+    it('respects a user-selected trendMonthLimit instead of the default 6', async () => {
+      transactionRows = [
+        '2024-01',
+        '2024-02',
+        '2024-03',
+        '2024-04',
+        '2024-05',
+        '2024-06',
+        '2024-07',
+        '2024-08',
+      ].map((month, i) =>
+        tx({
+          id: `tx-${i}`,
+          date: `${month}-05`,
+          type: 'income',
+          amount: 100,
+        })
+      );
+      const { result } = await renderBoard();
+
+      act(() => {
+        result.current.onMonthChange('2024-08');
+        result.current.setTrendMonthLimit(3);
+      });
+      expect(result.current.monthlyTotals.map((m) => m.month)).toEqual([
+        '2024-06',
+        '2024-07',
+        '2024-08',
+      ]);
+
+      act(() => {
+        result.current.setTrendMonthLimit(12);
+      });
+      expect(result.current.monthlyTotals.map((m) => m.month)).toEqual([
+        '2024-01',
+        '2024-02',
+        '2024-03',
+        '2024-04',
+        '2024-05',
+        '2024-06',
+        '2024-07',
+        '2024-08',
+      ]);
+    });
+
+    it('includes a per-category expense breakdown for each month', async () => {
+      transactionRows = [
+        tx({
+          id: '1',
+          date: '2024-05-10',
+          type: 'expense',
+          category: 'needs',
+          amount: 300,
+        }),
+        tx({
+          id: '2',
+          date: '2024-05-12',
+          type: 'expense',
+          category: 'wants',
+          amount: 50,
+        }),
+      ];
+      const { result } = await renderBoard();
+
+      act(() => {
+        result.current.onMonthChange('2024-05');
+      });
+
+      const entry = result.current.monthlyTotals.find(
+        (m) => m.month === '2024-05'
+      );
+      expect(entry?.categoryBreakdown).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ id: 'needs', amount: 300 }),
+          expect.objectContaining({ id: 'savings', amount: 0 }),
+          expect.objectContaining({ id: 'wants', amount: 50 }),
+        ])
+      );
+    });
+  });
+
+  describe('trendSeries', () => {
+    it('defaults to expense and switches via the setter', async () => {
+      const { result } = await renderBoard();
+
+      expect(result.current.trendSeries).toBe('expense');
+
+      act(() => {
+        result.current.setTrendSeries('income');
+      });
+
+      expect(result.current.trendSeries).toBe('income');
+    });
   });
 
   describe('compareRows', () => {

@@ -182,6 +182,9 @@ export type I18nDict = {
   graphTab: string;
   trendTab: string;
   compareTab: string;
+  chartThisMonth: string;
+  chartPreviousMonth: string;
+  monthsUnit: string;
 };
 
 export const I18N: Record<Lang, I18nDict> = {
@@ -253,6 +256,9 @@ export const I18N: Record<Lang, I18nDict> = {
     graphTab: 'กราฟ',
     trendTab: 'แนวโน้ม',
     compareTab: 'เปรียบเทียบ',
+    chartThisMonth: 'เดือนนี้',
+    chartPreviousMonth: 'เดือนที่แล้ว',
+    monthsUnit: 'เดือน',
   },
   en: {
     loadingLabel: 'Loading…',
@@ -323,5 +329,8 @@ export const I18N: Record<Lang, I18nDict> = {
     graphTab: 'Graph',
     trendTab: 'Trend',
     compareTab: 'Compare',
+    chartThisMonth: 'This month',
+    chartPreviousMonth: 'Last month',
+    monthsUnit: 'months',
   },
 };
