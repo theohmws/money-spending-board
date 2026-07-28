@@ -30,6 +30,10 @@ type Props = {
 };
 
 const CHART_HEIGHT = 100;
+// Bars only ever grow into the bottom (100 - BAR_MAX_HEIGHT)% of the chart,
+// reserving headroom at the top so the value label above the tallest bar
+// never collides with the legend row above the chart.
+const BAR_MAX_HEIGHT = 80;
 const GROUP_GAP = 3;
 const BAR_GAP = 1.5;
 const LABEL_MIN_HEIGHT = 14;
@@ -63,7 +67,7 @@ export const GroupedBarChart = ({ groups, legend, themeTokens }: Props) => {
       const barWidth = (availableWidth - BAR_GAP * (barCount - 1)) / barCount;
 
       return group.bars.map((bar, barIndex) => {
-        const height = Math.max(0.5, (bar.value / maxValue) * CHART_HEIGHT);
+        const height = Math.max(0.5, (bar.value / maxValue) * BAR_MAX_HEIGHT);
         const x = groupX + barIndex * (barWidth + BAR_GAP);
         return {
           key: `${group.label}-${bar.id}`,
