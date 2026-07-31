@@ -29,6 +29,8 @@ export const useTransactions = (
   const [selectedMonth, setSelectedMonth] = useState(todayStr().slice(0, 7));
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingTxId, setEditingTxId] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const [txType, setTxType] = useState<TxType>('expense');
   const [txForm, setTxForm] = useState<TxForm>({
     amount: '',
@@ -93,6 +95,7 @@ export const useTransactions = (
     setEditingTxId(null);
     setTxType('expense');
     setTxForm({ amount: '', note: '', category: 'needs', date: todayStr() });
+    setSaveError(null);
     setShowAddModal(true);
   }, []);
   const openEditModal = useCallback((tx: Transaction) => {
@@ -104,11 +107,13 @@ export const useTransactions = (
       category: tx.category ?? 'needs',
       date: tx.date,
     });
+    setSaveError(null);
     setShowAddModal(true);
   }, []);
   const closeAddModal = useCallback(() => {
     setShowAddModal(false);
     setEditingTxId(null);
+    setSaveError(null);
   }, []);
   const onTxAmountChange = useCallback(
     (value: string) => setTxForm((prev) => ({ ...prev, amount: value })),
@@ -129,10 +134,24 @@ export const useTransactions = (
 
   const deleteTx = useCallback(
     async (id: string) => {
-      await clientRef.current?.from('transactions').delete().eq('id', id);
-      setTransactions((prev) => prev.filter((tx) => tx.id !== id));
+      const client = clientRef.current;
+      if (!client) return;
+
+      setDeleteError(null);
+      try {
+        const { error } = await client
+          .from('transactions')
+          .delete()
+          .eq('id', id);
+        if (error) throw error;
+        setTransactions((prev) => prev.filter((tx) => tx.id !== id));
+      } catch (err) {
+        setDeleteError(
+          err instanceof Error ? err.message : t.deleteTransactionError
+        );
+      }
     },
-    [clientRef]
+    [clientRef, t]
   );
 
   const saveTransaction = useCallback(async () => {
@@ -151,33 +170,38 @@ export const useTransactions = (
     const client = clientRef.current;
     if (!client || !userId) return;
 
-    const { data, error } = editingTxId
-      ? await client
-          .from('transactions')
-          .update({
-            type: tx.type,
-            category: tx.category,
-            note: tx.note,
-            amount: tx.amount,
-            date: tx.date,
-          })
-          .eq('id', editingTxId)
-          .select()
-      : await client
-          .from('transactions')
-          .insert({ ...tx, user_id: userId })
-          .select();
+    setSaveError(null);
+    try {
+      const { data, error } = editingTxId
+        ? await client
+            .from('transactions')
+            .update({
+              type: tx.type,
+              category: tx.category,
+              note: tx.note,
+              amount: tx.amount,
+              date: tx.date,
+            })
+            .eq('id', editingTxId)
+            .select()
+        : await client
+            .from('transactions')
+            .insert({ ...tx, user_id: userId })
+            .select();
 
-    if (!error) {
+      if (error) throw error;
+
       const saved = (data?.[0] as Transaction | undefined) ?? tx;
       setTransactions((prev) =>
         editingTxId
           ? prev.map((row) => (row.id === editingTxId ? saved : row))
           : [saved, ...prev]
       );
+      setEditingTxId(null);
+      setShowAddModal(false);
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : t.saveTransactionError);
     }
-    setEditingTxId(null);
-    setShowAddModal(false);
   }, [clientRef, editingTxId, t, txForm, txType, userId]);
 
   return {
@@ -202,7 +226,9 @@ export const useTransactions = (
     onTxDateChange,
     onTxCategoryChange,
     saveTransaction,
+    saveError,
     deleteTx,
+    deleteError,
     load,
     clear,
   };

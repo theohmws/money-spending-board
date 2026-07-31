@@ -14,6 +14,7 @@ type Props = Pick<
   | 'onTxDateChange'
   | 'categoryOptions'
   | 'saveTransaction'
+  | 'saveError'
   | 'themeTokens'
 >;
 
@@ -30,6 +31,7 @@ export const AddTransactionModal = ({
   onTxDateChange,
   categoryOptions,
   saveTransaction,
+  saveError,
   themeTokens,
 }: Props) => {
   if (!showAddModal) return null;
@@ -193,6 +195,15 @@ export const AddTransactionModal = ({
             }}
           />
         </div>
+
+        {saveError && (
+          <div
+            className="mt-3.5 rounded-[10px] px-3 py-2.5 text-[13px]"
+            style={{ background: '#FBEAEC', color: '#C0374A' }}
+          >
+            {saveError}
+          </div>
+        )}
 
         <button
           type="button"

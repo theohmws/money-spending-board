@@ -40,6 +40,15 @@ export const BoardCard = () => {
           className="mx-auto flex w-full flex-1 flex-col"
           style={{ maxWidth: isDesktop ? '960px' : '100%' }}
         >
+          {!board.isOnline && (
+            <div
+              className="px-4 py-2.5 text-center text-[12.5px] font-semibold"
+              style={{ background: '#FDF3E2', color: '#8A5A00' }}
+            >
+              {board.t.offlineBanner}
+            </div>
+          )}
+
           {board.booting && (
             <div
               className="flex flex-1 items-center justify-center text-sm"
@@ -119,6 +128,7 @@ export const BoardCard = () => {
                     <TransactionList
                       t={board.t}
                       transactionRows={board.transactionRows}
+                      deleteError={board.deleteError}
                       themeTokens={themeTokens}
                     />
                   </div>
@@ -179,6 +189,7 @@ export const BoardCard = () => {
         onTxDateChange={board.onTxDateChange}
         categoryOptions={board.categoryOptions}
         saveTransaction={board.saveTransaction}
+        saveError={board.saveError}
         themeTokens={themeTokens}
       />
       <RatioModal

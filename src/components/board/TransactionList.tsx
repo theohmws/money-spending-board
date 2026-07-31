@@ -2,10 +2,15 @@ import type { useSpendingBoard } from '@/hooks/useSpendingBoard';
 
 type Props = Pick<
   ReturnType<typeof useSpendingBoard>,
-  't' | 'transactionRows' | 'themeTokens'
+  't' | 'transactionRows' | 'deleteError' | 'themeTokens'
 >;
 
-export const TransactionList = ({ t, transactionRows, themeTokens }: Props) => (
+export const TransactionList = ({
+  t,
+  transactionRows,
+  deleteError,
+  themeTokens,
+}: Props) => (
   <div>
     <div className="mt-7.5 flex items-center justify-between">
       <div
@@ -15,6 +20,15 @@ export const TransactionList = ({ t, transactionRows, themeTokens }: Props) => (
         {t.recentActivity}
       </div>
     </div>
+
+    {deleteError && (
+      <div
+        className="mt-2.5 rounded-[10px] px-3 py-2.5 text-[13px]"
+        style={{ background: '#FBEAEC', color: '#C0374A' }}
+      >
+        {deleteError}
+      </div>
+    )}
 
     <div className="mt-2.5 flex flex-col">
       {transactionRows.length === 0 && (

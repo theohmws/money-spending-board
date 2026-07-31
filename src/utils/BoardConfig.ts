@@ -185,6 +185,9 @@ export type I18nDict = {
   chartThisMonth: string;
   chartPreviousMonth: string;
   monthsUnit: string;
+  offlineBanner: string;
+  saveTransactionError: string;
+  deleteTransactionError: string;
 };
 
 export const I18N: Record<Lang, I18nDict> = {
@@ -259,6 +262,10 @@ export const I18N: Record<Lang, I18nDict> = {
     chartThisMonth: 'เดือนนี้',
     chartPreviousMonth: 'เดือนที่แล้ว',
     monthsUnit: 'เดือน',
+    offlineBanner:
+      'ออฟไลน์อยู่ — การเปลี่ยนแปลงจะไม่ถูกบันทึกจนกว่าจะกลับมาออนไลน์',
+    saveTransactionError: 'บันทึกรายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+    deleteTransactionError: 'ลบรายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
   },
   en: {
     loadingLabel: 'Loading…',
@@ -332,5 +339,10 @@ export const I18N: Record<Lang, I18nDict> = {
     chartThisMonth: 'This month',
     chartPreviousMonth: 'Last month',
     monthsUnit: 'months',
+    offlineBanner:
+      "You're offline — changes won't be saved until you're back online.",
+    saveTransactionError: 'Could not save the transaction. Please try again.',
+    deleteTransactionError:
+      'Could not delete the transaction. Please try again.',
   },
 };
