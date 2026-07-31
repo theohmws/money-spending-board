@@ -1,7 +1,9 @@
 // Money Spending Board service worker.
-// Bump CACHE_NAME whenever the precached shell list below changes so
-// `activate` clears out the stale cache from a previous version.
-const CACHE_NAME = 'msb-shell-v1';
+// CACHE_NAME is kept in sync with package.json's version by
+// scripts/set-sw-cache-version.js (run as part of `npm run build`), so a
+// version bump alone is enough for `activate` to clear out the previous
+// version's cache — don't hand-edit this line, it gets overwritten on build.
+const CACHE_NAME = 'msb-shell-v0.0.3';
 
 const SHELL_URLS = [
   '/',
