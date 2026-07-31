@@ -6,6 +6,7 @@ import type { BoardSupabaseClient } from '@/hooks/useAuthSession';
 import { useAuthSession } from '@/hooks/useAuthSession';
 import { useCategoryMeta } from '@/hooks/useCategoryMeta';
 import { useI18n } from '@/hooks/useI18n';
+import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 import { useProfile } from '@/hooks/useProfile';
 import { useRatios } from '@/hooks/useRatios';
 import { useTheme } from '@/hooks/useTheme';
@@ -34,6 +35,7 @@ export type TrendMonthLimit = (typeof TREND_MONTH_LIMIT_OPTIONS)[number];
 export const useSpendingBoard = () => {
   const { lang, toggleLang, t } = useI18n();
   const { theme, setTheme, themeTokens } = useTheme();
+  const isOnline = useOnlineStatus();
   const locale = lang === 'en' ? 'en-US' : 'th-TH';
 
   // Mirrors the auth session's email/client specifically for the hooks
@@ -174,7 +176,9 @@ export const useSpendingBoard = () => {
     onTxDateChange,
     onTxCategoryChange,
     saveTransaction,
+    saveError,
     deleteTx,
+    deleteError,
   } = txSlice;
 
   // Cross-domain actions: each touches two hooks (profile + ratios, or
@@ -437,6 +441,7 @@ export const useSpendingBoard = () => {
     setTheme,
     themeTokens,
     isDesktop,
+    isOnline,
 
     booting,
     showConfigError: !booting && configMissing,
@@ -474,6 +479,7 @@ export const useSpendingBoard = () => {
     expenseLabel: fmtMoney(expense),
     categoryCards,
     transactionRows,
+    deleteError,
     monthlyTotals,
     compareRows,
 
@@ -489,6 +495,7 @@ export const useSpendingBoard = () => {
     onTxDateChange,
     categoryOptions,
     saveTransaction,
+    saveError,
 
     showRatioModal,
     openRatioModal,

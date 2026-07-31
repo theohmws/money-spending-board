@@ -329,4 +329,106 @@ describe('useTransactions', () => {
     expect(result.current.editingTxId).toBeNull();
     expect(result.current.showAddModal).toBe(false);
   });
+
+  it('should keep the modal open and surface an error when saving fails', async () => {
+    const { client, insertSelect } = makeClient();
+    insertSelect.mockResolvedValue({
+      data: null,
+      error: new Error('Failed to fetch'),
+    });
+    const clientRef = { current: client as any };
+    const { result } = renderHook(() =>
+      useTransactions(clientRef, 'user-1', t, locale)
+    );
+
+    act(() => {
+      result.current.openAddModal();
+      result.current.onTxAmountChange('100');
+    });
+
+    await act(async () => {
+      await result.current.saveTransaction();
+    });
+
+    expect(result.current.showAddModal).toBe(true);
+    expect(result.current.editingTxId).toBeNull();
+    expect(result.current.saveError).toBe('Failed to fetch');
+    expect(result.current.monthTx).toEqual([]);
+  });
+
+  it('should clear a prior save error on the next successful save', async () => {
+    const { client, insertSelect } = makeClient();
+    insertSelect.mockResolvedValueOnce({
+      data: null,
+      error: new Error('Failed to fetch'),
+    });
+    const clientRef = { current: client as any };
+    const { result } = renderHook(() =>
+      useTransactions(clientRef, 'user-1', t, locale)
+    );
+
+    act(() => {
+      result.current.openAddModal();
+      result.current.onTxAmountChange('100');
+    });
+    await act(async () => {
+      await result.current.saveTransaction();
+    });
+    expect(result.current.saveError).toBe('Failed to fetch');
+
+    insertSelect.mockResolvedValueOnce({
+      data: [
+        {
+          id: 'server-1',
+          type: 'expense',
+          category: 'needs',
+          note: t.expense,
+          amount: 100,
+          date: '2024-01-01',
+        },
+      ],
+      error: null,
+    });
+    await act(async () => {
+      await result.current.saveTransaction();
+    });
+
+    expect(result.current.saveError).toBeNull();
+    expect(result.current.showAddModal).toBe(false);
+  });
+
+  it('should keep the transaction and surface an error when deleting fails', async () => {
+    const { client, selectOrder, deleteEq } = makeClient();
+    const today = new Date().toISOString().slice(0, 10);
+    selectOrder.mockResolvedValue({
+      data: [
+        {
+          id: 'tx-1',
+          type: 'expense',
+          category: 'needs',
+          note: 'Rent',
+          amount: 500,
+          date: today,
+        },
+      ],
+      error: null,
+    });
+    deleteEq.mockResolvedValue({ error: new Error('Failed to fetch') });
+    const clientRef = { current: client as any };
+    const { result } = renderHook(() =>
+      useTransactions(clientRef, 'user-1', t, locale)
+    );
+
+    await act(async () => {
+      result.current.load(client as any);
+      await Promise.resolve();
+    });
+
+    await act(async () => {
+      await result.current.deleteTx('tx-1');
+    });
+
+    expect(result.current.monthTx).toHaveLength(1);
+    expect(result.current.deleteError).toBe('Failed to fetch');
+  });
 });

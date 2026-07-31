@@ -6,7 +6,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/set-sw-cache-version.js && next build",
     "start": "next start",
     "build-stats": "cross-env ANALYZE=true npm run build",
     "build-prod": "run-s clean build",
