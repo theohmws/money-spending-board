@@ -129,6 +129,7 @@ export const BoardCard = () => {
                       t={board.t}
                       transactionRows={board.transactionRows}
                       deleteError={board.deleteError}
+                      isOnline={board.isOnline}
                       themeTokens={themeTokens}
                     />
                   </div>
@@ -165,7 +166,8 @@ export const BoardCard = () => {
                 <button
                   type="button"
                   onClick={board.openAddModal}
-                  className="w-full rounded-2xl p-4 text-[15px] font-bold"
+                  disabled={!board.isOnline}
+                  className="w-full rounded-2xl p-4 text-[15px] font-bold disabled:cursor-not-allowed disabled:opacity-50"
                   style={{ background: '#132119', color: '#EFFCF4' }}
                 >
                   + {board.t.addTransaction}
@@ -190,6 +192,7 @@ export const BoardCard = () => {
         categoryOptions={board.categoryOptions}
         saveTransaction={board.saveTransaction}
         saveError={board.saveError}
+        isOnline={board.isOnline}
         themeTokens={themeTokens}
       />
       <RatioModal

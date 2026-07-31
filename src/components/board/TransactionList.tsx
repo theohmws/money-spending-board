@@ -2,13 +2,14 @@ import type { useSpendingBoard } from '@/hooks/useSpendingBoard';
 
 type Props = Pick<
   ReturnType<typeof useSpendingBoard>,
-  't' | 'transactionRows' | 'deleteError' | 'themeTokens'
+  't' | 'transactionRows' | 'deleteError' | 'isOnline' | 'themeTokens'
 >;
 
 export const TransactionList = ({
   t,
   transactionRows,
   deleteError,
+  isOnline,
   themeTokens,
 }: Props) => (
   <div>
@@ -43,16 +44,20 @@ export const TransactionList = ({
         <div
           key={tx.id}
           role="button"
-          tabIndex={0}
-          onClick={tx.onEdit}
+          tabIndex={isOnline ? 0 : -1}
+          onClick={isOnline ? tx.onEdit : undefined}
           onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
+            if (isOnline && (e.key === 'Enter' || e.key === ' ')) {
               e.preventDefault();
               tx.onEdit();
             }
           }}
-          className="flex cursor-pointer items-center gap-3 border-b py-3 text-left"
-          style={{ borderColor: themeTokens.divider }}
+          className="flex items-center gap-3 border-b py-3 text-left"
+          style={{
+            borderColor: themeTokens.divider,
+            cursor: isOnline ? 'pointer' : 'default',
+            opacity: isOnline ? 1 : 0.6,
+          }}
         >
           <div
             className="flex size-9 shrink-0 items-center justify-center rounded-[10px] font-manrope text-[13px] font-bold text-white"
@@ -86,7 +91,8 @@ export const TransactionList = ({
               e.stopPropagation();
               tx.onDelete();
             }}
-            className="px-0.5 py-1 text-base"
+            disabled={!isOnline}
+            className="px-0.5 py-1 text-base disabled:cursor-not-allowed"
             style={{ color: themeTokens.subtext2 }}
           >
             ×

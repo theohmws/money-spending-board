@@ -15,6 +15,7 @@ type Props = Pick<
   | 'categoryOptions'
   | 'saveTransaction'
   | 'saveError'
+  | 'isOnline'
   | 'themeTokens'
 >;
 
@@ -32,6 +33,7 @@ export const AddTransactionModal = ({
   categoryOptions,
   saveTransaction,
   saveError,
+  isOnline,
   themeTokens,
 }: Props) => {
   if (!showAddModal) return null;
@@ -196,19 +198,20 @@ export const AddTransactionModal = ({
           />
         </div>
 
-        {saveError && (
+        {(saveError || !isOnline) && (
           <div
             className="mt-3.5 rounded-[10px] px-3 py-2.5 text-[13px]"
             style={{ background: '#FBEAEC', color: '#C0374A' }}
           >
-            {saveError}
+            {isOnline ? saveError : t.offlineBanner}
           </div>
         )}
 
         <button
           type="button"
           onClick={saveTransaction}
-          className="mt-5.5 w-full rounded-xl p-4 text-[15px] font-bold"
+          disabled={!isOnline}
+          className="mt-5.5 w-full rounded-xl p-4 text-[15px] font-bold disabled:cursor-not-allowed disabled:opacity-50"
           style={{ background: '#132119', color: '#EFFCF4' }}
         >
           {isEditing ? t.updateTransactionBtn : t.saveTransactionBtn}
