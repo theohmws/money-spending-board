@@ -1,7 +1,7 @@
 ## 1. Icons
 
-- [x] 1.1 Generate `public/icon-192.png`, `public/icon-512.png` (solid `#0E8F5F` background, centered white "฿" glyph, per design.md Decision 4).
-- [x] 1.2 Generate `public/icon-maskable-512.png` with the glyph kept inside the maskable safe-zone circle.
+- [x] 1.1 Generate `public/icon-192.png`, `public/icon-512.png` from the user-supplied icon artwork (corner-flood-filled to transparent, cropped, re-squared, per design.md Decision 4).
+- [x] 1.2 Generate `public/icon-maskable-512.png` with the artwork kept inside the maskable safe-zone circle on an opaque backdrop.
 
 ## 2. Manifest route
 
