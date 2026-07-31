@@ -1,12 +1,13 @@
 # 💰 Money Spending Board
 
-A personal budgeting app built with Next.js 16 (App Router), TypeScript, and Tailwind CSS. Track transactions, split your budget across an editable needs/savings/wants ratio (50/30/20 by default), and switch between Thai and English — all backed by a fixed Supabase project configured via environment variables.
+A personal budgeting app built with Next.js 16 (App Router), TypeScript, and Tailwind CSS. Track transactions, split your budget across an editable needs/savings/wants ratio (50/30/20 by default), view trend and compare spending charts, and switch between Thai and English — all backed by a fixed Supabase project configured via environment variables.
 
 ### Features
 
-- 🔐 Email/password auth via [Supabase](https://supabase.com)
-- 💸 Add, edit, and categorize transactions with per-category icons and colors
+- 🔐 Email/password + Google OAuth sign-in via [Supabase](https://supabase.com) (other providers configurable via env var)
+- 💸 Add, edit, delete, and categorize transactions with per-category icons and colors
 - 📊 Editable needs/savings/wants budget split (defaults to 50/30/20, must sum to 100)
+- 📈 Trend and compare spending charts (Overview/Graph tabs — monthly income/expense trend and this-month-vs-previous per category)
 - 🌗 Light/dark theme toggle
 - 🇹🇭 🇬🇧 Thai/English language toggle
 - 📱 Responsive, self-contained board UI (`app/page.tsx`)
@@ -34,7 +35,7 @@ cd money-spending-board
 npm install
 ```
 
-Copy `.env.example` to `.env.local` and fill in your Supabase project's publishable key (`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` — from Project Settings → API Keys in the Supabase dashboard). These are required at build time; there's no in-app config flow or offline fallback.
+Copy `.env.example` to `.env.local` and fill in your Supabase project's publishable key (`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` — from Project Settings → API Keys in the Supabase dashboard). These are required at build time; there's no in-app config flow or offline fallback. `NEXT_PUBLIC_SUPABASE_AUTH_PROVIDERS` (comma-separated, defaults to `google`) controls which OAuth "Continue with ___" buttons render — each provider must also be enabled in the Supabase dashboard under Auth → Providers; set it to an empty string to disable OAuth and use email/password only.
 
 ```shell
 cp .env.example .env.local
@@ -57,12 +58,19 @@ Open http://localhost:3000.
 │   ├── about, blog            # Unmodified boilerplate placeholders
 │   ├── layout.tsx, sitemap.ts, robots.ts
 ├── src
-│   ├── hooks/useSpendingBoard.ts   # All board state/handlers (session, transactions, ratios, theme, lang...)
-│   ├── components/board/          # Board UI: AuthScreen, BoardHeader, BudgetSplit, TransactionList, modals
+│   ├── hooks/useSpendingBoard.ts   # Orchestrator composing the domain-sliced hooks below
+│   ├── hooks/useAuthSession.ts     # Supabase session, email/password + OAuth sign-in
+│   ├── hooks/useTransactions.ts    # Supabase-backed transactions CRUD + add/edit modal state
+│   ├── hooks/useRatios.ts, useProfile.ts, useCategoryMeta.ts  # localStorage-backed slices
+│   ├── hooks/useI18n.ts, useTheme.ts   # Language + theme state
+│   ├── components/board/          # Board UI: BoardCard, AuthScreen, BoardHeader, BoardTabs,
+│   │                               #   BudgetSplit, TransactionList, TrendChart, CompareChart, modals
 │   ├── templates/Main.tsx         # Site chrome (header/nav/footer) for about/blog
 │   ├── utils/BoardConfig.ts       # Category groups, icons, colors, Thai/English i18n dictionary
-│   ├── utils/boardHelpers.ts      # Pure helpers (fmtMoney, themeTokens, ...)
+│   ├── utils/boardHelpers.ts      # Pure helpers (fmtMoney, themeTokens, monthKey, ...)
 │   └── utils/AppConfig.ts         # Site metadata
+├── supabase/migrations         # Schema for the spending_board.transactions table + RLS policies
+├── openspec                    # Change proposals and specs for non-trivial features
 ├── cypress/e2e                # Cypress specs (predate the board, stale)
 ├── tailwind.config.js
 └── tsconfig.json
