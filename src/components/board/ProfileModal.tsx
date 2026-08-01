@@ -1,4 +1,5 @@
 import type { useSpendingBoard } from '@/hooks/useSpendingBoard';
+import { AppConfig } from '@/utils/AppConfig';
 
 type Props = Pick<
   ReturnType<typeof useSpendingBoard>,
@@ -283,6 +284,15 @@ export const ProfileModal = ({
         >
           {t.saveProfileBtn}
         </button>
+
+        {AppConfig.version && (
+          <div
+            className="mt-4 text-center text-[11.5px]"
+            style={{ color: themeTokens.subtext3 }}
+          >
+            v{AppConfig.version}
+          </div>
+        )}
       </div>
     </div>
   );
