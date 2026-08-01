@@ -65,12 +65,7 @@ export const AuthScreen = ({
   return (
     <div className="flex flex-1 flex-col px-8 pb-8 pt-11">
       <div className="flex items-center justify-between">
-        <div
-          className="flex size-11 items-center justify-center rounded-xl font-manrope text-lg font-extrabold"
-          style={{ background: '#0E3B2A', color: '#8CF2C4' }}
-        >
-          $
-        </div>
+        <img src="/icon-512.png" alt="" className="size-11 rounded-xl" />
         <div className="flex items-center gap-2.5">
           <button
             type="button"
