@@ -63,7 +63,7 @@ export const AuthScreen = ({
     : { signin: t.signIn, signup: t.signUp }[authMode];
 
   return (
-    <div className="flex flex-1 flex-col px-8 pb-8 pt-11">
+    <div className="mx-auto flex w-full max-w-[400px] flex-1 flex-col px-8 pb-8 pt-11">
       <div className="flex items-center justify-between">
         <img src="/icon-512.png" alt="" className="size-11 rounded-xl" />
         <div className="flex items-center gap-2.5">
