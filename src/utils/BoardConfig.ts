@@ -188,6 +188,7 @@ export type I18nDict = {
   offlineBanner: string;
   saveTransactionError: string;
   deleteTransactionError: string;
+  noCompareData: string;
 };
 
 export const I18N: Record<Lang, I18nDict> = {
@@ -266,6 +267,7 @@ export const I18N: Record<Lang, I18nDict> = {
       'ออฟไลน์อยู่ — การเปลี่ยนแปลงจะไม่ถูกบันทึกจนกว่าจะกลับมาออนไลน์',
     saveTransactionError: 'บันทึกรายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
     deleteTransactionError: 'ลบรายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+    noCompareData: 'ยังไม่มีรายจ่ายในเดือนนี้หรือเดือนที่แล้ว',
   },
   en: {
     loadingLabel: 'Loading…',
@@ -344,5 +346,6 @@ export const I18N: Record<Lang, I18nDict> = {
     saveTransactionError: 'Could not save the transaction. Please try again.',
     deleteTransactionError:
       'Could not delete the transaction. Please try again.',
+    noCompareData: 'No spending recorded for this month or last month yet.',
   },
 };
