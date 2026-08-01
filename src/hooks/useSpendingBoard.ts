@@ -23,10 +23,12 @@ import {
 } from '@/utils/BoardConfig';
 import { fmtMoney, monthKey, previousMonthKey } from '@/utils/boardHelpers';
 
-const GRID_ROWS: Record<CategoryId, string> = {
+// Only `needs` gets an explicit placement (spanning both columns of row 1,
+// full-width); savings/wants are left to grid auto-flow, which places them
+// in row 2 automatically once row 1 is fully occupied. Avoids the old
+// two-row-tall needs card whose content didn't fill that much height.
+const GRID_COLUMN_SPAN: Partial<Record<CategoryId, string>> = {
   needs: '1 / 3',
-  savings: '1',
-  wants: '2',
 };
 
 export const TREND_MONTH_LIMIT_OPTIONS = [3, 6, 12, 15, 24] as const;
@@ -236,7 +238,7 @@ export const useSpendingBoard = () => {
           dark: meta.dark,
           iconPath: ICON_MAP[meta.icon] ?? ICON_MAP.home,
           pctLabel: ratioPct,
-          gridRow: GRID_ROWS[group.id],
+          gridColumn: GRID_COLUMN_SPAN[group.id],
           items: group.items.join(' · '),
           spentLabel: fmtMoney(spent),
           budgetLabel: fmtMoney(budget),
