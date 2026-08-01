@@ -4,4 +4,5 @@ export const AppConfig = {
   description:
     'Track spending and split your budget across needs, savings, and wants.',
   locale: 'en',
+  version: process.env.NEXT_PUBLIC_APP_VERSION ?? '',
 };
