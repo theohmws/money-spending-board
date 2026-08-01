@@ -1,6 +1,7 @@
 'use client';
 
 import { useSpendingBoard } from '@/hooks/useSpendingBoard';
+import { AppConfig } from '@/utils/AppConfig';
 
 import { AddTransactionModal } from './AddTransactionModal';
 import { AuthScreen } from './AuthScreen';
@@ -176,6 +177,15 @@ export const BoardCard = () => {
             </div>
           )}
         </div>
+
+        {AppConfig.version && (
+          <div
+            className="px-6 pb-3 pt-1 text-center text-[10.5px]"
+            style={{ color: themeTokens.subtext3 }}
+          >
+            v{AppConfig.version}
+          </div>
+        )}
       </div>
 
       <AddTransactionModal
