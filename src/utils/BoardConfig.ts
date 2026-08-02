@@ -143,6 +143,7 @@ export type I18nDict = {
   gotIt: string;
   recentActivity: string;
   noTransactionsYet: string;
+  noTransactionsHint: string;
   addTransaction: string;
   editTransaction: string;
   expense: string;
@@ -219,6 +220,7 @@ export const I18N: Record<Lang, I18nDict> = {
     gotIt: 'เข้าใจแล้ว',
     recentActivity: 'กิจกรรมล่าสุด',
     noTransactionsYet: 'ยังไม่มีรายการ',
+    noTransactionsHint: 'บันทึกรายจ่ายแรกของคุณด้านล่าง',
     addTransaction: 'เพิ่มรายการ',
     editTransaction: 'แก้ไขรายการ',
     expense: 'รายจ่าย',
@@ -296,6 +298,7 @@ export const I18N: Record<Lang, I18nDict> = {
     gotIt: 'Got it',
     recentActivity: 'Recent activity',
     noTransactionsYet: 'No transactions yet',
+    noTransactionsHint: 'Log your first expense below',
     addTransaction: 'Add transaction',
     editTransaction: 'Edit transaction',
     expense: 'Expense',
