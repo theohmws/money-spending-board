@@ -84,58 +84,71 @@ export const BudgetSplit = ({
       )}
     </div>
 
-    <div className="mt-3.5 grid min-h-[250px] grid-cols-[1.1fr_1fr] grid-rows-2 gap-2.5">
-      {categoryCards.map((card) => (
-        <div
-          key={card.id}
-          className="flex flex-col rounded-2xl p-4"
-          style={{
-            gridRow: card.gridRow,
-            background: card.color,
-            color: card.dark,
-          }}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d={card.iconPath} />
-              </svg>
+    <div className="mt-3.5 grid grid-cols-2 gap-2.5">
+      {categoryCards.map((card) => {
+        const isDark = themeTokens.mode === 'dark';
+        // Dark mode swaps each category's light/dark token pair rather than
+        // introducing new colors: card.dark (already a deep, muted shade of
+        // the same hue) becomes the background, card.color becomes the
+        // foreground — so cards read as designed for dark mode, not just
+        // inverted, while staying within the existing color tokens.
+        const cardBg = isDark ? card.dark : card.color;
+        const cardFg = isDark ? card.color : card.dark;
+
+        return (
+          <div
+            key={card.id}
+            className="flex flex-col rounded-2xl p-4"
+            style={{
+              gridColumn: card.gridColumn,
+              background: cardBg,
+              color: cardFg,
+            }}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d={card.iconPath} />
+                </svg>
+                <div className="font-manrope text-[15px] font-extrabold">
+                  {card.name}
+                </div>
+              </div>
               <div className="font-manrope text-[15px] font-extrabold">
-                {card.name}
+                {card.pctLabel}%
               </div>
             </div>
-            <div className="font-manrope text-[15px] font-extrabold">
-              {card.pctLabel}%
+            <div className="mt-1.5 text-[11px] leading-snug opacity-75">
+              {card.items}
+            </div>
+            <div className="flex-1" />
+            <div className="text-[12.5px] font-bold">
+              {card.spentLabel}{' '}
+              <span className="font-medium opacity-75">
+                / {card.budgetLabel}
+              </span>
+            </div>
+            <div
+              className="mt-1.5 h-1.5 overflow-hidden rounded"
+              style={{ background: 'rgba(255,255,255,0.45)' }}
+            >
+              <div
+                className="h-full rounded"
+                style={{ width: `${card.pct}%`, background: cardFg }}
+              />
             </div>
           </div>
-          <div className="mt-1.5 text-[11px] leading-snug opacity-75">
-            {card.items}
-          </div>
-          <div className="flex-1" />
-          <div className="text-[12.5px] font-bold">
-            {card.spentLabel}{' '}
-            <span className="font-medium opacity-75">/ {card.budgetLabel}</span>
-          </div>
-          <div
-            className="mt-1.5 h-1.5 overflow-hidden rounded"
-            style={{ background: 'rgba(255,255,255,0.45)' }}
-          >
-            <div
-              className="h-full rounded"
-              style={{ width: `${card.pct}%`, background: card.dark }}
-            />
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   </div>
 );

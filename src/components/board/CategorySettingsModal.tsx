@@ -88,7 +88,7 @@ export const CategorySettingsModal = ({
                 </div>
               </div>
 
-              <div className="mt-3 flex flex-wrap gap-2">
+              <div className="mt-3 grid grid-cols-4 gap-2">
                 {row.iconOptions.map((icon) => (
                   <button
                     key={icon.id}
