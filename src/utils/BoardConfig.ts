@@ -216,7 +216,7 @@ export const I18N: Record<Lang, I18nDict> = {
     editRatio: 'แก้ไขสัดส่วน',
     ruleTitle: '50/30/20 Rule',
     ruleBody:
-      'แนวทางการจัดงบประมาณอย่างง่าย: 50% ของรายรับสำหรับสิ่งจำเป็น (ที่อยู่อาศัย ค่าน้ำค่าไฟ ของใช้ในบ้าน) 30% สำหรับสิ่งที่ต้องการ (ความบันเทิง ท่องเที่ยว ช้อปปิ้ง) และ 20% สำหรับเงินออม (ชำระหนี้ ลงทุน เงินสำรองฉุกเฉิน) ปรับสัดส่วนของคุณเองได้ตลอดผ่าน "แก้ไขสัดส่วน"',
+      'แนวทางการจัดงบประมาณอย่างง่าย: 50% ของรายรับสำหรับสิ่งจำเป็น (ที่อยู่อาศัย ค่าน้ำค่าไฟ ของใช้ในบ้าน) 30% สำหรับสิ่งที่ต้องการ (ความบันเทิง ท่องเที่ยว ช้อปปิ้ง) และ 20% สำหรับเงินออม (ชำระหนี้ ลงทุน เงินสำรองฉุกเฉิน) ปรับสัดส่วนของคุณเองได้ตลอดผ่าน “แก้ไขสัดส่วน”',
     gotIt: 'เข้าใจแล้ว',
     recentActivity: 'กิจกรรมล่าสุด',
     noTransactionsYet: 'ยังไม่มีรายการ',
@@ -284,7 +284,7 @@ export const I18N: Record<Lang, I18nDict> = {
     signIn: 'Sign in',
     signUp: 'Sign up',
     pleaseWait: 'Please wait…',
-    toggleToSignUp: "Don't have an account? Sign up",
+    toggleToSignUp: 'Don’t have an account? Sign up',
     toggleToSignIn: 'Have an account? Sign in',
     footerAuth: 'Personal spending board · secured by Supabase Auth',
     signOut: 'Sign out',
@@ -345,7 +345,7 @@ export const I18N: Record<Lang, I18nDict> = {
     chartPreviousMonth: 'Last month',
     monthsUnit: 'months',
     offlineBanner:
-      "You're offline — changes won't be saved until you're back online.",
+      'You’re offline — changes won’t be saved until you’re back online.',
     saveTransactionError: 'Could not save the transaction. Please try again.',
     deleteTransactionError:
       'Could not delete the transaction. Please try again.',
