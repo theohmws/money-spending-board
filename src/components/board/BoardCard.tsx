@@ -160,23 +160,42 @@ export const BoardCard = () => {
                 )}
               </div>
 
-              <div
-                className="sticky bottom-0 px-6 pb-5.5 pt-4"
-                style={{ background: themeTokens.fadeToCard }}
-              >
-                <button
-                  type="button"
-                  onClick={board.openAddModal}
-                  disabled={!board.isOnline}
-                  className="w-full rounded-2xl p-4 text-[15px] font-bold disabled:cursor-not-allowed disabled:opacity-50"
-                  style={{ background: '#132119', color: '#EFFCF4' }}
+              {isDesktop && (
+                <div
+                  className="sticky bottom-0 px-6 pb-5.5 pt-4"
+                  style={{ background: themeTokens.fadeToCard }}
                 >
-                  + {board.t.addTransaction}
-                </button>
-              </div>
+                  <button
+                    type="button"
+                    onClick={board.openAddModal}
+                    disabled={!board.isOnline}
+                    className="w-full rounded-2xl p-4 text-[15px] font-bold disabled:cursor-not-allowed disabled:opacity-50"
+                    style={{ background: '#132119', color: '#EFFCF4' }}
+                  >
+                    + {board.t.addTransaction}
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
+
+        {board.showApp && !isDesktop && (
+          <button
+            type="button"
+            onClick={board.openAddModal}
+            disabled={!board.isOnline}
+            aria-label={board.t.addTransaction}
+            className="fixed bottom-6 right-6 z-50 flex size-14 items-center justify-center rounded-full text-2xl font-bold disabled:cursor-not-allowed disabled:opacity-50"
+            style={{
+              background: '#132119',
+              color: '#EFFCF4',
+              boxShadow: '0 10px 25px rgba(20,30,25,0.35)',
+            }}
+          >
+            +
+          </button>
+        )}
 
         {AppConfig.version && (
           <div

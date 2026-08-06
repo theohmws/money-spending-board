@@ -142,6 +142,8 @@ export type I18nDict = {
   ruleBody: string;
   gotIt: string;
   recentActivity: string;
+  today: string;
+  yesterday: string;
   noTransactionsYet: string;
   noTransactionsHint: string;
   addTransaction: string;
@@ -219,6 +221,8 @@ export const I18N: Record<Lang, I18nDict> = {
       'แนวทางการจัดงบประมาณอย่างง่าย: 50% ของรายรับสำหรับสิ่งจำเป็น (ที่อยู่อาศัย ค่าน้ำค่าไฟ ของใช้ในบ้าน) 30% สำหรับสิ่งที่ต้องการ (ความบันเทิง ท่องเที่ยว ช้อปปิ้ง) และ 20% สำหรับเงินออม (ชำระหนี้ ลงทุน เงินสำรองฉุกเฉิน) ปรับสัดส่วนของคุณเองได้ตลอดผ่าน “แก้ไขสัดส่วน”',
     gotIt: 'เข้าใจแล้ว',
     recentActivity: 'กิจกรรมล่าสุด',
+    today: 'วันนี้',
+    yesterday: 'เมื่อวาน',
     noTransactionsYet: 'ยังไม่มีรายการ',
     noTransactionsHint: 'บันทึกรายจ่ายแรกของคุณด้านล่าง',
     addTransaction: 'เพิ่มรายการ',
@@ -297,6 +301,8 @@ export const I18N: Record<Lang, I18nDict> = {
       'A simple budgeting guideline: 50% of income to Needs (housing, bills, groceries), 30% to Wants (fun, travel, shopping), and 20% to Savings (debt payoff, investing, emergency fund). Adjust your own split anytime with "Edit ratio".',
     gotIt: 'Got it',
     recentActivity: 'Recent activity',
+    today: 'Today',
+    yesterday: 'Yesterday',
     noTransactionsYet: 'No transactions yet',
     noTransactionsHint: 'Log your first expense below',
     addTransaction: 'Add transaction',
