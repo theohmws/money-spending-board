@@ -21,7 +21,12 @@ import {
   ICON_MAP,
   PALETTE,
 } from '@/utils/BoardConfig';
-import { fmtMoney, monthKey, previousMonthKey } from '@/utils/boardHelpers';
+import {
+  fmtMoney,
+  monthKey,
+  previousMonthKey,
+  todayStr,
+} from '@/utils/boardHelpers';
 
 // Only `needs` gets an explicit placement (spanning both columns of row 1,
 // full-width); savings/wants are left to grid auto-flow, which places them
@@ -248,34 +253,56 @@ export const useSpendingBoard = () => {
     [groupsLocalized, categoryMeta, ratios, budgetBase, monthTx]
   );
 
-  const transactionRows = useMemo(
-    () =>
-      [...monthTx]
-        .sort((a, b) => (a.date < b.date ? 1 : -1))
-        .map((tx) => {
-          const category = tx.category ? catById[tx.category] : null;
-          const meta = tx.category
-            ? categoryMeta[tx.category] ?? DEFAULT_CATEGORY_META[tx.category]
-            : null;
-          return {
-            id: tx.id,
-            initial: tx.type === 'income' ? '+' : category?.name[0] ?? 'O',
-            color: tx.type === 'income' ? '#0E8F5F' : meta?.color ?? '#64748B',
-            title: tx.note || category?.name || 'Other',
-            dateLabel: new Date(`${tx.date}T00:00:00`).toLocaleDateString(
-              locale,
-              { month: 'short', day: 'numeric' }
-            ),
-            amountLabel:
-              (tx.type === 'income' ? '+' : '-') +
-              fmtMoney(tx.amount).replace('-', ''),
-            amountColor: tx.type === 'income' ? '#0E8F5F' : themeTokens.text,
-            onDelete: () => deleteTx(tx.id),
-            onEdit: () => openEditModal(tx),
-          };
-        }),
-    [monthTx, catById, categoryMeta, locale, theme, deleteTx, openEditModal]
-  );
+  const transactionRows = useMemo(() => {
+    const today = todayStr();
+    const yesterdayDate = new Date(`${today}T00:00:00Z`);
+    yesterdayDate.setUTCDate(yesterdayDate.getUTCDate() - 1);
+    const yesterday = yesterdayDate.toISOString().slice(0, 10);
+
+    const dayLabelFor = (date: string) => {
+      if (date === today) return t.today;
+      if (date === yesterday) return t.yesterday;
+      return new Date(`${date}T00:00:00`).toLocaleDateString(locale, {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+      });
+    };
+
+    return [...monthTx]
+      .sort((a, b) => (a.date < b.date ? 1 : -1))
+      .map((tx) => {
+        const category = tx.category ? catById[tx.category] : null;
+        const meta = tx.category
+          ? categoryMeta[tx.category] ?? DEFAULT_CATEGORY_META[tx.category]
+          : null;
+        return {
+          id: tx.id,
+          date: tx.date,
+          dayLabel: dayLabelFor(tx.date),
+          initial: tx.type === 'income' ? '+' : category?.name[0] ?? 'O',
+          color: tx.type === 'income' ? '#0E8F5F' : meta?.color ?? '#64748B',
+          title: tx.note || category?.name || 'Other',
+          subtitle:
+            category?.name ?? (tx.type === 'income' ? t.income : t.expense),
+          amountLabel:
+            (tx.type === 'income' ? '+' : '-') +
+            fmtMoney(tx.amount).replace('-', ''),
+          amountColor: tx.type === 'income' ? '#0E8F5F' : themeTokens.text,
+          onDelete: () => deleteTx(tx.id),
+          onEdit: () => openEditModal(tx),
+        };
+      });
+  }, [
+    monthTx,
+    catById,
+    categoryMeta,
+    locale,
+    theme,
+    deleteTx,
+    openEditModal,
+    t,
+  ]);
 
   const monthlyTotals = useMemo(() => {
     const emptyCategorySpend = (): Record<CategoryId, number> => ({
