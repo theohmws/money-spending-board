@@ -290,7 +290,7 @@ export const useSpendingBoard = () => {
             category?.name ?? (tx.type === 'income' ? t.income : t.expense),
           netAmount,
           amountLabel: fmtSignedMoney(netAmount),
-          amountColor: tx.type === 'income' ? '#0E8F5F' : '#C0374A',
+          amountColor: tx.type === 'income' ? '#0E8F5F' : themeTokens.text,
           onDelete: () => deleteTx(tx.id),
           onEdit: () => openEditModal(tx),
         };
