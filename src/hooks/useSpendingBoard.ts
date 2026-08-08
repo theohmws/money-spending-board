@@ -285,6 +285,8 @@ export const useSpendingBoard = () => {
           title: tx.note || category?.name || 'Other',
           subtitle:
             category?.name ?? (tx.type === 'income' ? t.income : t.expense),
+          netAmount:
+            tx.type === 'income' ? Number(tx.amount) : -Number(tx.amount),
           amountLabel:
             (tx.type === 'income' ? '+' : '-') +
             fmtMoney(tx.amount).replace('-', ''),
