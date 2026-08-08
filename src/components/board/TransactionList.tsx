@@ -122,7 +122,13 @@ export const TransactionList = ({
                 </span>
                 <div className="flex items-center gap-1.5">
                   <span
-                    className="text-[12.5px] font-bold"
+                    className="text-[11px] font-medium"
+                    style={{ color: themeTokens.subtext2 }}
+                  >
+                    {t.total}
+                  </span>
+                  <span
+                    className="text-[12.5px] font-semibold"
                     style={{
                       color: group.netColor,
                       fontVariantNumeric: 'tabular-nums',
