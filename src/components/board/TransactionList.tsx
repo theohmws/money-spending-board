@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 
 import type { useSpendingBoard } from '@/hooks/useSpendingBoard';
-import { fmtMoney } from '@/utils/boardHelpers';
+import { fmtSignedMoney } from '@/utils/boardHelpers';
 
 type Props = Pick<
   ReturnType<typeof useSpendingBoard>,
@@ -37,8 +37,7 @@ export const TransactionList = ({
       const net = group.rows.reduce((sum, row) => sum + row.netAmount, 0);
       return {
         ...group,
-        netLabel:
-          (net >= 0 ? '+' : '-') + fmtMoney(Math.abs(net)).replace('-', ''),
+        netLabel: fmtSignedMoney(net),
         netColor: net >= 0 ? '#0E8F5F' : '#C0374A',
       };
     });
@@ -124,7 +123,10 @@ export const TransactionList = ({
                 <div className="flex items-center gap-1.5">
                   <span
                     className="text-[12.5px] font-bold"
-                    style={{ color: group.netColor }}
+                    style={{
+                      color: group.netColor,
+                      fontVariantNumeric: 'tabular-nums',
+                    }}
                   >
                     {group.netLabel}
                   </span>
@@ -194,7 +196,10 @@ export const TransactionList = ({
                     </div>
                     <div
                       className="text-[14.5px] font-bold"
-                      style={{ color: tx.amountColor }}
+                      style={{
+                        color: tx.amountColor,
+                        fontVariantNumeric: 'tabular-nums',
+                      }}
                     >
                       {tx.amountLabel}
                     </div>
