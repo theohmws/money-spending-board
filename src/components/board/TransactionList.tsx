@@ -128,7 +128,7 @@ export const TransactionList = ({
                     {t.total}
                   </span>
                   <span
-                    className="text-[12.5px] font-semibold"
+                    className="text-[13.5px] font-bold"
                     style={{
                       color: group.netColor,
                       fontVariantNumeric: 'tabular-nums',
