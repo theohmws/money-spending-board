@@ -92,7 +92,10 @@ export const BoardHeader = ({
       </select>
     </div>
 
-    <div className="mt-1 font-manrope text-[38px] font-extrabold">
+    <div
+      className="mt-1 font-manrope text-[38px] font-extrabold"
+      style={{ fontVariantNumeric: 'tabular-nums' }}
+    >
       {balanceLabel}
     </div>
 
@@ -101,13 +104,23 @@ export const BoardHeader = ({
         <div className="text-[11.5px]" style={{ color: '#7FAF95' }}>
           {t.income}
         </div>
-        <div className="mt-0.5 text-[15px] font-bold">{incomeLabel}</div>
+        <div
+          className="mt-0.5 text-[15px] font-bold"
+          style={{ fontVariantNumeric: 'tabular-nums' }}
+        >
+          {incomeLabel}
+        </div>
       </div>
       <div>
         <div className="text-[11.5px]" style={{ color: '#7FAF95' }}>
           {t.spent}
         </div>
-        <div className="mt-0.5 text-[15px] font-bold">{expenseLabel}</div>
+        <div
+          className="mt-0.5 text-[15px] font-bold"
+          style={{ fontVariantNumeric: 'tabular-nums' }}
+        >
+          {expenseLabel}
+        </div>
       </div>
     </div>
   </div>

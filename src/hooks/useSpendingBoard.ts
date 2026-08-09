@@ -23,6 +23,7 @@ import {
 } from '@/utils/BoardConfig';
 import {
   fmtMoney,
+  fmtSignedMoney,
   monthKey,
   previousMonthKey,
   todayStr,
@@ -276,6 +277,8 @@ export const useSpendingBoard = () => {
         const meta = tx.category
           ? categoryMeta[tx.category] ?? DEFAULT_CATEGORY_META[tx.category]
           : null;
+        const netAmount =
+          tx.type === 'income' ? Number(tx.amount) : -Number(tx.amount);
         return {
           id: tx.id,
           date: tx.date,
@@ -285,9 +288,8 @@ export const useSpendingBoard = () => {
           title: tx.note || category?.name || 'Other',
           subtitle:
             category?.name ?? (tx.type === 'income' ? t.income : t.expense),
-          amountLabel:
-            (tx.type === 'income' ? '+' : '-') +
-            fmtMoney(tx.amount).replace('-', ''),
+          netAmount,
+          amountLabel: fmtSignedMoney(netAmount),
           amountColor: tx.type === 'income' ? '#0E8F5F' : themeTokens.text,
           onDelete: () => deleteTx(tx.id),
           onEdit: () => openEditModal(tx),

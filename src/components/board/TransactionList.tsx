@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 
 import type { useSpendingBoard } from '@/hooks/useSpendingBoard';
+import { fmtSignedMoney } from '@/utils/boardHelpers';
 
 type Props = Pick<
   ReturnType<typeof useSpendingBoard>,
@@ -32,7 +33,14 @@ export const TransactionList = ({
         groups.push({ date: tx.date, dayLabel: tx.dayLabel, rows: [tx] });
       }
     });
-    return groups;
+    return groups.map((group) => {
+      const net = group.rows.reduce((sum, row) => sum + row.netAmount, 0);
+      return {
+        ...group,
+        netLabel: fmtSignedMoney(net),
+        netColor: net >= 0 ? '#0E8F5F' : '#C0374A',
+      };
+    });
   }, [transactionRows]);
 
   const toggleDay = (date: string) =>
@@ -112,23 +120,42 @@ export const TransactionList = ({
                 >
                   {group.dayLabel}
                 </span>
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  style={{
-                    color: themeTokens.subtext2,
-                    transform: isCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)',
-                    transition: 'transform 0.15s ease',
-                  }}
-                >
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
+                <div className="flex items-center gap-1.5">
+                  <span
+                    className="text-[11px] font-medium"
+                    style={{ color: themeTokens.subtext2 }}
+                  >
+                    {t.total}
+                  </span>
+                  <span
+                    className="text-[13.5px] font-bold"
+                    style={{
+                      color: group.netColor,
+                      fontVariantNumeric: 'tabular-nums',
+                    }}
+                  >
+                    {group.netLabel}
+                  </span>
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    style={{
+                      color: themeTokens.subtext2,
+                      transform: isCollapsed
+                        ? 'rotate(-90deg)'
+                        : 'rotate(0deg)',
+                      transition: 'transform 0.15s ease',
+                    }}
+                  >
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </div>
               </button>
 
               {!isCollapsed &&
@@ -175,7 +202,10 @@ export const TransactionList = ({
                     </div>
                     <div
                       className="text-[14.5px] font-bold"
-                      style={{ color: tx.amountColor }}
+                      style={{
+                        color: tx.amountColor,
+                        fontVariantNumeric: 'tabular-nums',
+                      }}
                     >
                       {tx.amountLabel}
                     </div>

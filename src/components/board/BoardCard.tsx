@@ -186,11 +186,11 @@ export const BoardCard = () => {
             onClick={board.openAddModal}
             disabled={!board.isOnline}
             aria-label={board.t.addTransaction}
-            className="fixed bottom-6 right-6 z-50 flex size-14 items-center justify-center rounded-full text-2xl font-bold disabled:cursor-not-allowed disabled:opacity-50"
+            className="fixed bottom-6 right-6 z-10 flex size-14 items-center justify-center rounded-full text-2xl font-bold disabled:cursor-not-allowed disabled:opacity-50"
             style={{
-              background: '#132119',
-              color: '#EFFCF4',
-              boxShadow: '0 10px 25px rgba(20,30,25,0.35)',
+              background: '#0E8F5F',
+              color: '#FFFFFF',
+              boxShadow: '0 10px 25px rgba(14,143,95,0.45)',
             }}
           >
             +
