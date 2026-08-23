@@ -1,11 +1,11 @@
 const version = process.env.NEXT_PUBLIC_APP_VERSION ?? '';
 // Both best-effort (see next.config.js) — '' when unavailable (e.g. a
 // shallow/git-less build), in which case the label below just omits that
-// part rather than showing a blank commit/date.
+// part rather than showing a blank commit/time.
 const buildCommit = process.env.NEXT_PUBLIC_BUILD_COMMIT ?? '';
-const buildDate = process.env.NEXT_PUBLIC_BUILD_DATE ?? '';
+const buildTime = process.env.NEXT_PUBLIC_BUILD_TIME ?? '';
 
-const versionLabel = [version && `v${version}`, buildCommit, buildDate]
+const versionLabel = [version && `v${version}`, buildCommit, buildTime]
   .filter(Boolean)
   .join(' · ');
 
@@ -17,6 +17,6 @@ export const AppConfig = {
   locale: 'en',
   version,
   buildCommit,
-  buildDate,
+  buildTime,
   versionLabel,
 };
