@@ -42,12 +42,13 @@
 - [ ] 7.3 Preview modal: editable table (date, description, category picker, amount, include/exclude toggle), duplicate-warning indicator per flagged row, a count of unrecognized/dropped lines (per design.md's parser-miss mitigation), and a confirm/cancel footer.
 - [ ] 7.4 Row edits in the preview clear that row's eventual `needs_review` flag on import; untouched rows keep it set.
 
-## 8. Needs-review surface on `TransactionList`
+## 8. Needs-review + imported-origin surfaces on `TransactionList`
 
 - [ ] 8.1 Small badge/indicator on rows where `needs_review` is `true`.
-- [ ] 8.2 Filter/tab scoped to needs-review-only rows, alongside (not replacing) the existing full list.
-- [ ] 8.3 Confirm `transactionRows` (the cross-slice derived view in `useSpendingBoard.ts`) threads `needs_review` through; no duplicate computation outside the composition root, per `spending-board-state`'s existing rule.
-- [ ] 8.4 Opening a needs-review row still goes through the existing `AddTransactionModal` edit flow unchanged (per `transaction-editing`); saving it clears `needs_review`.
+- [ ] 8.2 Separate, independent badge/indicator on rows where `source` is set, shown regardless of `needs_review` — visually distinct from the needs-review badge (they can appear together on the same row).
+- [ ] 8.3 Filter/tab scoped to needs-review-only rows, alongside (not replacing) the existing full list.
+- [ ] 8.4 Confirm `transactionRows` (the cross-slice derived view in `useSpendingBoard.ts`) threads both `needs_review` and `source` through; no duplicate computation outside the composition root, per `spending-board-state`'s existing rule.
+- [ ] 8.5 Opening a needs-review row still goes through the existing `AddTransactionModal` edit flow unchanged (per `transaction-editing`); saving it clears `needs_review` but leaves `source` (and therefore the imported badge) untouched.
 
 ## 9. Category-rule management UI
 
@@ -56,7 +57,7 @@
 
 ## 10. i18n
 
-- [ ] 10.1 Add `th`/`en` strings to `I18nDict` (`src/utils/BoardConfig.ts`) for: import entry point, password prompt, preview table headers/actions, duplicate-warning text, needs-review badge/filter labels, category-rule CRUD UI.
+- [ ] 10.1 Add `th`/`en` strings to `I18nDict` (`src/utils/BoardConfig.ts`) for: import entry point, password prompt, preview table headers/actions, duplicate-warning text, needs-review badge/filter labels, imported-origin badge label, category-rule CRUD UI.
 
 ## 11. Tests
 

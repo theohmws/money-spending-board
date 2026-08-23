@@ -77,6 +77,21 @@ A row confirmed from the preview step SHALL be saved with `needs_review = true` 
 - **WHEN** a user opens a needs-review row for editing and saves it (via the existing add/edit transaction flow)
 - **THEN** that row's `needs_review` becomes `false`
 
+### Requirement: A transaction's import origin is visibly and permanently distinguishable from manual entry
+`TransactionList` SHALL show a visible "imported" indicator on any row with `source` set, independent of that row's `needs_review` state, so a row's origin remains visible even after it has been reviewed.
+
+#### Scenario: An imported row shows the imported badge regardless of review status
+- **WHEN** the transaction list renders a row with `source` set (e.g. `'ktc_import'`)
+- **THEN** that row shows an "imported" badge, whether or not `needs_review` is `true`
+
+#### Scenario: Reviewing an imported row does not remove the imported badge
+- **WHEN** a user reviews and saves a row that has `source` set, clearing its `needs_review` flag
+- **THEN** the row's "imported" badge remains visible after the save
+
+#### Scenario: A manually-entered row never shows the imported badge
+- **WHEN** the transaction list renders a row with no `source` (entered via the normal add-transaction flow)
+- **THEN** that row shows no "imported" badge
+
 ### Requirement: Possible duplicate imports are flagged, never blocked
 A preview row SHALL be flagged as a possible duplicate if an existing transaction with the same `date` and `amount` exists AND that existing transaction was itself previously imported. The user SHALL still be able to import a flagged row.
 
