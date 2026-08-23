@@ -31,6 +31,42 @@ export type Transaction = {
   note: string;
   amount: number;
   date: string;
+  // null = manually entered. A non-null value (e.g. 'ktc_import') marks the
+  // row as having come from a statement import.
+  source: string | null;
+  // true for an imported row the user hasn't cleaned up in the preview
+  // step yet; always false for a manually-entered row.
+  needs_review: boolean;
+};
+
+export type ImportCategoryRule = {
+  id: string;
+  keyword: string;
+  category: CategoryId;
+};
+
+export type BadgeColorPair = { color: string; dark: string };
+export type BadgeColors = {
+  needsReview: BadgeColorPair;
+  source: BadgeColorPair;
+};
+
+export const DEFAULT_BADGE_COLORS: BadgeColors = {
+  needsReview: { color: '#C9A6F2', dark: '#4B2A6B' },
+  source: { color: '#7FB3F2', dark: '#1E3A5C' },
+};
+
+export type ParsedImportRow = {
+  // Present only once the row has been matched into the local transactions
+  // array; absent for a freshly-parsed row.
+  key: string;
+  date: string;
+  description: string;
+  amount: number;
+  category: CategoryId;
+  included: boolean;
+  edited: boolean;
+  possibleDuplicate: boolean;
 };
 
 export const GROUPS: Group[] = [
@@ -192,6 +228,46 @@ export type I18nDict = {
   saveTransactionError: string;
   deleteTransactionError: string;
   noCompareData: string;
+  importEntryLabel: string;
+  importEntryDesc: string;
+  importSettingsEntryLabel: string;
+  importSettingsEntryDesc: string;
+  importParsing: string;
+  importParseError: string;
+  importPasswordTitle: string;
+  importPasswordLabel: string;
+  importPasswordSubmit: string;
+  importPasswordCancel: string;
+  importPasswordError: string;
+  importPreviewTitle: string;
+  importPreviewEmpty: string;
+  importPreviewSkippedNote: string;
+  importRowDate: string;
+  importRowDescription: string;
+  importRowCategory: string;
+  importRowAmount: string;
+  importDuplicateWarning: string;
+  importConfirmBtn: string;
+  importCancelBtn: string;
+  importSaveError: string;
+  needsReviewBadgeAriaSuffix: string;
+  needsReviewFilterLabel: string;
+  needsReviewFilterHint: string;
+  allTransactionsFilterLabel: string;
+  importedBadgeLabel: string;
+  importSettingsTitle: string;
+  categoryRulesTitle: string;
+  categoryRulesDesc: string;
+  categoryRuleKeywordPlaceholder: string;
+  addRuleBtn: string;
+  removeRuleAria: string;
+  badgeColorsTitle: string;
+  needsReviewColorLabel: string;
+  sourceColorLabel: string;
+  saveImportSettingsBtn: string;
+  categoryRuleSaveError: string;
+  categoryRuleDeleteError: string;
+  boardSettingsSaveError: string;
 };
 
 export const I18N: Record<Lang, I18nDict> = {
@@ -274,6 +350,49 @@ export const I18N: Record<Lang, I18nDict> = {
     saveTransactionError: 'บันทึกรายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
     deleteTransactionError: 'ลบรายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
     noCompareData: 'ยังไม่มีรายจ่ายในเดือนนี้หรือเดือนที่แล้ว',
+    importEntryLabel: 'นำเข้าจาก PDF',
+    importEntryDesc: 'นำเข้ารายการจากใบแจ้งยอดบัตรเครดิต KTC',
+    importSettingsEntryLabel: 'ตั้งค่าการนำเข้า',
+    importSettingsEntryDesc: 'คำที่ใช้เดาหมวดหมู่ และสีของป้ายกำกับ',
+    importParsing: 'กำลังอ่านไฟล์…',
+    importParseError:
+      'อ่านไฟล์ไม่สำเร็จ กรุณาตรวจสอบว่าเป็นใบแจ้งยอดบัตรเครดิต KTC',
+    importPasswordTitle: 'ไฟล์นี้มีรหัสผ่าน',
+    importPasswordLabel: 'รหัสผ่าน PDF',
+    importPasswordSubmit: 'เปิดไฟล์',
+    importPasswordCancel: 'ยกเลิก',
+    importPasswordError: 'รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่',
+    importPreviewTitle: 'ตรวจสอบรายการก่อนนำเข้า',
+    importPreviewEmpty: 'ไม่พบรายการในไฟล์นี้',
+    importPreviewSkippedNote: 'มี {n} บรรทัดที่ไม่รู้จัก จึงไม่ได้แสดงไว้',
+    importRowDate: 'วันที่',
+    importRowDescription: 'รายการ',
+    importRowCategory: 'หมวดหมู่',
+    importRowAmount: 'จำนวนเงิน',
+    importDuplicateWarning: 'อาจซ้ำกับรายการที่มีอยู่แล้ว',
+    importConfirmBtn: 'นำเข้ารายการที่เลือก',
+    importCancelBtn: 'ยกเลิก',
+    importSaveError: 'นำเข้ารายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+    needsReviewBadgeAriaSuffix: 'รอตรวจสอบ',
+    needsReviewFilterLabel: 'รอตรวจสอบ',
+    needsReviewFilterHint:
+      'รายการที่นำเข้ามาแล้วยังไม่ได้ตรวจสอบ จะมีแถบสีทางซ้ายของแถวกำกับไว้',
+    allTransactionsFilterLabel: 'ทั้งหมด',
+    importedBadgeLabel: 'นำเข้า',
+    importSettingsTitle: 'ตั้งค่าการนำเข้า',
+    categoryRulesTitle: 'คำสำหรับเดาหมวดหมู่',
+    categoryRulesDesc:
+      'เมื่อคำอธิบายรายการมีคำนี้ จะเดาหมวดหมู่ให้อัตโนมัติตอนนำเข้า',
+    categoryRuleKeywordPlaceholder: 'เช่น STARBUCKS',
+    addRuleBtn: 'เพิ่ม',
+    removeRuleAria: 'ลบคำนี้',
+    badgeColorsTitle: 'สีของป้ายกำกับ',
+    needsReviewColorLabel: 'แถบ "รอตรวจสอบ"',
+    sourceColorLabel: 'ป้าย "นำเข้า"',
+    saveImportSettingsBtn: 'บันทึกการตั้งค่า',
+    categoryRuleSaveError: 'บันทึกคำไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+    categoryRuleDeleteError: 'ลบคำไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+    boardSettingsSaveError: 'บันทึกสีไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
   },
   en: {
     loadingLabel: 'Loading…',
@@ -356,5 +475,48 @@ export const I18N: Record<Lang, I18nDict> = {
     deleteTransactionError:
       'Could not delete the transaction. Please try again.',
     noCompareData: 'No spending recorded for this month or last month yet.',
+    importEntryLabel: 'Import from PDF',
+    importEntryDesc: 'Import transactions from a KTC credit-card statement',
+    importSettingsEntryLabel: 'Import settings',
+    importSettingsEntryDesc: 'Category-guess keywords and badge colors',
+    importParsing: 'Reading file…',
+    importParseError:
+      'Could not read the file. Make sure it’s a KTC credit-card statement.',
+    importPasswordTitle: 'This file is password-protected',
+    importPasswordLabel: 'PDF password',
+    importPasswordSubmit: 'Unlock',
+    importPasswordCancel: 'Cancel',
+    importPasswordError: 'Wrong password. Please try again.',
+    importPreviewTitle: 'Review before importing',
+    importPreviewEmpty: 'No transactions found in this file.',
+    importPreviewSkippedNote: '{n} lines weren’t recognized and are hidden.',
+    importRowDate: 'Date',
+    importRowDescription: 'Description',
+    importRowCategory: 'Category',
+    importRowAmount: 'Amount',
+    importDuplicateWarning: 'Might be a duplicate of an existing transaction',
+    importConfirmBtn: 'Import selected',
+    importCancelBtn: 'Cancel',
+    importSaveError: 'Could not import the transactions. Please try again.',
+    needsReviewBadgeAriaSuffix: 'needs review',
+    needsReviewFilterLabel: 'Needs review',
+    needsReviewFilterHint:
+      'Imported transactions you haven’t reviewed yet — marked with a stripe on the left of the row.',
+    allTransactionsFilterLabel: 'All',
+    importedBadgeLabel: 'Imported',
+    importSettingsTitle: 'Import settings',
+    categoryRulesTitle: 'Category-guess keywords',
+    categoryRulesDesc:
+      'When an imported row’s description contains this word, its category is guessed automatically.',
+    categoryRuleKeywordPlaceholder: 'e.g. STARBUCKS',
+    addRuleBtn: 'Add',
+    removeRuleAria: 'Remove this keyword',
+    badgeColorsTitle: 'Badge colors',
+    needsReviewColorLabel: '"Needs review" stripe',
+    sourceColorLabel: '"Imported" label',
+    saveImportSettingsBtn: 'Save settings',
+    categoryRuleSaveError: 'Could not save the keyword. Please try again.',
+    categoryRuleDeleteError: 'Could not remove the keyword. Please try again.',
+    boardSettingsSaveError: 'Could not save the colors. Please try again.',
   },
 };

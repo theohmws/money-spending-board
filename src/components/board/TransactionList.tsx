@@ -5,16 +5,38 @@ import { fmtSignedMoney } from '@/utils/boardHelpers';
 
 type Props = Pick<
   ReturnType<typeof useSpendingBoard>,
-  't' | 'transactionRows' | 'deleteError' | 'isOnline' | 'themeTokens'
+  | 't'
+  | 'transactionRows'
+  | 'transactionFilter'
+  | 'setTransactionFilter'
+  | 'badgeColors'
+  | 'deleteError'
+  | 'isOnline'
+  | 'themeTokens'
 >;
 
 export const TransactionList = ({
   t,
   transactionRows,
+  transactionFilter,
+  setTransactionFilter,
+  badgeColors,
   deleteError,
   isOnline,
   themeTokens,
 }: Props) => {
+  const isDark = themeTokens.mode === 'dark';
+  // No background fill on either indicator (design.md Decision 5b), so each
+  // uses the member of its color pair that reads as legible foreground text
+  // against `cardBg` — same "flip by theme" idea BudgetSplit already uses
+  // for its category cards, just without ever using the pair as a fill.
+  const needsReviewColor = isDark
+    ? badgeColors.needsReview.color
+    : badgeColors.needsReview.dark;
+  const sourceColor = isDark
+    ? badgeColors.source.color
+    : badgeColors.source.dark;
+
   const [collapsedDays, setCollapsedDays] = useState<Record<string, boolean>>(
     {}
   );
@@ -55,7 +77,55 @@ export const TransactionList = ({
         >
           {t.recentActivity}
         </div>
+        <div
+          className="flex gap-1 rounded-[9px] p-0.5"
+          style={{ background: themeTokens.chipBg }}
+        >
+          <button
+            type="button"
+            onClick={() => setTransactionFilter('all')}
+            className="rounded-lg px-2.5 py-1 text-[11.5px] font-semibold"
+            style={{
+              background:
+                transactionFilter === 'all'
+                  ? themeTokens.cardBg
+                  : 'transparent',
+              color:
+                transactionFilter === 'all'
+                  ? themeTokens.text
+                  : themeTokens.chipText,
+            }}
+          >
+            {t.allTransactionsFilterLabel}
+          </button>
+          <button
+            type="button"
+            onClick={() => setTransactionFilter('needsReview')}
+            className="rounded-lg px-2.5 py-1 text-[11.5px] font-semibold"
+            style={{
+              background:
+                transactionFilter === 'needsReview'
+                  ? themeTokens.cardBg
+                  : 'transparent',
+              color:
+                transactionFilter === 'needsReview'
+                  ? themeTokens.text
+                  : themeTokens.chipText,
+            }}
+          >
+            {t.needsReviewFilterLabel}
+          </button>
+        </div>
       </div>
+
+      {transactionFilter === 'needsReview' && (
+        <div
+          className="mt-2 text-[11.5px] leading-relaxed"
+          style={{ color: themeTokens.subtext2 }}
+        >
+          {t.needsReviewFilterHint}
+        </div>
+      )}
 
       {deleteError && (
         <div
@@ -163,6 +233,7 @@ export const TransactionList = ({
                   <div
                     key={tx.id}
                     role="button"
+                    aria-label={tx.ariaLabel}
                     tabIndex={isOnline ? 0 : -1}
                     onClick={isOnline ? tx.onEdit : undefined}
                     onKeyDown={(e) => {
@@ -171,13 +242,20 @@ export const TransactionList = ({
                         tx.onEdit();
                       }
                     }}
-                    className="flex items-center gap-3 border-b py-3 text-left"
+                    className="relative flex items-center gap-3 border-b py-3 pl-2.5 text-left"
                     style={{
                       borderColor: themeTokens.divider,
                       cursor: isOnline ? 'pointer' : 'default',
                       opacity: isOnline ? 1 : 0.6,
                     }}
                   >
+                    {tx.needsReview && (
+                      <span
+                        aria-hidden="true"
+                        className="absolute inset-y-2 left-0 w-[3px] rounded-full"
+                        style={{ background: needsReviewColor }}
+                      />
+                    )}
                     <div
                       className="flex size-9 shrink-0 items-center justify-center rounded-[10px] font-manrope text-[13px] font-bold text-white"
                       style={{ background: tx.color }}
@@ -191,12 +269,22 @@ export const TransactionList = ({
                       >
                         {tx.title}
                       </div>
-                      {tx.subtitle !== tx.title && (
+                      {(tx.subtitle !== tx.title || tx.sourceLabel) && (
                         <div
-                          className="mt-0.5 truncate text-xs"
+                          className="mt-0.5 flex items-center gap-1.5 truncate text-xs"
                           style={{ color: themeTokens.subtext2 }}
                         >
-                          {tx.subtitle}
+                          {tx.subtitle !== tx.title && (
+                            <span>{tx.subtitle}</span>
+                          )}
+                          {tx.sourceLabel && (
+                            <span
+                              className="font-manrope text-[10px] font-extrabold uppercase tracking-wide"
+                              style={{ color: sourceColor }}
+                            >
+                              {tx.sourceLabel}
+                            </span>
+                          )}
                         </div>
                       )}
                     </div>

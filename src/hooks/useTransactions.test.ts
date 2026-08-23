@@ -9,6 +9,7 @@ const locale = 'th-TH';
 
 const makeClient = () => {
   const insertSelect = jest.fn();
+  const insert = jest.fn(() => ({ select: insertSelect }));
   const updateSelect = jest.fn();
   const updateEq = jest.fn(() => ({ select: updateSelect }));
   const deleteEq = jest.fn().mockResolvedValue({ error: null });
@@ -17,7 +18,7 @@ const makeClient = () => {
   const client = {
     from: jest.fn(() => ({
       select: jest.fn(() => ({ order: selectOrder })),
-      insert: jest.fn(() => ({ select: insertSelect })),
+      insert,
       update: jest.fn(() => ({ eq: updateEq })),
       delete: jest.fn(() => ({ eq: deleteEq })),
     })),
@@ -25,6 +26,7 @@ const makeClient = () => {
 
   return {
     client,
+    insert,
     insertSelect,
     updateSelect,
     updateEq,
@@ -228,6 +230,8 @@ describe('useTransactions', () => {
         note: 'Salary',
         amount: 1000,
         date: '2024-02-01',
+        source: null,
+        needs_review: false,
       });
     });
 
@@ -257,6 +261,8 @@ describe('useTransactions', () => {
         note: 'Rent',
         amount: 500,
         date: '2024-02-01',
+        source: null,
+        needs_review: false,
       });
     });
     expect(result.current.editingTxId).toBe('tx-1');
@@ -430,5 +436,115 @@ describe('useTransactions', () => {
 
     expect(result.current.monthTx).toHaveLength(1);
     expect(result.current.deleteError).toBe('Failed to fetch');
+  });
+
+  it('bulk-inserts imported transactions with a single batched call', async () => {
+    const { client, insert, insertSelect } = makeClient();
+    insertSelect.mockResolvedValue({
+      data: [
+        {
+          id: 'a',
+          type: 'expense',
+          category: 'wants',
+          note: 'Row A',
+          amount: 100,
+          date: '2025-09-01',
+          source: 'ktc_import',
+          needs_review: true,
+        },
+        {
+          id: 'b',
+          type: 'expense',
+          category: 'wants',
+          note: 'Row B',
+          amount: 200,
+          date: '2025-09-02',
+          source: 'ktc_import',
+          needs_review: false,
+        },
+      ],
+      error: null,
+    });
+    const clientRef = { current: client as any };
+    const { result } = renderHook(() =>
+      useTransactions(clientRef, 'user-1', t, locale)
+    );
+
+    let saveError: string | null = null;
+    await act(async () => {
+      saveError = await result.current.bulkInsertTransactions([
+        {
+          type: 'expense',
+          category: 'wants',
+          note: 'Row A',
+          amount: 100,
+          date: '2025-09-01',
+          source: 'ktc_import',
+          needs_review: true,
+        },
+        {
+          type: 'expense',
+          category: 'wants',
+          note: 'Row B',
+          amount: 200,
+          date: '2025-09-02',
+          source: 'ktc_import',
+          needs_review: false,
+        },
+      ]);
+    });
+
+    expect(saveError).toBeNull();
+    expect(insert).toHaveBeenCalledTimes(1);
+    const [insertedPayload] = insert.mock.calls[0] as unknown as [unknown[]];
+    expect(insertedPayload).toHaveLength(2);
+    expect(result.current.transactions).toHaveLength(2);
+  });
+
+  it('does nothing when bulk-inserting an empty list', async () => {
+    const { client, insert } = makeClient();
+    const clientRef = { current: client as any };
+    const { result } = renderHook(() =>
+      useTransactions(clientRef, 'user-1', t, locale)
+    );
+
+    let saveError: string | null = null;
+    await act(async () => {
+      saveError = await result.current.bulkInsertTransactions([]);
+    });
+
+    expect(saveError).toBeNull();
+    expect(insert).not.toHaveBeenCalled();
+    expect(result.current.monthTx).toHaveLength(0);
+  });
+
+  it('surfaces an error and inserts nothing locally when the bulk insert fails', async () => {
+    const { client, insertSelect } = makeClient();
+    insertSelect.mockResolvedValue({
+      data: null,
+      error: new Error('Failed to fetch'),
+    });
+    const clientRef = { current: client as any };
+    const { result } = renderHook(() =>
+      useTransactions(clientRef, 'user-1', t, locale)
+    );
+
+    let saveError: string | null = null;
+    await act(async () => {
+      saveError = await result.current.bulkInsertTransactions([
+        {
+          type: 'expense',
+          category: 'wants',
+          note: 'Row A',
+          amount: 100,
+          date: '2025-09-01',
+          source: 'ktc_import',
+          needs_review: true,
+        },
+      ]);
+    });
+
+    expect(saveError).toBe('Failed to fetch');
+    expect(result.current.monthTx).toHaveLength(0);
   });
 });

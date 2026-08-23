@@ -158,6 +158,14 @@ export const useTransactions = (
     const amount = parseFloat(txForm.amount);
     if (!amount || amount <= 0) return;
 
+    // Editing an existing row never touches its `source` (the update below
+    // simply omits the column), but always clears `needs_review` — opening
+    // and saving a flagged row through this same flow is how a user marks
+    // it reviewed.
+    const existing = editingTxId
+      ? transactions.find((row) => row.id === editingTxId)
+      : undefined;
+
     const tx: Transaction = {
       id: editingTxId ?? uid(),
       type: txType,
@@ -165,6 +173,8 @@ export const useTransactions = (
       note: txForm.note || (txType === 'income' ? t.income : t.expense),
       amount,
       date: txForm.date || todayStr(),
+      source: existing?.source ?? null,
+      needs_review: false,
     };
 
     const client = clientRef.current;
@@ -181,6 +191,7 @@ export const useTransactions = (
               note: tx.note,
               amount: tx.amount,
               date: tx.date,
+              needs_review: false,
             })
             .eq('id', editingTxId)
             .select()
@@ -202,7 +213,47 @@ export const useTransactions = (
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : t.saveTransactionError);
     }
-  }, [clientRef, editingTxId, t, txForm, txType, userId]);
+  }, [clientRef, editingTxId, t, transactions, txForm, txType, userId]);
+
+  // Imported rows land here as one batched insert rather than N calls to
+  // saveTransaction — see design.md Decision 8 in
+  // openspec/changes/2026-08-23-import-ktc-credit-card-statement.
+  const bulkInsertTransactions = useCallback(
+    async (
+      rows: {
+        type: TxType;
+        category: CategoryId | null;
+        note: string;
+        amount: number;
+        date: string;
+        source: string;
+        needs_review: boolean;
+      }[]
+    ): Promise<string | null> => {
+      const client = clientRef.current;
+      if (!client || !userId || rows.length === 0) return null;
+
+      const payload: Transaction[] = rows.map((row) => ({
+        ...row,
+        id: uid(),
+      }));
+
+      try {
+        const { data, error } = await client
+          .from('transactions')
+          .insert(payload.map((row) => ({ ...row, user_id: userId })))
+          .select();
+        if (error) throw error;
+
+        const saved = (data as Transaction[] | null) ?? payload;
+        setTransactions((prev) => [...saved, ...prev]);
+        return null;
+      } catch (err) {
+        return err instanceof Error ? err.message : t.saveTransactionError;
+      }
+    },
+    [clientRef, t, userId]
+  );
 
   return {
     transactions,
@@ -227,6 +278,7 @@ export const useTransactions = (
     onTxCategoryChange,
     saveTransaction,
     saveError,
+    bulkInsertTransactions,
     deleteTx,
     deleteError,
     load,

@@ -30,6 +30,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.110.2",
     "next": "^16.2.10",
+    "pdfjs-dist": "^6.2.108",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-number-format": "^5.4.5"
