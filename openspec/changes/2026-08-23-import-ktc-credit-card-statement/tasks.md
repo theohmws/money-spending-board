@@ -3,7 +3,7 @@
 - [x] 1.1 Migration: add `source text` and `needs_review boolean not null default false` to `spending_board.transactions`.
 - [x] 1.2 Migration: create `spending_board.import_category_rules` (`id`, `user_id uuid references auth.users`, `keyword text`, `category text check (category in ('needs','savings','wants'))`, `created_at`), RLS scoped by `(select auth.uid()) = user_id` for select/insert/update/delete, plus explicit `grant`s to `anon`/`authenticated`/`service_role` per this repo's convention (`auto_expose_new_tables` is `false`).
 - [x] 1.3 Migration: create `spending_board.board_settings` (`user_id uuid primary key references auth.users`, `badge_colors jsonb not null default` the two-key default shown in design.md Decision 5c, `updated_at timestamptz not null default now()`), same RLS + grant pattern as 1.2.
-- [ ] 1.4 Apply via Supabase MCP/CLI, not hand-edited on the remote database. **Not done** — this session has no authorized Supabase MCP/CLI access. `supabase/migrations/20260823140000_credit_card_import.sql` is written and ready; someone with project access needs to apply it (`supabase db push` or the Supabase MCP tools) before this feature can hit a real database.
+- [x] 1.4 Applied via the Supabase MCP tools to the `money-spending-board` project (`yjphlaymjjmbinhmdcqj`), recorded as migration `20260823143820_credit_card_import`. Verified after applying: `transactions` gained `source`/`needs_review` with all 91 existing rows intact (`needs_review` defaulting to `false`); `import_category_rules` and `board_settings` both created with RLS enabled and their policies in place; `get_advisors` shows no new security findings (only a pre-existing, unrelated leaked-password-protection warning).
 
 ## 2. Dependencies
 
@@ -77,4 +77,4 @@
 ## 12. Verification
 
 - [x] 12.1 `npm run check-types`, `npm run lint`, `npm run test` all clean (127 tests passing). `npm run build` also verified clean (confirms the pdfjs-dist worker bundles correctly for static export — see Task 2.1).
-- [ ] 12.2 **Not done.** No browser or local Supabase stack available in this session to manually walk the real import flow end to end. This is the main thing to do before considering this change fully verified — see the `verify` skill once migrations (Task 1.4) are applied to a real project.
+- [ ] 12.2 **Not done.** The migration (Task 1.4) is now applied to the real project, so this is unblocked, but there's still no browser available in this session to manually walk the import flow end to end. This is the last thing standing between this change and being fully verified — see the `verify` skill.
