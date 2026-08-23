@@ -146,7 +146,7 @@ describe('useCreditCardImport', () => {
     expect(importedResult.current.importRows[0]?.possibleDuplicate).toBe(true);
   });
 
-  it('surfaces a parse error and returns to idle when extraction fails', async () => {
+  it('surfaces a parse error on the preview step (not idle, or the message would never render)', async () => {
     mockExtractPdfText.mockRejectedValue(new Error('bad pdf'));
 
     const { result } = renderHook(() =>
@@ -157,7 +157,8 @@ describe('useCreditCardImport', () => {
       await result.current.selectFile(file);
     });
 
-    expect(result.current.importStatus).toBe('idle');
+    expect(result.current.importStatus).toBe('preview');
+    expect(result.current.importRows).toEqual([]);
     expect(result.current.parseError).toBe('bad pdf');
   });
 
