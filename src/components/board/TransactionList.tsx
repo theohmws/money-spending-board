@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import type { useSpendingBoard } from '@/hooks/useSpendingBoard';
 import { fmtSignedMoney } from '@/utils/boardHelpers';
@@ -27,8 +27,6 @@ export const TransactionList = ({
   isOnline,
   themeTokens,
 }: Props) => {
-  const importFileInputRef = useRef<HTMLInputElement>(null);
-
   const isDark = themeTokens.mode === 'dark';
   // No background fill on either indicator (design.md Decision 5b), so each
   // uses the member of its color pair that reads as legible foreground text
@@ -84,7 +82,7 @@ export const TransactionList = ({
         <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={() => importFileInputRef.current?.click()}
+            onClick={startImport}
             aria-label={t.importEntryLabel}
             className="flex size-7 items-center justify-center rounded-[9px]"
             style={{
@@ -105,17 +103,6 @@ export const TransactionList = ({
               <path d="M12 3v12 M7 8l5-5 5 5 M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
             </svg>
           </button>
-          <input
-            ref={importFileInputRef}
-            type="file"
-            accept="application/pdf"
-            className="hidden"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) startImport(file);
-              e.target.value = '';
-            }}
-          />
           <div
             className="flex gap-1 rounded-[9px] p-0.5"
             style={{ background: themeTokens.chipBg }}

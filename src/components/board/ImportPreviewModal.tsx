@@ -9,6 +9,8 @@ type Props = Pick<
   ReturnType<typeof useSpendingBoard>,
   | 't'
   | 'importStatus'
+  | 'importSourceChoices'
+  | 'selectImportFile'
   | 'importPreviewRows'
   | 'importParseError'
   | 'passwordIsRetry'
@@ -26,6 +28,8 @@ type Props = Pick<
 export const ImportPreviewModal = ({
   t,
   importStatus,
+  importSourceChoices,
+  selectImportFile,
   importPreviewRows,
   importParseError,
   passwordIsRetry,
@@ -40,10 +44,18 @@ export const ImportPreviewModal = ({
   themeTokens,
 }: Props) => {
   const passwordInputRef = useRef<HTMLInputElement>(null);
+  const sourceFileInputRef = useRef<HTMLInputElement>(null);
 
   if (importStatus === 'idle') return null;
 
   const includedCount = importPreviewRows.filter((row) => row.included).length;
+
+  const stepTitle = {
+    source: t.importSourceStepTitle,
+    parsing: t.importPreviewTitle,
+    password: t.importPasswordTitle,
+    preview: t.importPreviewTitle,
+  }[importStatus];
 
   return (
     <div
@@ -59,9 +71,7 @@ export const ImportPreviewModal = ({
             className="font-manrope text-lg font-extrabold"
             style={{ color: themeTokens.text }}
           >
-            {importStatus === 'password'
-              ? t.importPasswordTitle
-              : t.importPreviewTitle}
+            {stepTitle}
           </div>
           <button
             type="button"
@@ -76,6 +86,52 @@ export const ImportPreviewModal = ({
             ×
           </button>
         </div>
+
+        {importStatus === 'source' && (
+          <div className="mt-4.5">
+            <div className="flex flex-wrap gap-2">
+              {importSourceChoices.map((choice) => (
+                <button
+                  key={choice.id}
+                  type="button"
+                  onClick={choice.onSelect}
+                  className="rounded-[9px] border-[1.5px] px-3.5 py-2.5 text-[13.5px] font-semibold"
+                  style={{
+                    borderColor: choice.selected
+                      ? '#0E8F5F'
+                      : themeTokens.inputBorder,
+                    background: choice.selected
+                      ? '#0E8F5F'
+                      : themeTokens.cardBg,
+                    color: choice.selected ? '#EFFCF4' : themeTokens.chipText,
+                  }}
+                >
+                  {choice.name}
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => sourceFileInputRef.current?.click()}
+              className="mt-5.5 w-full rounded-xl p-4 text-[15px] font-bold"
+              style={{ background: '#132119', color: '#EFFCF4' }}
+            >
+              {t.importChooseFileBtn}
+            </button>
+            <input
+              ref={sourceFileInputRef}
+              type="file"
+              accept="application/pdf"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) selectImportFile(file);
+                e.target.value = '';
+              }}
+            />
+          </div>
+        )}
 
         {importStatus === 'parsing' && (
           <div

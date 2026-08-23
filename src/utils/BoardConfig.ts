@@ -231,6 +231,9 @@ export type I18nDict = {
   importEntryLabel: string;
   importSettingsEntryLabel: string;
   importSettingsEntryDesc: string;
+  importSourceStepTitle: string;
+  importSourceKtcLabel: string;
+  importChooseFileBtn: string;
   importParsing: string;
   importParseError: string;
   importPasswordTitle: string;
@@ -352,6 +355,9 @@ export const I18N: Record<Lang, I18nDict> = {
     importEntryLabel: 'นำเข้าจาก PDF',
     importSettingsEntryLabel: 'ตั้งค่าการนำเข้า',
     importSettingsEntryDesc: 'คำที่ใช้เดาหมวดหมู่ และสีของป้ายกำกับ',
+    importSourceStepTitle: 'เลือกธนาคาร',
+    importSourceKtcLabel: 'KTC',
+    importChooseFileBtn: 'เลือกไฟล์ PDF',
     importParsing: 'กำลังอ่านไฟล์…',
     importParseError:
       'อ่านไฟล์ไม่สำเร็จ กรุณาตรวจสอบว่าเป็นใบแจ้งยอดบัตรเครดิต KTC',
@@ -476,6 +482,9 @@ export const I18N: Record<Lang, I18nDict> = {
     importEntryLabel: 'Import from PDF',
     importSettingsEntryLabel: 'Import settings',
     importSettingsEntryDesc: 'Category-guess keywords and badge colors',
+    importSourceStepTitle: 'Choose your bank',
+    importSourceKtcLabel: 'KTC',
+    importChooseFileBtn: 'Choose PDF file',
     importParsing: 'Reading file…',
     importParseError:
       'Could not read the file. Make sure it’s a KTC credit-card statement.',

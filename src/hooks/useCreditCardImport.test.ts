@@ -44,13 +44,46 @@ describe('useCreditCardImport', () => {
   const guessCategory = jest.fn().mockReturnValue('wants');
   const bulkInsertTransactions = jest.fn().mockResolvedValue(null);
 
-  it('starts idle with no rows', () => {
+  it('starts idle with no rows, defaulting to the only available source', () => {
     const { result } = renderHook(() =>
       useCreditCardImport(t, [], guessCategory, bulkInsertTransactions)
     );
 
     expect(result.current.importStatus).toBe('idle');
     expect(result.current.importRows).toEqual([]);
+    expect(result.current.selectedSourceId).toBe('ktc');
+  });
+
+  it('opens the source-selection step, and lets a source be selected', () => {
+    const { result } = renderHook(() =>
+      useCreditCardImport(t, [], guessCategory, bulkInsertTransactions)
+    );
+
+    act(() => {
+      result.current.openSourceStep();
+    });
+    expect(result.current.importStatus).toBe('source');
+
+    act(() => {
+      result.current.selectSource('ktc');
+    });
+    expect(result.current.selectedSourceId).toBe('ktc');
+  });
+
+  it('cancelling from the source step returns to idle', () => {
+    const { result } = renderHook(() =>
+      useCreditCardImport(t, [], guessCategory, bulkInsertTransactions)
+    );
+
+    act(() => {
+      result.current.openSourceStep();
+    });
+    expect(result.current.importStatus).toBe('source');
+
+    act(() => {
+      result.current.cancelImport();
+    });
+    expect(result.current.importStatus).toBe('idle');
   });
 
   it('parses a selected file straight to preview when unlocked', async () => {

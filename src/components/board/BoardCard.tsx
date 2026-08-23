@@ -269,6 +269,8 @@ export const BoardCard = () => {
       <ImportPreviewModal
         t={board.t}
         importStatus={board.importStatus}
+        importSourceChoices={board.importSourceChoices}
+        selectImportFile={board.selectImportFile}
         importPreviewRows={board.importPreviewRows}
         importParseError={board.importParseError}
         passwordIsRetry={board.passwordIsRetry}

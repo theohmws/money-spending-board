@@ -12,9 +12,34 @@ import { uid } from '@/utils/boardHelpers';
 import { extractPdfText } from '@/utils/importParsers/extractPdfText';
 import { parseKtcStatement } from '@/utils/importParsers/ktc';
 
-const KTC_SOURCE = 'ktc_import';
+export type ImportSourceId = 'ktc';
 
-type ImportStatus = 'idle' | 'parsing' | 'password' | 'preview';
+type ImportSourceDef = {
+  id: ImportSourceId;
+  sourceTag: string;
+  // Looked up against I18nDict at the composition root, where every other
+  // localized label is built — keeps this registry itself i18n-agnostic.
+  labelKey: keyof I18nDict;
+  parse: (
+    text: string
+  ) => { date: string; description: string; amount: number }[];
+};
+
+// One entry today (KTC) — deliberately still a real array + a real "which
+// source is selected" step in the UI, not a single hardcoded call, so a
+// second bank is "add an entry here" rather than a redesign. The parser
+// itself (parseKtcStatement) stays hardcoded to KTC's format per design.md
+// Decision 2 — this registry is just what lets the UI *offer* a choice.
+export const IMPORT_SOURCES: ImportSourceDef[] = [
+  {
+    id: 'ktc',
+    sourceTag: 'ktc_import',
+    labelKey: 'importSourceKtcLabel',
+    parse: parseKtcStatement,
+  },
+];
+
+type ImportStatus = 'idle' | 'source' | 'parsing' | 'password' | 'preview';
 
 type BulkInsertRow = {
   type: 'expense';
@@ -38,6 +63,9 @@ export const useCreditCardImport = (
   bulkInsertTransactions: (rows: BulkInsertRow[]) => Promise<string | null>
 ) => {
   const [importStatus, setImportStatus] = useState<ImportStatus>('idle');
+  const [selectedSourceId, setSelectedSourceId] = useState<ImportSourceId>(
+    IMPORT_SOURCES[0]!.id
+  );
   const [importRows, setImportRows] = useState<ParsedImportRow[]>([]);
   const [parseError, setParseError] = useState<string | null>(null);
   const [passwordIsRetry, setPasswordIsRetry] = useState(false);
@@ -57,6 +85,12 @@ export const useCreditCardImport = (
     [transactions]
   );
 
+  const openSourceStep = useCallback(() => setImportStatus('source'), []);
+
+  const selectSource = useCallback((id: ImportSourceId) => {
+    setSelectedSourceId(id);
+  }, []);
+
   const selectFile = useCallback(
     async (file: File) => {
       setImportStatus('parsing');
@@ -72,7 +106,10 @@ export const useCreditCardImport = (
           },
         });
 
-        const parsed = parseKtcStatement(text);
+        const source =
+          IMPORT_SOURCES.find((s) => s.id === selectedSourceId) ??
+          IMPORT_SOURCES[0]!;
+        const parsed = source.parse(text);
         setImportRows(
           parsed.map((row) => ({
             key: uid(),
@@ -91,7 +128,7 @@ export const useCreditCardImport = (
         setImportStatus('idle');
       }
     },
-    [guessCategory, isPossibleDuplicate, t]
+    [guessCategory, isPossibleDuplicate, selectedSourceId, t]
   );
 
   // `password: null` means the user cancelled the prompt.
@@ -135,6 +172,10 @@ export const useCreditCardImport = (
     const included = importRows.filter((row) => row.included);
     if (included.length === 0) return;
 
+    const sourceTag =
+      IMPORT_SOURCES.find((s) => s.id === selectedSourceId)?.sourceTag ??
+      IMPORT_SOURCES[0]!.sourceTag;
+
     setImportError(null);
     const error = await bulkInsertTransactions(
       included.map((row) => ({
@@ -143,7 +184,7 @@ export const useCreditCardImport = (
         note: row.description,
         amount: row.amount,
         date: row.date,
-        source: KTC_SOURCE,
+        source: sourceTag,
         // A row the user edited in preview doesn't need a second look.
         needs_review: !row.edited,
       }))
@@ -155,10 +196,13 @@ export const useCreditCardImport = (
     }
     setImportStatus('idle');
     setImportRows([]);
-  }, [bulkInsertTransactions, importRows]);
+  }, [bulkInsertTransactions, importRows, selectedSourceId]);
 
   return {
     importStatus,
+    selectedSourceId,
+    openSourceStep,
+    selectSource,
     importRows,
     parseError,
     passwordIsRetry,
