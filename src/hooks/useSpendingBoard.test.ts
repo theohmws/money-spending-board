@@ -456,4 +456,25 @@ describe('useSpendingBoard', () => {
       expect(result.current.transactionRows[0]?.id).toBe('imported-unreviewed');
     });
   });
+
+  describe('credit-card import source picker', () => {
+    it('offers KTC as the only, pre-selected source, and starting an import opens that step', async () => {
+      const { result } = await renderBoard();
+
+      expect(result.current.importSourceChoices).toEqual([
+        expect.objectContaining({
+          id: 'ktc',
+          name: 'KTC',
+          selected: true,
+        }),
+      ]);
+      expect(result.current.importStatus).toBe('idle');
+
+      act(() => {
+        result.current.startImport();
+      });
+
+      expect(result.current.importStatus).toBe('source');
+    });
+  });
 });

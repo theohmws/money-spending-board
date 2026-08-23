@@ -6,7 +6,10 @@ import type { BoardSupabaseClient } from '@/hooks/useAuthSession';
 import { useAuthSession } from '@/hooks/useAuthSession';
 import { useBoardSettings } from '@/hooks/useBoardSettings';
 import { useCategoryMeta } from '@/hooks/useCategoryMeta';
-import { useCreditCardImport } from '@/hooks/useCreditCardImport';
+import {
+  IMPORT_SOURCES,
+  useCreditCardImport,
+} from '@/hooks/useCreditCardImport';
 import { useI18n } from '@/hooks/useI18n';
 import { useImportCategoryRules } from '@/hooks/useImportCategoryRules';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
@@ -249,6 +252,9 @@ export const useSpendingBoard = () => {
 
   const {
     importStatus,
+    selectedSourceId,
+    openSourceStep,
+    selectSource,
     importRows,
     parseError: importParseError,
     passwordIsRetry,
@@ -284,13 +290,10 @@ export const useSpendingBoard = () => {
     []
   );
 
-  const startImport = useCallback(
-    (file: File) => {
-      closeProfile();
-      selectImportFile(file);
-    },
-    [closeProfile, selectImportFile]
-  );
+  const startImport = useCallback(() => {
+    closeProfile();
+    openSourceStep();
+  }, [closeProfile, openSourceStep]);
 
   const groupsLocalized = useMemo(
     () =>
@@ -549,6 +552,17 @@ export const useSpendingBoard = () => {
     [importRows, catById]
   );
 
+  const importSourceChoices = useMemo(
+    () =>
+      IMPORT_SOURCES.map((source) => ({
+        id: source.id,
+        name: t[source.labelKey],
+        selected: source.id === selectedSourceId,
+        onSelect: () => selectSource(source.id),
+      })),
+    [selectedSourceId, selectSource, t]
+  );
+
   const categorySettingsRows = useMemo(
     () =>
       groupsLocalized.map((group) => {
@@ -711,6 +725,8 @@ export const useSpendingBoard = () => {
 
     startImport,
     importStatus,
+    importSourceChoices,
+    selectImportFile,
     importPreviewRows,
     importParseError,
     passwordIsRetry,

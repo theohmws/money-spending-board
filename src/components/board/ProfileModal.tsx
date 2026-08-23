@@ -1,5 +1,3 @@
-import { useRef } from 'react';
-
 import type { useSpendingBoard } from '@/hooks/useSpendingBoard';
 import { AppConfig } from '@/utils/AppConfig';
 
@@ -16,7 +14,6 @@ type Props = Pick<
   | 'saveProfile'
   | 'editSplitFromProfile'
   | 'openCategorySettings'
-  | 'startImport'
   | 'openImportSettings'
   | 'profileRatioLabel'
   | 'userEmail'
@@ -37,7 +34,6 @@ export const ProfileModal = ({
   saveProfile,
   editSplitFromProfile,
   openCategorySettings,
-  startImport,
   openImportSettings,
   profileRatioLabel,
   userEmail,
@@ -45,8 +41,6 @@ export const ProfileModal = ({
   setTheme,
   themeTokens,
 }: Props) => {
-  const importFileInputRef = useRef<HTMLInputElement>(null);
-
   if (!showProfile) return null;
 
   const isLight = theme !== 'dark';
@@ -232,45 +226,6 @@ export const ProfileModal = ({
             {t.edit}
           </button>
         </div>
-
-        <button
-          type="button"
-          onClick={() => importFileInputRef.current?.click()}
-          className="mt-3 flex w-full items-center justify-between rounded-xl px-3.5 py-3 text-left"
-          style={{ background: themeTokens.chipBg }}
-        >
-          <div>
-            <div
-              className="text-sm font-semibold"
-              style={{ color: themeTokens.text }}
-            >
-              {t.importEntryLabel}
-            </div>
-            <div
-              className="mt-0.5 text-xs"
-              style={{ color: themeTokens.subtext }}
-            >
-              {t.importEntryDesc}
-            </div>
-          </div>
-          <span
-            className="text-[12.5px] font-semibold"
-            style={{ color: '#0E8F5F' }}
-          >
-            +
-          </span>
-        </button>
-        <input
-          ref={importFileInputRef}
-          type="file"
-          accept="application/pdf"
-          className="hidden"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) startImport(file);
-            e.target.value = '';
-          }}
-        />
 
         <div
           className="mt-3 flex items-center justify-between rounded-xl px-3.5 py-3"

@@ -134,6 +134,7 @@ export const BoardCard = () => {
                       transactionFilter={board.transactionFilter}
                       setTransactionFilter={board.setTransactionFilter}
                       badgeColors={board.badgeColors}
+                      startImport={board.startImport}
                       deleteError={board.deleteError}
                       isOnline={board.isOnline}
                       themeTokens={themeTokens}
@@ -258,7 +259,6 @@ export const BoardCard = () => {
         saveProfile={board.saveProfile}
         editSplitFromProfile={board.editSplitFromProfile}
         openCategorySettings={board.openCategorySettings}
-        startImport={board.startImport}
         openImportSettings={board.openImportSettings}
         profileRatioLabel={board.profileRatioLabel}
         userEmail={board.userEmail}
@@ -269,6 +269,8 @@ export const BoardCard = () => {
       <ImportPreviewModal
         t={board.t}
         importStatus={board.importStatus}
+        importSourceChoices={board.importSourceChoices}
+        selectImportFile={board.selectImportFile}
         importPreviewRows={board.importPreviewRows}
         importParseError={board.importParseError}
         passwordIsRetry={board.passwordIsRetry}
