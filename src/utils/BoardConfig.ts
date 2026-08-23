@@ -229,7 +229,6 @@ export type I18nDict = {
   deleteTransactionError: string;
   noCompareData: string;
   importEntryLabel: string;
-  importEntryDesc: string;
   importSettingsEntryLabel: string;
   importSettingsEntryDesc: string;
   importParsing: string;
@@ -351,7 +350,6 @@ export const I18N: Record<Lang, I18nDict> = {
     deleteTransactionError: 'ลบรายการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
     noCompareData: 'ยังไม่มีรายจ่ายในเดือนนี้หรือเดือนที่แล้ว',
     importEntryLabel: 'นำเข้าจาก PDF',
-    importEntryDesc: 'นำเข้ารายการจากใบแจ้งยอดบัตรเครดิต KTC',
     importSettingsEntryLabel: 'ตั้งค่าการนำเข้า',
     importSettingsEntryDesc: 'คำที่ใช้เดาหมวดหมู่ และสีของป้ายกำกับ',
     importParsing: 'กำลังอ่านไฟล์…',
@@ -476,7 +474,6 @@ export const I18N: Record<Lang, I18nDict> = {
       'Could not delete the transaction. Please try again.',
     noCompareData: 'No spending recorded for this month or last month yet.',
     importEntryLabel: 'Import from PDF',
-    importEntryDesc: 'Import transactions from a KTC credit-card statement',
     importSettingsEntryLabel: 'Import settings',
     importSettingsEntryDesc: 'Category-guess keywords and badge colors',
     importParsing: 'Reading file…',

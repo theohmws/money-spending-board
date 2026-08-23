@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 import type { useSpendingBoard } from '@/hooks/useSpendingBoard';
 import { fmtSignedMoney } from '@/utils/boardHelpers';
@@ -10,6 +10,7 @@ type Props = Pick<
   | 'transactionFilter'
   | 'setTransactionFilter'
   | 'badgeColors'
+  | 'startImport'
   | 'deleteError'
   | 'isOnline'
   | 'themeTokens'
@@ -21,10 +22,13 @@ export const TransactionList = ({
   transactionFilter,
   setTransactionFilter,
   badgeColors,
+  startImport,
   deleteError,
   isOnline,
   themeTokens,
 }: Props) => {
+  const importFileInputRef = useRef<HTMLInputElement>(null);
+
   const isDark = themeTokens.mode === 'dark';
   // No background fill on either indicator (design.md Decision 5b), so each
   // uses the member of its color pair that reads as legible foreground text
@@ -77,44 +81,80 @@ export const TransactionList = ({
         >
           {t.recentActivity}
         </div>
-        <div
-          className="flex gap-1 rounded-[9px] p-0.5"
-          style={{ background: themeTokens.chipBg }}
-        >
+        <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={() => setTransactionFilter('all')}
-            className="rounded-lg px-2.5 py-1 text-[11.5px] font-semibold"
+            onClick={() => importFileInputRef.current?.click()}
+            aria-label={t.importEntryLabel}
+            className="flex size-7 items-center justify-center rounded-[9px]"
             style={{
-              background:
-                transactionFilter === 'all'
-                  ? themeTokens.cardBg
-                  : 'transparent',
-              color:
-                transactionFilter === 'all'
-                  ? themeTokens.text
-                  : themeTokens.chipText,
+              background: themeTokens.chipBg,
+              color: themeTokens.chipText,
             }}
           >
-            {t.allTransactionsFilterLabel}
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 3v12 M7 8l5-5 5 5 M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
+            </svg>
           </button>
-          <button
-            type="button"
-            onClick={() => setTransactionFilter('needsReview')}
-            className="rounded-lg px-2.5 py-1 text-[11.5px] font-semibold"
-            style={{
-              background:
-                transactionFilter === 'needsReview'
-                  ? themeTokens.cardBg
-                  : 'transparent',
-              color:
-                transactionFilter === 'needsReview'
-                  ? themeTokens.text
-                  : themeTokens.chipText,
+          <input
+            ref={importFileInputRef}
+            type="file"
+            accept="application/pdf"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) startImport(file);
+              e.target.value = '';
             }}
+          />
+          <div
+            className="flex gap-1 rounded-[9px] p-0.5"
+            style={{ background: themeTokens.chipBg }}
           >
-            {t.needsReviewFilterLabel}
-          </button>
+            <button
+              type="button"
+              onClick={() => setTransactionFilter('all')}
+              className="rounded-lg px-2.5 py-1 text-[11.5px] font-semibold"
+              style={{
+                background:
+                  transactionFilter === 'all'
+                    ? themeTokens.cardBg
+                    : 'transparent',
+                color:
+                  transactionFilter === 'all'
+                    ? themeTokens.text
+                    : themeTokens.chipText,
+              }}
+            >
+              {t.allTransactionsFilterLabel}
+            </button>
+            <button
+              type="button"
+              onClick={() => setTransactionFilter('needsReview')}
+              className="rounded-lg px-2.5 py-1 text-[11.5px] font-semibold"
+              style={{
+                background:
+                  transactionFilter === 'needsReview'
+                    ? themeTokens.cardBg
+                    : 'transparent',
+                color:
+                  transactionFilter === 'needsReview'
+                    ? themeTokens.text
+                    : themeTokens.chipText,
+              }}
+            >
+              {t.needsReviewFilterLabel}
+            </button>
+          </div>
         </div>
       </div>
 
