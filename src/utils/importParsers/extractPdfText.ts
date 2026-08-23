@@ -62,14 +62,26 @@ export const extractPdfText = async (
   // import flow, and keeps this module importable (e.g. by
   // useSpendingBoard, and by Jest, which can't statically parse pdfjs-dist's
   // own `import.meta`-using bundle) without ever loading pdfjs-dist itself.
-  const pdfjsLib = await import('pdfjs-dist');
+  //
+  // The `legacy/` build, not the default `build/` one: the default build
+  // targets a newer JS runtime baseline (e.g. `Promise.withResolvers`, only
+  // in Safari 17.4+/iOS 17.4+) than this board otherwise needs to assume,
+  // and broke with a generic "undefined is not a function" on an iPhone on
+  // an older iOS during real-world testing of the import flow. `legacy/`
+  // is pdfjs-dist's own documented answer to that gap — same API surface
+  // (its .d.ts is a bare `export * from "pdfjs-dist"`), more conservatively
+  // transpiled.
+  // pdfjs-dist ships no package.json "exports" map, so this deep import
+  // needs its real file extension to resolve at all.
+  // eslint-disable-next-line import/extensions
+  const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
 
   if (!workerConfigured) {
     // The standard bundler-friendly way to point pdfjs-dist at its worker
     // asset: Next's build (and dev server) resolves this the same way it
     // resolves any other `new URL(..., import.meta.url)` static asset.
     pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-      'pdfjs-dist/build/pdf.worker.min.mjs',
+      'pdfjs-dist/legacy/build/pdf.worker.min.mjs',
       import.meta.url
     ).toString();
     workerConfigured = true;
