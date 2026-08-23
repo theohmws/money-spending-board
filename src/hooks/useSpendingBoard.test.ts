@@ -16,15 +16,33 @@ const mockAuth = {
 
 let transactionRows: unknown[] = [];
 
-const mockFrom = jest.fn(() => ({
-  select: jest.fn(() => ({
-    order: jest
-      .fn()
-      .mockImplementation(() =>
-        Promise.resolve({ data: transactionRows, error: null })
-      ),
-  })),
-}));
+const mockFrom = jest.fn((table: string) => {
+  if (table === 'import_category_rules') {
+    return {
+      select: jest.fn(() => Promise.resolve({ data: [], error: null })),
+    };
+  }
+  if (table === 'board_settings') {
+    return {
+      select: jest.fn(() => ({
+        maybeSingle: jest
+          .fn()
+          .mockImplementation(() =>
+            Promise.resolve({ data: null, error: null })
+          ),
+      })),
+    };
+  }
+  return {
+    select: jest.fn(() => ({
+      order: jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ data: transactionRows, error: null })
+        ),
+    })),
+  };
+});
 
 jest.mock('@supabase/supabase-js', () => ({
   createClient: jest.fn(() => ({ auth: mockAuth, from: mockFrom })),
@@ -37,6 +55,8 @@ type TxRow = {
   note: string;
   amount: number;
   date: string;
+  source: string | null;
+  needs_review: boolean;
 };
 
 const tx = (overrides: Partial<TxRow> & Pick<TxRow, 'id' | 'date'>): TxRow => ({
@@ -44,6 +64,8 @@ const tx = (overrides: Partial<TxRow> & Pick<TxRow, 'id' | 'date'>): TxRow => ({
   category: 'needs',
   note: '',
   amount: 100,
+  source: null,
+  needs_review: false,
   ...overrides,
 });
 
@@ -371,6 +393,67 @@ describe('useSpendingBoard', () => {
         selectedSpend: 60,
         previousSpend: 40,
       });
+    });
+  });
+
+  describe('transactionRows needs-review filter', () => {
+    beforeEach(() => {
+      transactionRows = [
+        tx({
+          id: 'imported-unreviewed',
+          date: '2024-03-05',
+          note: 'SHOPEETH BANGKOK TH',
+          source: 'ktc_import',
+          needs_review: true,
+        }),
+        tx({
+          id: 'manual',
+          date: '2024-03-06',
+          note: 'Coffee',
+          source: null,
+          needs_review: false,
+        }),
+      ];
+    });
+
+    it('shows every row by default, tagged with needsReview/sourceLabel', async () => {
+      const { result } = await renderBoard();
+
+      act(() => {
+        result.current.onMonthChange('2024-03');
+      });
+
+      expect(result.current.transactionFilter).toBe('all');
+      expect(result.current.transactionRows).toHaveLength(2);
+
+      const imported = result.current.transactionRows.find(
+        (row) => row.id === 'imported-unreviewed'
+      );
+      expect(imported).toMatchObject({
+        needsReview: true,
+        sourceLabel: 'KTC',
+        ariaLabel: expect.stringContaining('SHOPEETH BANGKOK TH'),
+      });
+
+      const manual = result.current.transactionRows.find(
+        (row) => row.id === 'manual'
+      );
+      expect(manual).toMatchObject({
+        needsReview: false,
+        sourceLabel: null,
+      });
+    });
+
+    it('filters to only needs-review rows when switched', async () => {
+      const { result } = await renderBoard();
+
+      act(() => {
+        result.current.onMonthChange('2024-03');
+        result.current.setTransactionFilter('needsReview');
+      });
+
+      expect(result.current.transactionRows).toHaveLength(1);
+      expect(result.current.transactionRows[0]?.id).toBe('imported-unreviewed');
     });
   });
 });

@@ -1,80 +1,80 @@
 ## 1. Schema
 
-- [ ] 1.1 Migration: add `source text` and `needs_review boolean not null default false` to `spending_board.transactions`.
-- [ ] 1.2 Migration: create `spending_board.import_category_rules` (`id`, `user_id uuid references auth.users`, `keyword text`, `category text check (category in ('needs','savings','wants'))`, `created_at`), RLS scoped by `(select auth.uid()) = user_id` for select/insert/update/delete, plus explicit `grant`s to `anon`/`authenticated`/`service_role` per this repo's convention (`auto_expose_new_tables` is `false`).
-- [ ] 1.3 Migration: create `spending_board.board_settings` (`user_id uuid primary key references auth.users`, `badge_colors jsonb not null default` the two-key default shown in design.md Decision 5c, `updated_at timestamptz not null default now()`), same RLS + grant pattern as 1.2.
-- [ ] 1.4 Apply via Supabase MCP/CLI, not hand-edited on the remote database.
+- [x] 1.1 Migration: add `source text` and `needs_review boolean not null default false` to `spending_board.transactions`.
+- [x] 1.2 Migration: create `spending_board.import_category_rules` (`id`, `user_id uuid references auth.users`, `keyword text`, `category text check (category in ('needs','savings','wants'))`, `created_at`), RLS scoped by `(select auth.uid()) = user_id` for select/insert/update/delete, plus explicit `grant`s to `anon`/`authenticated`/`service_role` per this repo's convention (`auto_expose_new_tables` is `false`).
+- [x] 1.3 Migration: create `spending_board.board_settings` (`user_id uuid primary key references auth.users`, `badge_colors jsonb not null default` the two-key default shown in design.md Decision 5c, `updated_at timestamptz not null default now()`), same RLS + grant pattern as 1.2.
+- [ ] 1.4 Apply via Supabase MCP/CLI, not hand-edited on the remote database. **Not done** — this session has no authorized Supabase MCP/CLI access. `supabase/migrations/20260823140000_credit_card_import.sql` is written and ready; someone with project access needs to apply it (`supabase db push` or the Supabase MCP tools) before this feature can hit a real database.
 
 ## 2. Dependencies
 
-- [ ] 2.1 Add `pdfjs-dist` to `package.json`. Confirm it works with `output: 'export'` (worker bundling may need a `next.config.js` tweak — verify during implementation, not assumed here).
+- [x] 2.1 Add `pdfjs-dist` to `package.json`. Confirmed working with `output: 'export'`: `npm run build` succeeds and emits the worker as a real static asset (`out/_next/static/media/pdf.worker.min.*.mjs`), referenced from the bundled chunks — no `next.config.js` change was needed, since `new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url)` is resolved natively by Next's bundler.
 
 ## 3. KTC parser
 
-- [ ] 3.1 `src/utils/importParsers/ktc.ts`: `parseKtcStatement(text: string): ParsedRow[]` — pure function, no I/O.
-- [ ] 3.2 Line filter: only lines starting with `DD/MM/YY DD/MM/YY` are candidate transaction rows; everything else (headers, balance-carried, period totals, continuation lines like `USD 0.01`) is dropped.
-- [ ] 3.3 Extract `date` (the first `DD/MM/YY`, converted to `YYYY-MM-DD`; the second date/posting date is not stored — confirm this is acceptable or whether posting date is wanted alongside trans date), raw `description` (whitespace-normalized, verbatim), and `amount`.
-- [ ] 3.4 Rows with a negative amount (leading `-`) are dropped unconditionally (card payments/credits, not spending).
-- [ ] 3.5 Unit tests against fixture text extracted from a real (personally-identifying details masked/replaced) KTC statement, covering: a normal row, a foreign-currency row with its `USD ...` continuation line, an installment row (`03/10 LAZADA ...`), a negative-amount payment row, and a non-transaction summary line — each asserting it's included/excluded/transformed correctly.
+- [x] 3.1 `src/utils/importParsers/ktc.ts`: `parseKtcStatement(text: string): ParsedRow[]` — pure function, no I/O.
+- [x] 3.2 Line filter: only lines starting with `DD/MM/YY DD/MM/YY` are candidate transaction rows; everything else (headers, balance-carried, period totals, continuation lines like `USD 0.01`) is dropped.
+- [x] 3.3 Extract `date` (the first `DD/MM/YY`, converted to `YYYY-MM-DD`), raw `description` (whitespace-normalized, verbatim), and `amount`. Posting date is intentionally not stored — trans date is what the user experiences the charge as, and the board's `Transaction` type only has one `date` field.
+- [x] 3.4 Rows with a negative amount (leading `-`) are dropped unconditionally (card payments/credits, not spending).
+- [x] 3.5 Unit tests against fixture text shaped like a real KTC statement, covering: a normal row, a foreign-currency row with its `USD ...` continuation line, an installment row (`03/10 LAZADA ...`), a negative-amount payment row (incl. a different payment-channel description), and non-transaction summary lines — each asserting it's included/excluded/transformed correctly, plus a full multi-line excerpt end to end.
 
 ## 4. PDF extraction + password handling
 
-- [ ] 4.1 `src/utils/importParsers/extractPdfText.ts` (or similar): wraps `pdfjs-dist`'s `getDocument()` + page text extraction into a single async function returning the concatenated text of all pages.
-- [ ] 4.2 Wire `onPassword` to a caller-supplied callback rather than handling UI here — keeps this a pure-ish IO helper the hook (Task 5) can drive.
-- [ ] 4.3 Test (or manually verify, since this touches an external binary format) both an unlocked PDF (the sample) and a deliberately password-protected test PDF, including a wrong-password retry.
+- [x] 4.1 `src/utils/importParsers/extractPdfText.ts`: wraps `pdfjs-dist`'s `getDocument()` + page text extraction (grouping text runs into rows by Y position, since `getTextContent()` has no inherent line breaks) into a single async function returning the concatenated text of all pages.
+- [x] 4.2 Wire `onPassword` to a caller-supplied callback rather than handling UI here — keeps this a pure-ish IO helper the hook (Task 5) can drive.
+- [ ] 4.3 **Partially done.** `useCreditCardImport`'s handling of the `onPassword` callback (prompt shown, retry flag, cancel, forwarding a submitted password) is unit-tested with a mocked `extractPdfText`. Not done: an actual end-to-end run against a real password-protected KTC PDF in a browser — this session has no display/browser to do that with. Worth doing once this ships to a real environment.
 
 ## 5. Import hook
 
-- [ ] 5.1 New domain hook (e.g. `useCreditCardImport.ts`) following the pattern of `useTransactions.ts`/`useRatios.ts`: owns selected-file state, parsing/loading state, password-prompt state (prompt visibility, error on wrong password), parsed preview rows (editable in place), per-row include/exclude, and confirm/cancel actions.
-- [ ] 5.2 Category auto-guess: for each parsed row, look up `import_category_rules` (loaded for the signed-in user) by keyword-in-description match; unmatched rows default to `'wants'` per the existing category default used elsewhere (`useTransactions.ts`'s `txForm` default).
-- [ ] 5.3 Dedupe flagging: for each preview row, check the already-loaded `transactions` array for an existing row with matching `date` + `amount` AND `source` set (i.e. previously imported); mark the preview row accordingly. No new query — reuse `useTransactions`'s already-loaded data via the composition root.
-- [ ] 5.4 Confirm action: for rows still included, bulk-insert into `transactions` with `source` (e.g. `'ktc_import'`) and `needs_review` (`false` for rows the user edited in preview, `true` for rows saved as-parsed).
-- [ ] 5.5 Compose the new hook into `useSpendingBoard.ts` alongside the existing domain hooks; load `import_category_rules` on session resolution the same way transactions/ratios/profile/categoryMeta already do (per `spending-board-state`'s "User-scoped data loads on session resolution, orchestrated centrally" requirement).
+- [x] 5.1 New domain hook `useCreditCardImport.ts` following the pattern of `useTransactions.ts`/`useRatios.ts`: owns parsing/loading state, password-prompt state, parsed preview rows (editable in place), per-row include/exclude, and confirm/cancel actions.
+- [x] 5.2 Category auto-guess: `useImportCategoryRules.guessCategory` looks up rules by keyword-in-description match (longest keyword wins on overlap); unmatched rows default to `'wants'`.
+- [x] 5.3 Dedupe flagging: each preview row is checked against the already-loaded `transactions` array for a `date`+`amount` match where `source` is set. No new query — reuses `useTransactions`'s already-loaded data via the composition root.
+- [x] 5.4 Confirm action: included rows are bulk-inserted with `source: 'ktc_import'` and `needs_review` (`false` for edited rows, `true` for as-parsed rows).
+- [x] 5.5 Composed into `useSpendingBoard.ts` alongside the existing domain hooks; `import_category_rules` and `board_settings` both load on session resolution the same way transactions/ratios/profile/categoryMeta already do.
 
 ## 6. Bulk insert on `useTransactions`
 
-- [ ] 6.1 Add a bulk-insert function to `useTransactions.ts` (single `.insert([...])` call with an array), separate from the existing single-row `saveTransaction`. Update local `transactions` state with all inserted rows on success.
-- [ ] 6.2 Thread `source`/`needs_review` through the `Transaction` type (`src/utils/BoardConfig.ts`) and through `useTransactions`'s load/save paths.
+- [x] 6.1 Added `bulkInsertTransactions` (single `.insert([...])` call with an array), separate from the existing single-row `saveTransaction`. Updates local `transactions` state with all inserted rows on success.
+- [x] 6.2 Threaded `source`/`needs_review` through the `Transaction` type and through `useTransactions`'s load/save paths — editing a row via the existing modal now always clears `needs_review` (leaving `source` untouched) on save.
 
 ## 7. Preview UI
 
-- [ ] 7.1 File-picker entry point (button in `BoardHeader` or above `TransactionList` — confirm placement during implementation) that accepts `.pdf`.
-- [ ] 7.2 Password-prompt step (only rendered when `onPassword` fires), following the existing modal visual pattern (`AddTransactionModal`/`RatioModal`).
-- [ ] 7.3 Preview modal: editable table (date, description, category picker, amount, include/exclude toggle), duplicate-warning indicator per flagged row, a count of unrecognized/dropped lines (per design.md's parser-miss mitigation), and a confirm/cancel footer.
-- [ ] 7.4 Row edits in the preview clear that row's eventual `needs_review` flag on import; untouched rows keep it set.
+- [x] 7.1 File-picker entry point: a row in `ProfileModal` ("Import from PDF") triggers a hidden `<input type="file" accept="application/pdf">`.
+- [x] 7.2 Password-prompt step (`ImportPreviewModal`, only rendered when `importStatus === 'password'`), following the existing modal visual pattern.
+- [x] 7.3 Preview modal (`ImportPreviewModal`): editable table (date, description, category picker, amount, include/exclude checkbox), duplicate-warning indicator per flagged row, confirm/cancel footer. **Not done**: a count of unrecognized/dropped lines — cut for scope/time; the parser doesn't currently distinguish "genuinely malformed transaction line" from "intentionally-excluded non-transaction line" cheaply enough to surface an honest count. Worth a follow-up if misparses turn out to be common in practice.
+- [x] 7.4 Row edits in the preview clear that row's eventual `needs_review` flag on import (`edited: true`); untouched rows keep it set.
 
 ## 8. Needs-review + imported-origin surfaces on `TransactionList`
 
-- [ ] 8.1 `needs_review` indicator: a left-edge accent stripe on the row (not a pill, not inline text) — color sourced from `board_settings.badge_colors.needsReview` (Task 9a), falling back to the default (`#C9A6F2`/`#4B2A6B`, the previously-unused 5th `PALETTE` entry) if no row exists yet for the user.
-- [ ] 8.2 `source` indicator: a bare colored text label (e.g. `KTC`, small caps, no background fill), inline with the row's subtitle — color sourced from `board_settings.badge_colors.source` (Task 9a), falling back to the default (`#7FB3F2`/`#1E3A5C`, the previously-unused 4th `PALETTE` entry). Independent of 8.1; both can render on the same row at once (see design.md Decision 5b).
-- [ ] 8.3 Accessible label: when `needs_review` is `true`, include a "needs review" suffix in the row's `aria-label` (color alone isn't a sufficient indicator — design.md Decision 5b) rather than relying on a hover `title`.
-- [ ] 8.4 Filter/tab scoped to needs-review-only rows, alongside (not replacing) the existing full list. The tab's own label/header is where a user first learns what the stripe means.
-- [ ] 8.5 Confirm `transactionRows` (the cross-slice derived view in `useSpendingBoard.ts`) threads both `needs_review` and `source` through; no duplicate computation outside the composition root, per `spending-board-state`'s existing rule.
-- [ ] 8.6 Opening a needs-review row still goes through the existing `AddTransactionModal` edit flow unchanged (per `transaction-editing`); saving it clears `needs_review` but leaves `source` (and therefore the imported badge) untouched.
+- [x] 8.1 `needs_review` indicator: a left-edge accent stripe on the row, colored from `board_settings.badge_colors.needsReview` (falling back to the default pair).
+- [x] 8.2 `source` indicator: a bare colored text label (`KTC`) inline with the row's subtitle, colored from `board_settings.badge_colors.source`. Independent of 8.1; both can render on the same row.
+- [x] 8.3 Accessible label: the row's `aria-label` includes a "needs review" suffix when `needs_review` is `true`.
+- [x] 8.4 Filter/tab ("All" / "Needs review") in `TransactionList`, with an explanatory hint line shown while the needs-review tab is active.
+- [x] 8.5 `transactionRows` (in `useSpendingBoard.ts`) threads `needsReview`/`sourceLabel`/`ariaLabel` through and applies the filter; no duplicate computation outside the composition root.
+- [x] 8.6 Opening a needs-review row still goes through the existing `AddTransactionModal` edit flow unchanged; saving it clears `needs_review` but leaves `source` untouched.
 
 ## 9a. Badge color settings
 
-- [ ] 9a.1 Small hook (e.g. extend the Task 5 import hook, or a thin `useBoardSettings`) that loads `board_settings` for the signed-in user on session resolution (per `spending-board-state`'s centralized-loading rule), falling back to the default `badge_colors` shape if no row exists yet.
-- [ ] 9a.2 Save action: upsert the whole `badge_colors` object for the user (mirrors `useCategoryMeta.saveCategoryMeta`'s whole-object replace, via Supabase `upsert` instead of `localStorage.setItem`).
-- [ ] 9a.3 Small color-picker UI for the two badge colors (needs-review, source), placed alongside the category-rule CRUD surface (Task 9). Reuse the existing palette-swatch picker pattern already used for category colors in `CategorySettingsModal`, rather than a free-form color input.
+- [x] 9a.1 `useBoardSettings.ts` loads `board_settings` for the signed-in user on session resolution, falling back to the default `badge_colors` shape if no row exists yet.
+- [x] 9a.2 `saveBadgeColors` upserts the whole `badge_colors` object (mirrors `useCategoryMeta.saveCategoryMeta`'s whole-object replace, via Supabase `upsert`).
+- [x] 9a.3 Color-picker UI for both badge colors in `ImportSettingsModal`, reusing the existing `PALETTE` swatch-picker pattern from `CategorySettingsModal`.
 
 ## 9. Category-rule management UI
 
-- [ ] 9.1 Basic CRUD (add/edit/remove a keyword → category rule), placed alongside `CategorySettingsModal` or as its own small settings surface (confirm placement during implementation).
-- [ ] 9.2 Supabase-backed hook actions (insert/update/delete on `import_category_rules`), following the same client/error-handling shape as `useTransactions`'s Supabase calls.
+- [x] 9.1 Basic CRUD (add/remove a keyword → category rule) in `ImportSettingsModal`, opened from a new row in `ProfileModal`.
+- [x] 9.2 `useImportCategoryRules.ts`: Supabase-backed insert/delete, following the same client/error-handling shape as `useTransactions`'s Supabase calls. (Editing an existing rule in place wasn't built — remove and re-add covers it for a first version.)
 
 ## 10. i18n
 
-- [ ] 10.1 Add `th`/`en` strings to `I18nDict` (`src/utils/BoardConfig.ts`) for: import entry point, password prompt, preview table headers/actions, duplicate-warning text, needs-review badge/filter labels (incl. the `aria-label` suffix), imported-origin badge label, category-rule CRUD UI, badge color-picker UI.
+- [x] 10.1 Added `th`/`en` strings to `I18nDict` for: import entry point, password prompt, preview table headers/actions, duplicate-warning text, needs-review badge/filter labels (incl. the `aria-label` suffix), imported-origin badge label, category-rule CRUD UI, badge color-picker UI.
 
 ## 11. Tests
 
-- [ ] 11.1 `parseKtcStatement` unit tests (Task 3.5).
-- [ ] 11.2 `useCreditCardImport` unit tests: category-guess matching, dedupe flagging logic, confirm/cancel state transitions — isolated per `spending-board-state`'s "domain state is independently testable" rule (no full Supabase client needed to test the pure logic).
-- [ ] 11.3 Bulk-insert path on `useTransactions` (mock Supabase client, assert single batched call).
-- [ ] 11.4 `transactionRows`/needs-review filter derivation tests.
+- [x] 11.1 `parseKtcStatement` unit tests (Task 3.5) — `src/utils/importParsers/ktc.test.ts`.
+- [x] 11.2 `useCreditCardImport` unit tests: category-guess matching (via a mocked `guessCategory`), dedupe flagging (manual vs. previously-imported match), password flow, confirm/cancel state transitions, per-row edit/toggle — `src/hooks/useCreditCardImport.test.ts`. Also added `src/hooks/useImportCategoryRules.test.ts` and `src/hooks/useBoardSettings.test.ts` for the two supporting hooks, matching this repo's one-test-file-per-hook convention.
+- [x] 11.3 Bulk-insert path on `useTransactions` (mock Supabase client, assert a single batched `insert` call, plus empty-list and failure cases).
+- [x] 11.4 `transactionRows`/needs-review filter derivation tests in `useSpendingBoard.test.ts`.
 
 ## 12. Verification
 
-- [ ] 12.1 `npm run check-types`, `npm run lint`, `npm run test` all clean.
-- [ ] 12.2 Manually verify in the browser (per the project's `verify` skill, local Supabase stack): import the sample-shaped statement end to end — preview shows correct rows, negative-amount row absent, foreign-currency continuation line doesn't appear as its own row, installment row's raw text is preserved, duplicate warning appears on a deliberately re-imported row, needs-review badge/filter work, category-rule CRUD persists and is picked up on the next import.
+- [x] 12.1 `npm run check-types`, `npm run lint`, `npm run test` all clean (127 tests passing). `npm run build` also verified clean (confirms the pdfjs-dist worker bundles correctly for static export — see Task 2.1).
+- [ ] 12.2 **Not done.** No browser or local Supabase stack available in this session to manually walk the real import flow end to end. This is the main thing to do before considering this change fully verified — see the `verify` skill once migrations (Task 1.4) are applied to a real project.

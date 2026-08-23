@@ -10,6 +10,8 @@ import { BoardTabs } from './BoardTabs';
 import { BudgetSplit } from './BudgetSplit';
 import { CategorySettingsModal } from './CategorySettingsModal';
 import { CompareChart } from './CompareChart';
+import { ImportPreviewModal } from './ImportPreviewModal';
+import { ImportSettingsModal } from './ImportSettingsModal';
 import { ProfileModal } from './ProfileModal';
 import { RatioModal } from './RatioModal';
 import { TransactionList } from './TransactionList';
@@ -129,6 +131,9 @@ export const BoardCard = () => {
                     <TransactionList
                       t={board.t}
                       transactionRows={board.transactionRows}
+                      transactionFilter={board.transactionFilter}
+                      setTransactionFilter={board.setTransactionFilter}
+                      badgeColors={board.badgeColors}
                       deleteError={board.deleteError}
                       isOnline={board.isOnline}
                       themeTokens={themeTokens}
@@ -253,10 +258,46 @@ export const BoardCard = () => {
         saveProfile={board.saveProfile}
         editSplitFromProfile={board.editSplitFromProfile}
         openCategorySettings={board.openCategorySettings}
+        startImport={board.startImport}
+        openImportSettings={board.openImportSettings}
         profileRatioLabel={board.profileRatioLabel}
         userEmail={board.userEmail}
         theme={board.theme}
         setTheme={board.setTheme}
+        themeTokens={themeTokens}
+      />
+      <ImportPreviewModal
+        t={board.t}
+        importStatus={board.importStatus}
+        importPreviewRows={board.importPreviewRows}
+        importParseError={board.importParseError}
+        passwordIsRetry={board.passwordIsRetry}
+        importError={board.importError}
+        submitPassword={board.submitPassword}
+        cancelImport={board.cancelImport}
+        toggleRowIncluded={board.toggleRowIncluded}
+        editRowDescription={board.editRowDescription}
+        editRowCategory={board.editRowCategory}
+        confirmImport={board.confirmImport}
+        categoryChoices={board.categoryChoices}
+        themeTokens={themeTokens}
+      />
+      <ImportSettingsModal
+        t={board.t}
+        showImportSettings={board.showImportSettings}
+        closeImportSettings={board.closeImportSettings}
+        ruleRows={board.ruleRows}
+        newRuleKeyword={board.newRuleKeyword}
+        onNewRuleKeywordChange={board.onNewRuleKeywordChange}
+        newRuleCategory={board.newRuleCategory}
+        onNewRuleCategoryChange={board.onNewRuleCategoryChange}
+        addRule={board.addRule}
+        ruleError={board.ruleError}
+        categoryChoices={board.categoryChoices}
+        badgeColorsForm={board.badgeColorsForm}
+        selectBadgeColor={board.selectBadgeColor}
+        saveBadgeColors={board.saveBadgeColors}
+        badgeColorsError={board.badgeColorsError}
         themeTokens={themeTokens}
       />
     </div>

@@ -4,8 +4,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import type { BoardSupabaseClient } from '@/hooks/useAuthSession';
 import { useAuthSession } from '@/hooks/useAuthSession';
+import { useBoardSettings } from '@/hooks/useBoardSettings';
 import { useCategoryMeta } from '@/hooks/useCategoryMeta';
+import { useCreditCardImport } from '@/hooks/useCreditCardImport';
 import { useI18n } from '@/hooks/useI18n';
+import { useImportCategoryRules } from '@/hooks/useImportCategoryRules';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 import { useProfile } from '@/hooks/useProfile';
 import { useRatios } from '@/hooks/useRatios';
@@ -63,8 +66,28 @@ export const useSpendingBoard = () => {
   const profileSlice = useProfile(resolvedEmail);
   const categoryMetaSlice = useCategoryMeta(resolvedEmail);
   const txSlice = useTransactions(clientRefLocal, resolvedUserId, t, locale);
+  const importRulesSlice = useImportCategoryRules(
+    clientRefLocal,
+    resolvedUserId,
+    t
+  );
+  const boardSettingsSlice = useBoardSettings(
+    clientRefLocal,
+    resolvedUserId,
+    t
+  );
+  const creditCardImportSlice = useCreditCardImport(
+    t,
+    txSlice.transactions,
+    importRulesSlice.guessCategory,
+    txSlice.bulkInsertTransactions
+  );
 
   const [showRuleInfo, setShowRuleInfo] = useState(false);
+  const [showImportSettings, setShowImportSettings] = useState(false);
+  const [transactionFilter, setTransactionFilter] = useState<
+    'all' | 'needsReview'
+  >('all');
 
   const [activeTab, setActiveTab] = useState<'overview' | 'graph'>('overview');
   const [activeGraphTab, setActiveGraphTab] = useState<'trend' | 'compare'>(
@@ -90,8 +113,17 @@ export const useSpendingBoard = () => {
       ratiosSlice.load(currentEmail);
       profileSlice.load(currentEmail);
       categoryMetaSlice.load(currentEmail);
+      importRulesSlice.load(client);
+      boardSettingsSlice.load(client);
     },
-    [txSlice.load, ratiosSlice.load, profileSlice.load, categoryMetaSlice.load]
+    [
+      txSlice.load,
+      ratiosSlice.load,
+      profileSlice.load,
+      categoryMetaSlice.load,
+      importRulesSlice.load,
+      boardSettingsSlice.load,
+    ]
   );
 
   const {
@@ -114,7 +146,14 @@ export const useSpendingBoard = () => {
   const signOut = useCallback(async () => {
     await authSignOut();
     txSlice.clear();
-  }, [authSignOut, txSlice.clear]);
+    importRulesSlice.clear();
+    boardSettingsSlice.clear();
+  }, [
+    authSignOut,
+    txSlice.clear,
+    importRulesSlice.clear,
+    boardSettingsSlice.clear,
+  ]);
 
   useEffect(() => {
     const onResize = () => setViewportWidth(window.innerWidth);
@@ -189,6 +228,40 @@ export const useSpendingBoard = () => {
     deleteError,
   } = txSlice;
 
+  const {
+    rules,
+    ruleError,
+    newRuleKeyword,
+    onNewRuleKeywordChange,
+    newRuleCategory,
+    onNewRuleCategoryChange,
+    addRule,
+    removeRule,
+  } = importRulesSlice;
+
+  const {
+    badgeColors,
+    badgeColorsForm,
+    settingsError: badgeColorsError,
+    selectBadgeColor,
+    saveBadgeColors,
+  } = boardSettingsSlice;
+
+  const {
+    importStatus,
+    importRows,
+    parseError: importParseError,
+    passwordIsRetry,
+    importError,
+    selectFile: selectImportFile,
+    submitPassword,
+    cancelImport,
+    toggleRowIncluded,
+    editRowDescription,
+    editRowCategory,
+    confirmImport,
+  } = creditCardImportSlice;
+
   // Cross-domain actions: each touches two hooks (profile + ratios, or
   // category-meta + profile), so they're composed here rather than in
   // either slice.
@@ -201,6 +274,23 @@ export const useSpendingBoard = () => {
     openCategorySettingsSlice();
     closeProfile();
   }, [openCategorySettingsSlice, closeProfile]);
+
+  const openImportSettings = useCallback(() => {
+    setShowImportSettings(true);
+    closeProfile();
+  }, [closeProfile]);
+  const closeImportSettings = useCallback(
+    () => setShowImportSettings(false),
+    []
+  );
+
+  const startImport = useCallback(
+    (file: File) => {
+      closeProfile();
+      selectImportFile(file);
+    },
+    [closeProfile, selectImportFile]
+  );
 
   const groupsLocalized = useMemo(
     () =>
@@ -270,7 +360,9 @@ export const useSpendingBoard = () => {
       });
     };
 
-    return [...monthTx]
+    return monthTx
+      .filter((tx) => transactionFilter === 'all' || tx.needs_review)
+      .slice()
       .sort((a, b) => (a.date < b.date ? 1 : -1))
       .map((tx) => {
         const category = tx.category ? catById[tx.category] : null;
@@ -279,24 +371,33 @@ export const useSpendingBoard = () => {
           : null;
         const netAmount =
           tx.type === 'income' ? Number(tx.amount) : -Number(tx.amount);
+        const title = tx.note || category?.name || 'Other';
         return {
           id: tx.id,
           date: tx.date,
           dayLabel: dayLabelFor(tx.date),
           initial: tx.type === 'income' ? '+' : category?.name[0] ?? 'O',
           color: tx.type === 'income' ? '#0E8F5F' : meta?.color ?? '#64748B',
-          title: tx.note || category?.name || 'Other',
+          title,
           subtitle:
             category?.name ?? (tx.type === 'income' ? t.income : t.expense),
           netAmount,
           amountLabel: fmtSignedMoney(netAmount),
           amountColor: tx.type === 'income' ? '#0E8F5F' : themeTokens.text,
+          needsReview: tx.needs_review,
+          // Only one source exists today (KTC), so this is a fixed lookup
+          // rather than a registry — see design.md Decision 2.
+          sourceLabel: tx.source === 'ktc_import' ? 'KTC' : null,
+          ariaLabel: tx.needs_review
+            ? `${title}, ${t.needsReviewBadgeAriaSuffix}`
+            : title,
           onDelete: () => deleteTx(tx.id),
           onEdit: () => openEditModal(tx),
         };
       });
   }, [
     monthTx,
+    transactionFilter,
     catById,
     categoryMeta,
     locale,
@@ -414,6 +515,40 @@ export const useSpendingBoard = () => {
     [groupsLocalized, txForm.category, categoryMeta, ratios, onTxCategoryChange]
   );
 
+  const categoryChoices = useMemo(
+    () =>
+      groupsLocalized.map((group) => {
+        const meta = categoryMeta[group.id] ?? DEFAULT_CATEGORY_META[group.id];
+        return {
+          id: group.id,
+          name: group.name,
+          color: meta.color,
+          dark: meta.dark,
+        };
+      }),
+    [groupsLocalized, categoryMeta]
+  );
+
+  const ruleRows = useMemo(
+    () =>
+      rules.map((rule) => ({
+        id: rule.id,
+        keyword: rule.keyword,
+        categoryName: catById[rule.category]?.name ?? rule.category,
+        onRemove: () => removeRule(rule.id),
+      })),
+    [rules, catById, removeRule]
+  );
+
+  const importPreviewRows = useMemo(
+    () =>
+      importRows.map((row) => ({
+        ...row,
+        categoryName: catById[row.category]?.name ?? row.category,
+      })),
+    [importRows, catById]
+  );
+
   const categorySettingsRows = useMemo(
     () =>
       groupsLocalized.map((group) => {
@@ -510,6 +645,8 @@ export const useSpendingBoard = () => {
     expenseLabel: fmtMoney(expense),
     categoryCards,
     transactionRows,
+    transactionFilter,
+    setTransactionFilter,
     deleteError,
     monthlyTotals,
     compareRows,
@@ -553,5 +690,36 @@ export const useSpendingBoard = () => {
     showCategorySettings,
     categorySettingsRows,
     saveCategoryMeta,
+
+    categoryChoices,
+
+    showImportSettings,
+    openImportSettings,
+    closeImportSettings,
+    ruleRows,
+    newRuleKeyword,
+    onNewRuleKeywordChange,
+    newRuleCategory,
+    onNewRuleCategoryChange,
+    addRule,
+    ruleError,
+    badgeColorsForm,
+    selectBadgeColor,
+    saveBadgeColors,
+    badgeColorsError,
+    badgeColors,
+
+    startImport,
+    importStatus,
+    importPreviewRows,
+    importParseError,
+    passwordIsRetry,
+    submitPassword,
+    cancelImport,
+    toggleRowIncluded,
+    editRowDescription,
+    editRowCategory,
+    confirmImport,
+    importError,
   };
 };
