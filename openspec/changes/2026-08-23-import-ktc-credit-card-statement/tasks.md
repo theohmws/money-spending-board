@@ -2,7 +2,8 @@
 
 - [ ] 1.1 Migration: add `source text` and `needs_review boolean not null default false` to `spending_board.transactions`.
 - [ ] 1.2 Migration: create `spending_board.import_category_rules` (`id`, `user_id uuid references auth.users`, `keyword text`, `category text check (category in ('needs','savings','wants'))`, `created_at`), RLS scoped by `(select auth.uid()) = user_id` for select/insert/update/delete, plus explicit `grant`s to `anon`/`authenticated`/`service_role` per this repo's convention (`auto_expose_new_tables` is `false`).
-- [ ] 1.3 Apply via Supabase MCP/CLI, not hand-edited on the remote database.
+- [ ] 1.3 Migration: create `spending_board.board_settings` (`user_id uuid primary key references auth.users`, `badge_colors jsonb not null default` the two-key default shown in design.md Decision 5c, `updated_at timestamptz not null default now()`), same RLS + grant pattern as 1.2.
+- [ ] 1.4 Apply via Supabase MCP/CLI, not hand-edited on the remote database.
 
 ## 2. Dependencies
 
@@ -44,11 +45,18 @@
 
 ## 8. Needs-review + imported-origin surfaces on `TransactionList`
 
-- [ ] 8.1 `needs_review` indicator: a left-edge accent stripe on the row (not a pill, not inline text) — reuses the `review`/`review-dark` color pair (the previously-unused 5th `PALETTE` entry).
-- [ ] 8.2 `source` indicator: a bare colored text label (e.g. `KTC`, small caps, no background fill), inline with the row's subtitle — reuses the `source`/`source-dark` color pair (the previously-unused 4th `PALETTE` entry). Independent of 8.1; both can render on the same row at once (see design.md Decision 5b).
-- [ ] 8.3 Filter/tab scoped to needs-review-only rows, alongside (not replacing) the existing full list.
-- [ ] 8.4 Confirm `transactionRows` (the cross-slice derived view in `useSpendingBoard.ts`) threads both `needs_review` and `source` through; no duplicate computation outside the composition root, per `spending-board-state`'s existing rule.
-- [ ] 8.5 Opening a needs-review row still goes through the existing `AddTransactionModal` edit flow unchanged (per `transaction-editing`); saving it clears `needs_review` but leaves `source` (and therefore the imported badge) untouched.
+- [ ] 8.1 `needs_review` indicator: a left-edge accent stripe on the row (not a pill, not inline text) — color sourced from `board_settings.badge_colors.needsReview` (Task 9a), falling back to the default (`#C9A6F2`/`#4B2A6B`, the previously-unused 5th `PALETTE` entry) if no row exists yet for the user.
+- [ ] 8.2 `source` indicator: a bare colored text label (e.g. `KTC`, small caps, no background fill), inline with the row's subtitle — color sourced from `board_settings.badge_colors.source` (Task 9a), falling back to the default (`#7FB3F2`/`#1E3A5C`, the previously-unused 4th `PALETTE` entry). Independent of 8.1; both can render on the same row at once (see design.md Decision 5b).
+- [ ] 8.3 Accessible label: when `needs_review` is `true`, include a "needs review" suffix in the row's `aria-label` (color alone isn't a sufficient indicator — design.md Decision 5b) rather than relying on a hover `title`.
+- [ ] 8.4 Filter/tab scoped to needs-review-only rows, alongside (not replacing) the existing full list. The tab's own label/header is where a user first learns what the stripe means.
+- [ ] 8.5 Confirm `transactionRows` (the cross-slice derived view in `useSpendingBoard.ts`) threads both `needs_review` and `source` through; no duplicate computation outside the composition root, per `spending-board-state`'s existing rule.
+- [ ] 8.6 Opening a needs-review row still goes through the existing `AddTransactionModal` edit flow unchanged (per `transaction-editing`); saving it clears `needs_review` but leaves `source` (and therefore the imported badge) untouched.
+
+## 9a. Badge color settings
+
+- [ ] 9a.1 Small hook (e.g. extend the Task 5 import hook, or a thin `useBoardSettings`) that loads `board_settings` for the signed-in user on session resolution (per `spending-board-state`'s centralized-loading rule), falling back to the default `badge_colors` shape if no row exists yet.
+- [ ] 9a.2 Save action: upsert the whole `badge_colors` object for the user (mirrors `useCategoryMeta.saveCategoryMeta`'s whole-object replace, via Supabase `upsert` instead of `localStorage.setItem`).
+- [ ] 9a.3 Small color-picker UI for the two badge colors (needs-review, source), placed alongside the category-rule CRUD surface (Task 9). Reuse the existing palette-swatch picker pattern already used for category colors in `CategorySettingsModal`, rather than a free-form color input.
 
 ## 9. Category-rule management UI
 
@@ -57,7 +65,7 @@
 
 ## 10. i18n
 
-- [ ] 10.1 Add `th`/`en` strings to `I18nDict` (`src/utils/BoardConfig.ts`) for: import entry point, password prompt, preview table headers/actions, duplicate-warning text, needs-review badge/filter labels, imported-origin badge label, category-rule CRUD UI.
+- [ ] 10.1 Add `th`/`en` strings to `I18nDict` (`src/utils/BoardConfig.ts`) for: import entry point, password prompt, preview table headers/actions, duplicate-warning text, needs-review badge/filter labels (incl. the `aria-label` suffix), imported-origin badge label, category-rule CRUD UI, badge color-picker UI.
 
 ## 11. Tests
 

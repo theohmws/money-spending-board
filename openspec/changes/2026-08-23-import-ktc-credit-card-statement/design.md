@@ -73,6 +73,23 @@ Two options were mocked up and compared (light/dark, using the board's real `the
 
 Both reuse the two previously-unused `PALETTE` entries (`#7FB3F2`/`#1E3A5C` for `source`, `#C9A6F2`/`#4B2A6B` for `needs_review`) rather than introducing new colors, following the same light/dark flip (`isDark ? dark : color` for the foreground, since neither has a filled background here) already established by `BudgetSplit`'s category cards.
 
+A color-only indicator isn't legible to everyone (colorblind users, or anyone who hasn't yet learned what the stripe means) and a `title` tooltip is unreliable on the touch-first, 430px-card layout this board is built around. So the stripe carries an accessible label too: the row's `aria-label` includes a "needs review" suffix whenever `needs_review` is `true` (this repo's ESLint config already enforces `aria-label` on icon-only controls elsewhere — same idea, applied to a color-only row state), and the needs-review filter/tab (Decision 5, already in scope) is where a user actually learns what the stripe means the first time, rather than relying on a hover tooltip.
+
+**5c. Badge colors are user-configurable, persisted on Supabase as a single JSON settings blob — not hardcoded.**
+The two colors picked in Decision 5b (Decision 5b) are defaults, not fixed. This mirrors `categoryMeta`'s existing shape exactly: `useCategoryMeta` already lets a user pick a color per category and persists the *whole* `CategoryMetaMap` object as one `JSON.stringify`'d blob (`localStorage.setItem(categoryMetaKey(email), JSON.stringify(categoryMetaForm))`) — same "small object, replace as a unit" shape, just written to `localStorage` today. Badge colors get the DB-backed equivalent of that same shape: a new one-row-per-user table,
+
+```sql
+create table spending_board.board_settings (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  badge_colors jsonb not null default
+    '{"needsReview":{"color":"#C9A6F2","dark":"#4B2A6B"},
+      "source":{"color":"#7FB3F2","dark":"#1E3A5C"}}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+```
+
+with RLS scoped by `(select auth.uid()) = user_id`, and a save action that's an upsert of the whole `badge_colors` object (mirroring `saveCategoryMeta`'s whole-object replace, just via Supabase instead of `localStorage.setItem`). `jsonb` (rather than two plain `text` columns) is deliberate: it needs no migration if a third badge/indicator is ever added later, and it sets a shape precedent for the *separately deferred* `ratios`/`profile`/`categoryMeta` → Supabase migration (Non-Goals) to follow, should that happen — those are the same "small JSON blob" shape today and would map onto `jsonb` columns the same way.
+
 **6. Dedupe is a soft warning, matched on `date` + `amount` against previously-imported rows only.**
 Matching also on the existing row's `note` would mean comparing a statement's raw description (`SHOPEETH BANGKOK TH`) against a user's own hand-typed note (`Coffee`) — that comparison would essentially never fire, so it isn't useful as a signal. Restricting the comparison set to rows where `source` is already set (i.e. themselves came from a prior import) avoids flagging a coincidental manual entry that happens to share a date and amount. The warning never blocks — it's a note on the preview row, and the user decides. False positives (two genuinely different statement rows sharing a date and amount — plausible given how many small LINEPAY charges appear on a single day in the sample) are an accepted, low-cost trade-off of a warning that never blocks.
 

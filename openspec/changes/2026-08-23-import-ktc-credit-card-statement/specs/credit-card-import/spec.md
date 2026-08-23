@@ -92,6 +92,25 @@ A row confirmed from the preview step SHALL be saved with `needs_review = true` 
 - **WHEN** the transaction list renders a row with no `source` (entered via the normal add-transaction flow)
 - **THEN** that row shows no "imported" badge
 
+#### Scenario: The needs-review indicator is accessible without relying on color alone
+- **WHEN** the transaction list renders a row with `needs_review = true`
+- **THEN** that row's accessible name (e.g. `aria-label`) includes a "needs review" indication, not just a color-only visual cue
+
+### Requirement: Badge colors are user-configurable and persisted on Supabase
+The needs-review and imported-source indicator colors SHALL default to a fixed pair of colors but SHALL be changeable by the user, persisted per-user on Supabase (not `localStorage`) so the choice follows them across devices.
+
+#### Scenario: Default colors apply before any customization
+- **WHEN** a user who has never customized badge colors views the transaction list
+- **THEN** both indicators render using the built-in default colors
+
+#### Scenario: Changing a badge color persists it
+- **WHEN** a user picks a new color for either indicator and saves
+- **THEN** that color is used for that indicator going forward, on this and any other device the user signs into
+
+#### Scenario: The two indicator colors are independently configurable
+- **WHEN** a user changes the needs-review indicator's color
+- **THEN** the imported-source indicator's color is unaffected, and vice versa
+
 ### Requirement: Possible duplicate imports are flagged, never blocked
 A preview row SHALL be flagged as a possible duplicate if an existing transaction with the same `date` and `amount` exists AND that existing transaction was itself previously imported. The user SHALL still be able to import a flagged row.
 
