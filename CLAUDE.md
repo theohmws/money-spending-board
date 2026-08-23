@@ -68,7 +68,7 @@ CI (`.github/workflows/CI.yml`) runs on Node 20 for: `build-prod`, commitlint (o
 
 ## Conventions
 
-- **Commits**: enforced [Conventional Commits](https://www.conventionalcommits.org/) via commitlint (validated in CI on PRs); use `npm run commit` for the guided Commitizen flow. Releases are automated with `semantic-release` on `main`.
+- **Commits**: enforced [Conventional Commits](https://www.conventionalcommits.org/) via commitlint (validated in CI on PRs); use `npm run commit` for the guided Commitizen flow. Releases are automated with `semantic-release` on `develop` — the repo's actual default/production branch (there is no `main`).
 - **ESLint** (`.eslintrc`, legacy format — see the pin note above): Airbnb + Airbnb TypeScript + `next/core-web-vitals` + Tailwind + Prettier, with project-specific overrides worth knowing:
   - `simple-import-sort` is enforced — imports/exports must be sorted; let `npm run format` fix this rather than hand-ordering.
   - `unused-imports/no-unused-imports` is an error; unused vars prefixed with `_` are allowed.
