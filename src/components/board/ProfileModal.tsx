@@ -360,12 +360,12 @@ export const ProfileModal = ({
           {t.saveProfileBtn}
         </button>
 
-        {AppConfig.version && (
+        {AppConfig.versionLabel && (
           <div
             className="mt-4 text-center text-[11.5px]"
             style={{ color: themeTokens.subtext3 }}
           >
-            v{AppConfig.version}
+            {AppConfig.versionLabel}
           </div>
         )}
       </div>
