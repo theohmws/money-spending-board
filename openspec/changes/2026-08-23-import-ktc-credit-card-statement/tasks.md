@@ -44,8 +44,8 @@
 
 ## 8. Needs-review + imported-origin surfaces on `TransactionList`
 
-- [ ] 8.1 Small badge/indicator on rows where `needs_review` is `true`.
-- [ ] 8.2 Separate, independent badge/indicator on rows where `source` is set, shown regardless of `needs_review` — visually distinct from the needs-review badge (they can appear together on the same row).
+- [ ] 8.1 `needs_review` indicator: a left-edge accent stripe on the row (not a pill, not inline text) — reuses the `review`/`review-dark` color pair (the previously-unused 5th `PALETTE` entry).
+- [ ] 8.2 `source` indicator: a bare colored text label (e.g. `KTC`, small caps, no background fill), inline with the row's subtitle — reuses the `source`/`source-dark` color pair (the previously-unused 4th `PALETTE` entry). Independent of 8.1; both can render on the same row at once (see design.md Decision 5b).
 - [ ] 8.3 Filter/tab scoped to needs-review-only rows, alongside (not replacing) the existing full list.
 - [ ] 8.4 Confirm `transactionRows` (the cross-slice derived view in `useSpendingBoard.ts`) threads both `needs_review` and `source` through; no duplicate computation outside the composition root, per `spending-board-state`'s existing rule.
 - [ ] 8.5 Opening a needs-review row still goes through the existing `AddTransactionModal` edit flow unchanged (per `transaction-editing`); saving it clears `needs_review` but leaves `source` (and therefore the imported badge) untouched.
