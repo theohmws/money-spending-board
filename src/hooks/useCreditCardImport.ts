@@ -125,7 +125,11 @@ export const useCreditCardImport = (
         setImportStatus('preview');
       } catch (err) {
         setParseError(err instanceof Error ? err.message : t.importParseError);
-        setImportStatus('idle');
+        // Stays on the 'preview' step (with zero rows) rather than
+        // resetting to 'idle' — ImportPreviewModal renders nothing at all
+        // for 'idle', which would make the error message it just set
+        // invisible: the modal would simply vanish with no feedback.
+        setImportStatus('preview');
       }
     },
     [guessCategory, isPossibleDuplicate, selectedSourceId, t]
