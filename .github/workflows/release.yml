@@ -17,6 +17,13 @@ jobs:
 
     name: Create a new release
     runs-on: ubuntu-latest
+    # Without this, GITHUB_TOKEN is read-only by default (per this repo's
+    # Actions settings) and semantic-release's git push (the version
+    # bump/tag) and its GitHub Release/issue creation both fail with a 403.
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v3
