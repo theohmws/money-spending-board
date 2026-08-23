@@ -202,12 +202,12 @@ export const BoardCard = () => {
           </button>
         )}
 
-        {AppConfig.version && (
+        {AppConfig.versionLabel && (
           <div
             className="px-6 pb-3 pt-1 text-center text-[10.5px]"
             style={{ color: themeTokens.subtext3 }}
           >
-            v{AppConfig.version}
+            {AppConfig.versionLabel}
           </div>
         )}
       </div>

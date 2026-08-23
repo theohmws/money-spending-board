@@ -103,7 +103,7 @@
   },
   "release": {
     "branches": [
-      "main"
+      "develop"
     ],
     "plugins": [
       "@semantic-release/commit-analyzer",
