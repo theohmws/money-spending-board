@@ -237,6 +237,7 @@ export const BoardCard = () => {
         ratioRows={board.ratioRows}
         ratioSum={board.ratioSum}
         saveRatios={board.saveRatios}
+        ratiosSaveError={board.ratiosSaveError}
         themeTokens={themeTokens}
       />
       <CategorySettingsModal
@@ -245,6 +246,7 @@ export const BoardCard = () => {
         closeCategorySettings={board.closeCategorySettings}
         categorySettingsRows={board.categorySettingsRows}
         saveCategoryMeta={board.saveCategoryMeta}
+        categoryMetaSaveError={board.categoryMetaSaveError}
         themeTokens={themeTokens}
       />
       <ProfileModal
@@ -257,6 +259,7 @@ export const BoardCard = () => {
         avatarSwatches={board.avatarSwatches}
         headerAvatarInitial={board.headerAvatarInitial}
         saveProfile={board.saveProfile}
+        profileSaveError={board.profileSaveError}
         editSplitFromProfile={board.editSplitFromProfile}
         openCategorySettings={board.openCategorySettings}
         openImportSettings={board.openImportSettings}

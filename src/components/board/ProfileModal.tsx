@@ -12,6 +12,7 @@ type Props = Pick<
   | 'avatarSwatches'
   | 'headerAvatarInitial'
   | 'saveProfile'
+  | 'profileSaveError'
   | 'editSplitFromProfile'
   | 'openCategorySettings'
   | 'openImportSettings'
@@ -32,6 +33,7 @@ export const ProfileModal = ({
   avatarSwatches,
   headerAvatarInitial,
   saveProfile,
+  profileSaveError,
   editSplitFromProfile,
   openCategorySettings,
   openImportSettings,
@@ -305,6 +307,15 @@ export const ProfileModal = ({
             </button>
           </div>
         </div>
+
+        {profileSaveError && (
+          <div
+            className="mt-3.5 rounded-[10px] px-3 py-2.5 text-[13px]"
+            style={{ background: '#FBEAEC', color: '#C0374A' }}
+          >
+            {profileSaveError}
+          </div>
+        )}
 
         <button
           type="button"

@@ -7,6 +7,7 @@ type Props = Pick<
   | 'closeCategorySettings'
   | 'categorySettingsRows'
   | 'saveCategoryMeta'
+  | 'categoryMetaSaveError'
   | 'themeTokens'
 >;
 
@@ -16,6 +17,7 @@ export const CategorySettingsModal = ({
   closeCategorySettings,
   categorySettingsRows,
   saveCategoryMeta,
+  categoryMetaSaveError,
   themeTokens,
 }: Props) => {
   if (!showCategorySettings) return null;
@@ -140,6 +142,15 @@ export const CategorySettingsModal = ({
             </div>
           ))}
         </div>
+
+        {categoryMetaSaveError && (
+          <div
+            className="mt-3.5 rounded-[10px] px-3 py-2.5 text-[13px]"
+            style={{ background: '#FBEAEC', color: '#C0374A' }}
+          >
+            {categoryMetaSaveError}
+          </div>
+        )}
 
         <button
           type="button"
