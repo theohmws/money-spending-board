@@ -7,6 +7,13 @@
 // actual (ESM-only) module code into anything that imports this file.
 import type { PDFPageProxy } from 'pdfjs-dist';
 
+// TextItem/TextMarkedContent aren't re-exported from the package's top-level
+// types entrypoint (only from its internal display/api module), so derive
+// the item type from the public getTextContent() signature instead.
+type TextContentItem = Awaited<
+  ReturnType<PDFPageProxy['getTextContent']>
+>['items'][number];
+
 let workerConfigured = false;
 
 export type ExtractPdfTextOptions = {
@@ -25,11 +32,33 @@ export type ExtractPdfTextOptions = {
 // position is close together, then ordering each row left to right.
 const Y_TOLERANCE = 2;
 
+// page.getTextContent() itself just drains page.streamTextContent() with
+// `for await (const value of readableStream)` — but ReadableStream async
+// iteration (Symbol.asyncIterator) isn't supported on every Safari/iOS build
+// in the wild: confirmed via an on-device stack trace ("undefined is not a
+// function") thrown from inside pdfjs-dist's getTextContent on iOS 18.7 /
+// Safari 26.6, while the same statement PDF parsed fine on desktop. Reading
+// via reader.read() instead only needs the base ReadableStream API (widely
+// supported since Safari 10.1) and yields the identical item chunks.
+const getTextContentItems = async (
+  page: PDFPageProxy
+): Promise<TextContentItem[]> => {
+  const reader = page.streamTextContent().getReader();
+  const items: TextContentItem[] = [];
+  for (;;) {
+    // eslint-disable-next-line no-await-in-loop
+    const { value, done } = await reader.read();
+    if (done) break;
+    items.push(...(value as { items: TextContentItem[] }).items);
+  }
+  return items;
+};
+
 const extractPageText = async (page: PDFPageProxy): Promise<string> => {
-  const content = await page.getTextContent();
+  const items = await getTextContentItems(page);
   const rows: { y: number; parts: { x: number; str: string }[] }[] = [];
 
-  content.items.forEach((item) => {
+  items.forEach((item) => {
     if (!('str' in item) || !item.str.trim()) return;
     const x = item.transform[4] ?? 0;
     const y = item.transform[5] ?? 0;
