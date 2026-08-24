@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/theohmws/money-spending-board/compare/v1.0.0...v1.1.0) (2026-08-24)
+
+
+### Features
+
+* surface a stack trace in the PDF import error banner ([aaba726](https://github.com/theohmws/money-spending-board/commit/aaba7265814f4595e02ee8e29dcda16ca5589c5d))
+
 # 1.0.0 (2026-08-23)
 
 
