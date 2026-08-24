@@ -162,6 +162,43 @@ describe('useCreditCardImport', () => {
     expect(result.current.parseError).toBe('bad pdf');
   });
 
+  it('captures a stack trace + engine string for a parse error, so a device without a debugger can still report one', async () => {
+    const err = new Error('bad pdf');
+    err.stack = 'Error: bad pdf\n    at fake (fake.js:1:1)';
+    mockExtractPdfText.mockRejectedValue(err);
+
+    const { result } = renderHook(() =>
+      useCreditCardImport(t, [], guessCategory, bulkInsertTransactions)
+    );
+
+    await act(async () => {
+      await result.current.selectFile(file);
+    });
+
+    expect(result.current.parseErrorDetail).toContain('Error: bad pdf');
+    expect(result.current.parseErrorDetail).toContain('at fake (fake.js:1:1)');
+    expect(result.current.parseErrorDetail).toContain(navigator.userAgent);
+  });
+
+  it('clears the parse error detail when the import is cancelled', async () => {
+    mockExtractPdfText.mockRejectedValue(new Error('bad pdf'));
+
+    const { result } = renderHook(() =>
+      useCreditCardImport(t, [], guessCategory, bulkInsertTransactions)
+    );
+
+    await act(async () => {
+      await result.current.selectFile(file);
+    });
+    expect(result.current.parseErrorDetail).not.toBeNull();
+
+    act(() => {
+      result.current.cancelImport();
+    });
+
+    expect(result.current.parseErrorDetail).toBeNull();
+  });
+
   it('prompts for a password and forwards the submitted value', async () => {
     const submitSpy = jest.fn();
     mockExtractPdfText.mockImplementation(
