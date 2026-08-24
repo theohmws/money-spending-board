@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/theohmws/money-spending-board/compare/v1.1.0...v1.1.1) (2026-08-24)
+
+
+### Bug Fixes
+
+* bypass ReadableStream async iteration in PDF text extraction ([914265c](https://github.com/theohmws/money-spending-board/commit/914265c64b310cf2a209cef85d71ec5b50e5bc59))
+
 # [1.1.0](https://github.com/theohmws/money-spending-board/compare/v1.0.0...v1.1.0) (2026-08-24)
 
 
