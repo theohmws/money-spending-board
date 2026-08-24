@@ -13,6 +13,7 @@ type Props = Pick<
   | 'selectImportFile'
   | 'importPreviewRows'
   | 'importParseError'
+  | 'importParseErrorDetail'
   | 'passwordIsRetry'
   | 'importError'
   | 'submitPassword'
@@ -32,6 +33,7 @@ export const ImportPreviewModal = ({
   selectImportFile,
   importPreviewRows,
   importParseError,
+  importParseErrorDetail,
   passwordIsRetry,
   importError,
   submitPassword,
@@ -204,6 +206,16 @@ export const ImportPreviewModal = ({
                 style={{ background: '#FBEAEC', color: '#C0374A' }}
               >
                 {importParseError}
+                {importParseErrorDetail && (
+                  <details className="mt-2">
+                    <summary className="cursor-pointer text-[11.5px] font-semibold">
+                      {t.importParseErrorDetailLabel}
+                    </summary>
+                    <pre className="mt-1.5 max-h-40 overflow-auto whitespace-pre-wrap break-all text-[10.5px] leading-snug">
+                      {importParseErrorDetail}
+                    </pre>
+                  </details>
+                )}
               </div>
             )}
 

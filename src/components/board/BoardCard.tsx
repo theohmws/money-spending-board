@@ -273,6 +273,7 @@ export const BoardCard = () => {
         selectImportFile={board.selectImportFile}
         importPreviewRows={board.importPreviewRows}
         importParseError={board.importParseError}
+        importParseErrorDetail={board.importParseErrorDetail}
         passwordIsRetry={board.passwordIsRetry}
         importError={board.importError}
         submitPassword={board.submitPassword}

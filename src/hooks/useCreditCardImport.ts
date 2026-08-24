@@ -51,6 +51,22 @@ type BulkInsertRow = {
   needs_review: boolean;
 };
 
+// A real parse failure reported from a phone can't be chased with a
+// desktop/remote debugger if one isn't available, so the on-device error
+// banner is the only place a stack trace and engine string can come from —
+// this formats both into one block the user can screenshot and send back.
+const formatParseErrorDetail = (err: unknown): string => {
+  const lines: string[] = [];
+  if (err instanceof Error) {
+    lines.push(`${err.name}: ${err.message}`);
+    if (err.stack) lines.push(err.stack);
+  } else {
+    lines.push(String(err));
+  }
+  if (typeof navigator !== 'undefined') lines.push(navigator.userAgent);
+  return lines.join('\n');
+};
+
 // Owns the whole "pick a KTC statement PDF -> preview -> confirm" flow.
 // Never writes to Supabase itself — `bulkInsertTransactions` (from
 // useTransactions, threaded in by the composition root) is the only thing
@@ -68,6 +84,7 @@ export const useCreditCardImport = (
   );
   const [importRows, setImportRows] = useState<ParsedImportRow[]>([]);
   const [parseError, setParseError] = useState<string | null>(null);
+  const [parseErrorDetail, setParseErrorDetail] = useState<string | null>(null);
   const [passwordIsRetry, setPasswordIsRetry] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
   const passwordSubmitRef = useRef<((password: string | null) => void) | null>(
@@ -95,6 +112,7 @@ export const useCreditCardImport = (
     async (file: File) => {
       setImportStatus('parsing');
       setParseError(null);
+      setParseErrorDetail(null);
       setImportRows([]);
 
       try {
@@ -125,6 +143,7 @@ export const useCreditCardImport = (
         setImportStatus('preview');
       } catch (err) {
         setParseError(err instanceof Error ? err.message : t.importParseError);
+        setParseErrorDetail(formatParseErrorDetail(err));
         // Stays on the 'preview' step (with zero rows) rather than
         // resetting to 'idle' — ImportPreviewModal renders nothing at all
         // for 'idle', which would make the error message it just set
@@ -145,6 +164,7 @@ export const useCreditCardImport = (
     setImportStatus('idle');
     setImportRows([]);
     setParseError(null);
+    setParseErrorDetail(null);
     setImportError(null);
   }, []);
 
@@ -209,6 +229,7 @@ export const useCreditCardImport = (
     selectSource,
     importRows,
     parseError,
+    parseErrorDetail,
     passwordIsRetry,
     importError,
     selectFile,
