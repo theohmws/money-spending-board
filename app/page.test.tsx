@@ -20,17 +20,27 @@ const mockAuth = {
   signOut: jest.fn().mockResolvedValue({ error: null }),
 };
 
-const mockFrom = jest.fn(() => ({
-  select: jest.fn(() => ({
-    order: jest.fn().mockResolvedValue({ data: [], error: null }),
-  })),
-  insert: jest.fn(() => ({
-    select: jest.fn().mockResolvedValue({ data: [], error: null }),
-  })),
-  delete: jest.fn(() => ({
-    eq: jest.fn().mockResolvedValue({ error: null }),
-  })),
-}));
+const mockFrom = jest.fn((table: string) => {
+  if (table === 'board_settings') {
+    return {
+      select: jest.fn(() => ({
+        maybeSingle: jest.fn().mockResolvedValue({ data: null, error: null }),
+      })),
+      upsert: jest.fn().mockResolvedValue({ error: null }),
+    };
+  }
+  return {
+    select: jest.fn(() => ({
+      order: jest.fn().mockResolvedValue({ data: [], error: null }),
+    })),
+    insert: jest.fn(() => ({
+      select: jest.fn().mockResolvedValue({ data: [], error: null }),
+    })),
+    delete: jest.fn(() => ({
+      eq: jest.fn().mockResolvedValue({ error: null }),
+    })),
+  };
+});
 
 jest.mock('@supabase/supabase-js', () => ({
   createClient: jest.fn(() => ({ auth: mockAuth, from: mockFrom })),

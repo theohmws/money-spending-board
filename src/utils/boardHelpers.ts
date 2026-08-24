@@ -1,3 +1,4 @@
+import type { BoardSupabaseClient } from '@/hooks/useAuthSession';
 import type { Theme } from '@/utils/BoardConfig';
 
 export type ThemeTokens = {
@@ -62,6 +63,34 @@ export const readJSON = <T>(key: string): T | null => {
   } catch {
     return null;
   }
+};
+
+// Shared by useProfile/useRatios/useCategoryMeta: each of those domains
+// lives in its own board_settings column, migrating once from the domain's
+// legacy localStorage key the first time a user's column is still null. See
+// design.md Decision 3 in
+// openspec/changes/2026-08-24-migrate-profile-ratios-categorymeta-to-supabase.
+export const loadBoardSettingField = async <T>(
+  client: BoardSupabaseClient,
+  userId: string,
+  column: 'profile' | 'ratios' | 'category_meta',
+  localStorageKey: string,
+  defaultValue: T
+): Promise<T> => {
+  const { data, error } = await client
+    .from('board_settings')
+    .select(column)
+    .maybeSingle();
+
+  const loaded =
+    !error && data ? (data as Record<string, T | null>)[column] : null;
+  if (loaded != null) return loaded;
+
+  const migrated = readJSON<T>(localStorageKey) ?? defaultValue;
+  await client
+    .from('board_settings')
+    .upsert({ user_id: userId, [column]: migrated });
+  return migrated;
 };
 
 export const themeTokens = (mode: Theme): ThemeTokens => {

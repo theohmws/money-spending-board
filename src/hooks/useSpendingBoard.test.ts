@@ -31,6 +31,7 @@ const mockFrom = jest.fn((table: string) => {
             Promise.resolve({ data: null, error: null })
           ),
       })),
+      upsert: jest.fn().mockResolvedValue({ error: null }),
     };
   }
   return {
