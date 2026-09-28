@@ -1,3 +1,16 @@
+# [1.2.0](https://github.com/theohmws/money-spending-board/compare/v1.1.1...v1.2.0) (2026-09-28)
+
+
+### Bug Fixes
+
+* dedupe slip uploads by the slip's transaction ID only ([8c1ac89](https://github.com/theohmws/money-spending-board/commit/8c1ac89f76572dc4b40d95e0181d50894f792cb9))
+
+
+### Features
+
+* accept OCR'd K PLUS bank slips from the iOS Shortcut endpoint ([8f03cfe](https://github.com/theohmws/money-spending-board/commit/8f03cfe337d680cacadaa85a8f7d5b0ccad08585))
+* add token-authenticated API for iOS Shortcuts to insert/update transactions ([c152163](https://github.com/theohmws/money-spending-board/commit/c152163841d7ea17014e7cc7343a0366bdaede6a))
+
 ## [1.1.1](https://github.com/theohmws/money-spending-board/compare/v1.1.0...v1.1.1) (2026-08-24)
 
 
