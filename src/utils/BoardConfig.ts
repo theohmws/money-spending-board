@@ -45,6 +45,14 @@ export type ImportCategoryRule = {
   category: CategoryId;
 };
 
+export type ApiToken = {
+  id: string;
+  name: string;
+  token_prefix: string;
+  created_at: string;
+  last_used_at: string | null;
+};
+
 export type BadgeColorPair = { color: string; dark: string };
 export type BadgeColors = {
   needsReview: BadgeColorPair;
@@ -271,6 +279,31 @@ export type I18nDict = {
   categoryRuleSaveError: string;
   categoryRuleDeleteError: string;
   boardSettingsSaveError: string;
+  apiTokensEntryLabel: string;
+  apiTokensEntryDesc: string;
+  apiTokensTitle: string;
+  apiTokensDesc: string;
+  apiEndpointLabel: string;
+  apiTokenNamePlaceholder: string;
+  apiTokenCreateBtn: string;
+  apiTokenRevealTitle: string;
+  apiTokenRevealHint: string;
+  apiTokenCopyBtn: string;
+  apiTokenCopiedLabel: string;
+  apiTokenDoneBtn: string;
+  apiTokenRevokeAria: string;
+  apiTokenNeverUsed: string;
+  apiTokenLastUsed: string;
+  apiTokensEmpty: string;
+  apiTokenSaveError: string;
+  apiTokenDeleteError: string;
+  apiUsageTitle: string;
+  apiUsageStep1: string;
+  apiUsageStep2: string;
+  apiUsageStep3: string;
+  apiUsageUpdateHint: string;
+  shortcutBadgeLabel: string;
+  slipBadgeLabel: string;
 };
 
 export const I18N: Record<Lang, I18nDict> = {
@@ -399,6 +432,35 @@ export const I18N: Record<Lang, I18nDict> = {
     categoryRuleSaveError: 'บันทึกคำไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
     categoryRuleDeleteError: 'ลบคำไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
     boardSettingsSaveError: 'บันทึกสีไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+    apiTokensEntryLabel: 'iOS Shortcuts / API',
+    apiTokensEntryDesc: 'โทเคนสำหรับเพิ่มหรือแก้ไขรายการจากคำสั่งลัด',
+    apiTokensTitle: 'iOS Shortcuts / API',
+    apiTokensDesc:
+      'สร้างโทเคนเพื่อให้คำสั่งลัด (Shortcuts) บน iPhone เพิ่มหรือแก้ไขรายการได้โดยไม่ต้องเปิดแอป เก็บโทเคนเป็นความลับ — ใครมีโทเคนก็เขียนรายการในบอร์ดของคุณได้',
+    apiEndpointLabel: 'URL ของ API',
+    apiTokenNamePlaceholder: 'ชื่อโทเคน เช่น iPhone',
+    apiTokenCreateBtn: 'สร้าง',
+    apiTokenRevealTitle: 'โทเคนใหม่ของคุณ',
+    apiTokenRevealHint:
+      'คัดลอกตอนนี้ — จะไม่แสดงอีก ใส่ไว้ใน header Authorization เป็น "Bearer <โทเคน>"',
+    apiTokenCopyBtn: 'คัดลอก',
+    apiTokenCopiedLabel: 'คัดลอกแล้ว',
+    apiTokenDoneBtn: 'เสร็จแล้ว',
+    apiTokenRevokeAria: 'ยกเลิกโทเคน',
+    apiTokenNeverUsed: 'ยังไม่เคยใช้',
+    apiTokenLastUsed: 'ใช้ล่าสุด',
+    apiTokensEmpty: 'ยังไม่มีโทเคน',
+    apiTokenSaveError: 'สร้างโทเคนไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+    apiTokenDeleteError: 'ยกเลิกโทเคนไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+    apiUsageTitle: 'วิธีใช้ใน Shortcuts',
+    apiUsageStep1:
+      'เพิ่มการทำงาน "รับเนื้อหาของ URL" ใส่ URL ด้านบน และตั้ง Method เป็น POST',
+    apiUsageStep2: 'Headers → Authorization: Bearer <โทเคน>',
+    apiUsageStep3: 'เนื้อหาคำขอ (Request Body) เป็น JSON เช่น',
+    apiUsageUpdateHint:
+      'ต้องมีแค่ amount ส่วนช่องอื่นไม่บังคับ ถ้าใส่ id จะเป็นการแก้ไขรายการเดิมแทน โดยเปลี่ยนเฉพาะช่องที่ส่งมา:',
+    shortcutBadgeLabel: 'Shortcut',
+    slipBadgeLabel: 'สลิป',
   },
   en: {
     loadingLabel: 'Loading…',
@@ -527,5 +589,35 @@ export const I18N: Record<Lang, I18nDict> = {
     categoryRuleSaveError: 'Could not save the keyword. Please try again.',
     categoryRuleDeleteError: 'Could not remove the keyword. Please try again.',
     boardSettingsSaveError: 'Could not save the colors. Please try again.',
+    apiTokensEntryLabel: 'iOS Shortcuts / API',
+    apiTokensEntryDesc:
+      'Tokens for adding or editing transactions from Shortcuts',
+    apiTokensTitle: 'iOS Shortcuts / API',
+    apiTokensDesc:
+      'Create a token so an iPhone Shortcut can add or edit transactions without opening the app. Keep it secret — anyone with the token can write to your board.',
+    apiEndpointLabel: 'API URL',
+    apiTokenNamePlaceholder: 'Token name, e.g. iPhone',
+    apiTokenCreateBtn: 'Create',
+    apiTokenRevealTitle: 'Your new token',
+    apiTokenRevealHint:
+      'Copy it now — it will not be shown again. Send it in the Authorization header as "Bearer <token>".',
+    apiTokenCopyBtn: 'Copy',
+    apiTokenCopiedLabel: 'Copied',
+    apiTokenDoneBtn: 'Done',
+    apiTokenRevokeAria: 'Revoke token',
+    apiTokenNeverUsed: 'Never used',
+    apiTokenLastUsed: 'Last used',
+    apiTokensEmpty: 'No tokens yet',
+    apiTokenSaveError: 'Could not create the token. Please try again.',
+    apiTokenDeleteError: 'Could not revoke the token. Please try again.',
+    apiUsageTitle: 'Using it in Shortcuts',
+    apiUsageStep1:
+      'Add a "Get Contents of URL" action with the API URL above, Method: POST',
+    apiUsageStep2: 'Headers → Authorization: Bearer <token>',
+    apiUsageStep3: 'Request Body: JSON, e.g.',
+    apiUsageUpdateHint:
+      'Only amount is required. Include an id to update an existing transaction instead — only the fields you send are changed:',
+    shortcutBadgeLabel: 'Shortcut',
+    slipBadgeLabel: 'Slip',
   },
 };

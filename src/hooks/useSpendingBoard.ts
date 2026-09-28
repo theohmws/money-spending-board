@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { useApiTokens } from '@/hooks/useApiTokens';
 import type { BoardSupabaseClient } from '@/hooks/useAuthSession';
 import { useAuthSession } from '@/hooks/useAuthSession';
 import { useBoardSettings } from '@/hooks/useBoardSettings';
@@ -17,7 +18,7 @@ import { useProfile } from '@/hooks/useProfile';
 import { useRatios } from '@/hooks/useRatios';
 import { useTheme } from '@/hooks/useTheme';
 import { useTransactions } from '@/hooks/useTransactions';
-import type { CategoryId } from '@/utils/BoardConfig';
+import type { CategoryId, I18nDict } from '@/utils/BoardConfig';
 import {
   CAT_ITEMS,
   CAT_NAMES,
@@ -39,6 +40,14 @@ import {
 // full-width); savings/wants are left to grid auto-flow, which places them
 // in row 2 automatically once row 1 is fully occupied. Avoids the old
 // two-row-tall needs card whose content didn't fill that much height.
+// Short badge text per `transactions.source` value; a source not listed here
+// (including null = manually entered) gets no badge.
+const SOURCE_LABELS: Record<string, string | ((t: I18nDict) => string)> = {
+  ktc_import: 'KTC',
+  ios_shortcut: (t) => t.shortcutBadgeLabel,
+  slip_ocr: (t) => t.slipBadgeLabel,
+};
+
 const GRID_COLUMN_SPAN: Partial<Record<CategoryId, string>> = {
   needs: '1 / 3',
 };
@@ -79,6 +88,7 @@ export const useSpendingBoard = () => {
     resolvedUserId,
     t
   );
+  const apiTokensSlice = useApiTokens(clientRefLocal, resolvedUserId, t);
   const creditCardImportSlice = useCreditCardImport(
     t,
     txSlice.transactions,
@@ -88,6 +98,7 @@ export const useSpendingBoard = () => {
 
   const [showRuleInfo, setShowRuleInfo] = useState(false);
   const [showImportSettings, setShowImportSettings] = useState(false);
+  const [showApiTokens, setShowApiTokens] = useState(false);
   const [transactionFilter, setTransactionFilter] = useState<
     'all' | 'needsReview'
   >('all');
@@ -118,6 +129,7 @@ export const useSpendingBoard = () => {
       categoryMetaSlice.load(currentEmail);
       importRulesSlice.load(client);
       boardSettingsSlice.load(client);
+      apiTokensSlice.load(client);
     },
     [
       txSlice.load,
@@ -126,6 +138,7 @@ export const useSpendingBoard = () => {
       categoryMetaSlice.load,
       importRulesSlice.load,
       boardSettingsSlice.load,
+      apiTokensSlice.load,
     ]
   );
 
@@ -151,11 +164,14 @@ export const useSpendingBoard = () => {
     txSlice.clear();
     importRulesSlice.clear();
     boardSettingsSlice.clear();
+    apiTokensSlice.clear();
+    setShowApiTokens(false);
   }, [
     authSignOut,
     txSlice.clear,
     importRulesSlice.clear,
     boardSettingsSlice.clear,
+    apiTokensSlice.clear,
   ]);
 
   useEffect(() => {
@@ -251,6 +267,19 @@ export const useSpendingBoard = () => {
   } = boardSettingsSlice;
 
   const {
+    apiTokens,
+    newTokenName,
+    onNewTokenNameChange,
+    revealedToken,
+    dismissRevealedToken,
+    apiTokenError,
+    creatingToken,
+    createApiToken,
+    revokeApiToken,
+    shortcutEndpoint,
+  } = apiTokensSlice;
+
+  const {
     importStatus,
     selectedSourceId,
     openSourceStep,
@@ -290,6 +319,17 @@ export const useSpendingBoard = () => {
     () => setShowImportSettings(false),
     []
   );
+
+  const openApiTokens = useCallback(() => {
+    setShowApiTokens(true);
+    closeProfile();
+  }, [closeProfile]);
+  // Closing the modal also forgets any just-created plaintext token, so it
+  // can't be shown again by reopening the modal.
+  const closeApiTokens = useCallback(() => {
+    setShowApiTokens(false);
+    dismissRevealedToken();
+  }, [dismissRevealedToken]);
 
   const startImport = useCallback(() => {
     closeProfile();
@@ -364,6 +404,12 @@ export const useSpendingBoard = () => {
       });
     };
 
+    const sourceLabelFor = (source: string | null) => {
+      const label = source ? SOURCE_LABELS[source] : undefined;
+      if (!label) return null;
+      return typeof label === 'function' ? label(t) : label;
+    };
+
     return monthTx
       .filter((tx) => transactionFilter === 'all' || tx.needs_review)
       .slice()
@@ -389,9 +435,7 @@ export const useSpendingBoard = () => {
           amountLabel: fmtSignedMoney(netAmount),
           amountColor: tx.type === 'income' ? '#0E8F5F' : themeTokens.text,
           needsReview: tx.needs_review,
-          // Only one source exists today (KTC), so this is a fixed lookup
-          // rather than a registry — see design.md Decision 2.
-          sourceLabel: tx.source === 'ktc_import' ? 'KTC' : null,
+          sourceLabel: sourceLabelFor(tx.source),
           ariaLabel: tx.needs_review
             ? `${title}, ${t.needsReviewBadgeAriaSuffix}`
             : title,
@@ -542,6 +586,25 @@ export const useSpendingBoard = () => {
         onRemove: () => removeRule(rule.id),
       })),
     [rules, catById, removeRule]
+  );
+
+  const apiTokenRows = useMemo(
+    () =>
+      apiTokens.map((token) => ({
+        id: token.id,
+        name: token.name,
+        prefix: token.token_prefix,
+        lastUsedLabel: token.last_used_at
+          ? `${t.apiTokenLastUsed} ${new Date(
+              token.last_used_at
+            ).toLocaleString(locale, {
+              dateStyle: 'medium',
+              timeStyle: 'short',
+            })}`
+          : t.apiTokenNeverUsed,
+        onRevoke: () => revokeApiToken(token.id),
+      })),
+    [apiTokens, locale, revokeApiToken, t]
   );
 
   const importPreviewRows = useMemo(
@@ -723,6 +786,19 @@ export const useSpendingBoard = () => {
     saveBadgeColors,
     badgeColorsError,
     badgeColors,
+
+    showApiTokens,
+    openApiTokens,
+    closeApiTokens,
+    apiTokenRows,
+    newTokenName,
+    onNewTokenNameChange,
+    createApiToken,
+    creatingToken,
+    revealedToken,
+    dismissRevealedToken,
+    apiTokenError,
+    shortcutEndpoint,
 
     startImport,
     importStatus,
