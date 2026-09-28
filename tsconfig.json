@@ -58,7 +58,8 @@
   "exclude": [
     "./out/**/*",
     "./node_modules/**/*",
-    "cypress/**/*.ts"
+    "cypress/**/*.ts",
+    "supabase/functions/*/index.ts"
   ],
   "include": [
     "next-env.d.ts",

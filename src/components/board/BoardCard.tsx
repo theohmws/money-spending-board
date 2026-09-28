@@ -4,6 +4,7 @@ import { useSpendingBoard } from '@/hooks/useSpendingBoard';
 import { AppConfig } from '@/utils/AppConfig';
 
 import { AddTransactionModal } from './AddTransactionModal';
+import { ApiTokensModal } from './ApiTokensModal';
 import { AuthScreen } from './AuthScreen';
 import { BoardHeader } from './BoardHeader';
 import { BoardTabs } from './BoardTabs';
@@ -260,6 +261,7 @@ export const BoardCard = () => {
         editSplitFromProfile={board.editSplitFromProfile}
         openCategorySettings={board.openCategorySettings}
         openImportSettings={board.openImportSettings}
+        openApiTokens={board.openApiTokens}
         profileRatioLabel={board.profileRatioLabel}
         userEmail={board.userEmail}
         theme={board.theme}
@@ -301,6 +303,22 @@ export const BoardCard = () => {
         selectBadgeColor={board.selectBadgeColor}
         saveBadgeColors={board.saveBadgeColors}
         badgeColorsError={board.badgeColorsError}
+        themeTokens={themeTokens}
+      />
+      <ApiTokensModal
+        t={board.t}
+        showApiTokens={board.showApiTokens}
+        closeApiTokens={board.closeApiTokens}
+        apiTokenRows={board.apiTokenRows}
+        newTokenName={board.newTokenName}
+        onNewTokenNameChange={board.onNewTokenNameChange}
+        createApiToken={board.createApiToken}
+        creatingToken={board.creatingToken}
+        revealedToken={board.revealedToken}
+        dismissRevealedToken={board.dismissRevealedToken}
+        apiTokenError={board.apiTokenError}
+        shortcutEndpoint={board.shortcutEndpoint}
+        isOnline={board.isOnline}
         themeTokens={themeTokens}
       />
     </div>

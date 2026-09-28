@@ -444,6 +444,28 @@ describe('useSpendingBoard', () => {
       });
     });
 
+    it('labels rows created through the iOS Shortcuts API', async () => {
+      transactionRows = [
+        tx({
+          id: 'from-shortcut',
+          date: '2024-03-07',
+          note: 'Coffee',
+          source: 'ios_shortcut',
+          needs_review: false,
+        }),
+      ];
+      const { result } = await renderBoard();
+
+      act(() => {
+        result.current.onMonthChange('2024-03');
+      });
+
+      expect(result.current.transactionRows[0]).toMatchObject({
+        id: 'from-shortcut',
+        sourceLabel: 'Shortcut',
+      });
+    });
+
     it('filters to only needs-review rows when switched', async () => {
       const { result } = await renderBoard();
 

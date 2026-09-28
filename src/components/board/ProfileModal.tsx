@@ -15,6 +15,7 @@ type Props = Pick<
   | 'editSplitFromProfile'
   | 'openCategorySettings'
   | 'openImportSettings'
+  | 'openApiTokens'
   | 'profileRatioLabel'
   | 'userEmail'
   | 'theme'
@@ -35,6 +36,7 @@ export const ProfileModal = ({
   editSplitFromProfile,
   openCategorySettings,
   openImportSettings,
+  openApiTokens,
   profileRatioLabel,
   userEmail,
   theme,
@@ -248,6 +250,34 @@ export const ProfileModal = ({
           <button
             type="button"
             onClick={openImportSettings}
+            className="text-[12.5px] font-semibold"
+            style={{ color: '#0E8F5F' }}
+          >
+            {t.edit}
+          </button>
+        </div>
+
+        <div
+          className="mt-3 flex items-center justify-between rounded-xl px-3.5 py-3"
+          style={{ background: themeTokens.chipBg }}
+        >
+          <div>
+            <div
+              className="text-sm font-semibold"
+              style={{ color: themeTokens.text }}
+            >
+              {t.apiTokensEntryLabel}
+            </div>
+            <div
+              className="mt-0.5 text-xs"
+              style={{ color: themeTokens.subtext }}
+            >
+              {t.apiTokensEntryDesc}
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={openApiTokens}
             className="text-[12.5px] font-semibold"
             style={{ color: '#0E8F5F' }}
           >
