@@ -42,8 +42,12 @@ A body with a `text` string and no `amount` SHALL be treated as the OCR text of 
 - **THEN** an expense is created with the slip's amount, the slip's date (else `ts`, else today), the memo or recipient as its note, `source = 'slip_ocr'` and `needs_review = true`
 
 #### Scenario: Re-sending the same slip does not duplicate it
-- **WHEN** a slip with the same reference number is sent again by the same user
+- **WHEN** a slip with the same slip ID (เลขที่รายการ) is sent again by the same user
 - **THEN** no new row is created and the response status is `duplicate`
+
+#### Scenario: Slip ID unreadable
+- **WHEN** an amount is found but no slip ID can be read
+- **THEN** the response is 200 with status `skipped` and nothing is saved
 
 #### Scenario: Unreadable image
 - **WHEN** no amount can be found in the text

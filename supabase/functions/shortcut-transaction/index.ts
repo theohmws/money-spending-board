@@ -103,13 +103,24 @@ Deno.serve(async (req) => {
   };
 
   if (slip) {
-    // Deterministic id per user + slip reference (or the whole OCR text if
-    // no reference was readable), so re-running the Shortcut over the same
-    // day's screenshots skips slips it already saved instead of
-    // duplicating them.
-    const id = `slip_${(
-      await sha256Hex(`${userId}:${slip.reference ?? slipText}`)
-    ).slice(0, 32)}`;
+    // Duplicates are detected by the slip's own transaction ID only: the
+    // row id is derived from user + slip ID, so re-running the Shortcut over
+    // the same day's screenshots skips slips already saved. Without a
+    // readable ID there's no reliable key (the Shortcut resends every
+    // photo on each run), so the slip is skipped rather than risk
+    // inserting it again on every run.
+    if (!slip.reference) {
+      return json(200, {
+        status: 'skipped',
+        message: `Skipped ฿${slip.amount.toFixed(
+          2
+        )}: couldn't read the slip ID (เลขที่รายการ)`,
+      });
+    }
+    const id = `slip_${(await sha256Hex(`${userId}:${slip.reference}`)).slice(
+      0,
+      32
+    )}`;
     const note = slip.memo ?? slip.recipient ?? 'K PLUS';
     const row = {
       id,
@@ -131,6 +142,7 @@ Deno.serve(async (req) => {
     const created = (data ?? []).length > 0;
     return json(created ? 201 : 200, {
       status: created ? 'created' : 'duplicate',
+      slipId: slip.reference,
       message: `${created ? 'Saved' : 'Already saved'} ฿${slip.amount.toFixed(
         2
       )} · ${note}`,

@@ -61,6 +61,23 @@ describe('parseSlipText', () => {
     );
   });
 
+  it('normalizes the slip ID so the same slip always gets the same key', () => {
+    const lower = THAI_SLIP.replace(
+      '016271140512BPM04321',
+      '016271140512bpm04321'
+    );
+    const split = THAI_SLIP.replace(
+      '016271140512BPM04321',
+      '0162711405 12BPM04321'
+    );
+    expect(parseSlipText(lower)?.reference).toBe('016271140512BPM04321');
+    expect(parseSlipText(split)?.reference).toBe('016271140512BPM04321');
+  });
+
+  it('reports no slip ID when none can be read', () => {
+    expect(parseSlipText('จำนวน: 120.00 บาท')?.reference).toBeNull();
+  });
+
   it('returns null when there is no amount at all', () => {
     expect(parseSlipText('Some random photo text\nno numbers')).toBeNull();
   });

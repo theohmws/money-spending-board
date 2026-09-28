@@ -104,22 +104,29 @@ export const extractAmount = (all: string[]): number | null => {
   return values.length ? Math.max(...values) : null;
 };
 
+// The slip's own transaction ID (K PLUS "เลขที่รายการ") — the sole
+// duplicate key for slip uploads, so it's normalized to upper case: OCR is
+// case-inconsistent on the same slip, and the ID itself isn't.
 export const extractReference = (all: string[]): string | null => {
   const looksLikeRef = (token: string) =>
     /^[0-9A-Za-z]{10,}$/.test(token) && /\d/.test(token);
 
   for (let i = 0; i < all.length; i += 1) {
     if (REFERENCE_LABEL_RE.test(all[i]!)) {
-      const token = valueAfterLabel(all, i, REFERENCE_LABEL_RE)
-        .split(' ')
-        .find(looksLikeRef);
-      if (token) return token;
+      const value = valueAfterLabel(all, i, REFERENCE_LABEL_RE);
+      // OCR sometimes splits a long ID with a space; try it rejoined
+      // before looking for a single ID-shaped token.
+      const joined = value.replace(/\s+/g, '');
+      const token = looksLikeRef(joined)
+        ? joined
+        : value.split(' ').find(looksLikeRef);
+      if (token) return token.toUpperCase();
     }
   }
   const fallback = all
     .flatMap((line) => line.split(' '))
     .find((token) => looksLikeRef(token) && token.length >= 15);
-  return fallback ?? null;
+  return fallback ? fallback.toUpperCase() : null;
 };
 
 export const extractMemo = (all: string[]): string | null => {
