@@ -453,6 +453,13 @@ describe('useSpendingBoard', () => {
           source: 'ios_shortcut',
           needs_review: false,
         }),
+        tx({
+          id: 'from-slip',
+          date: '2024-03-08',
+          note: 'ค่าอาหาร',
+          source: 'slip_ocr',
+          needs_review: true,
+        }),
       ];
       const { result } = await renderBoard();
 
@@ -460,9 +467,12 @@ describe('useSpendingBoard', () => {
         result.current.onMonthChange('2024-03');
       });
 
-      expect(result.current.transactionRows[0]).toMatchObject({
-        id: 'from-shortcut',
-        sourceLabel: 'Shortcut',
+      const labels = Object.fromEntries(
+        result.current.transactionRows.map((row) => [row.id, row.sourceLabel])
+      );
+      expect(labels).toEqual({
+        'from-shortcut': 'Shortcut',
+        'from-slip': 'สลิป',
       });
     });
 

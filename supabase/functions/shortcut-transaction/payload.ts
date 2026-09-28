@@ -6,6 +6,7 @@ export type CategoryId = 'needs' | 'savings' | 'wants';
 export type TxType = 'expense' | 'income';
 
 export const SHORTCUT_SOURCE = 'ios_shortcut';
+export const SLIP_SOURCE = 'slip_ocr';
 export const TOKEN_PREFIX = 'msb_';
 
 const CATEGORIES: readonly CategoryId[] = ['needs', 'savings', 'wants'];

@@ -22,6 +22,9 @@ Shortcuts often send numbers as text and may include locale formatting, so `amou
 ### 6. `needs_review` untouched
 Shortcut-created rows are `needs_review = false` — the user entered them deliberately. API updates don't change `needs_review`.
 
+### 7. Slip mode: parse OCR text server-side, idempotent by reference
+The user's Shortcut already OCRs each K PLUS screenshot on-device ("Extract Text from Image") and loops over *all of today's* slips on every run. So the endpoint (a) detects a slip body by `text` present + `amount` absent, (b) parses it in `slip.ts` with extractors that each accept label/value on the same or the next line and fall back to a weaker signal (largest non-fee figure for the amount; any long alphanumeric token for the reference), and (c) inserts with id `slip_<sha256(user_id:reference)>` via `upsert … ignoreDuplicates`, so re-runs report `duplicate` instead of creating copies. Slip date wins over the photo's `ts`, which wins over today. Unreadable images return 200 `skipped` so one bad photo doesn't make the Shortcut's loop look failed. Every response carries a human-readable `message` for the Shortcut's "Show alert".
+
 ## Risks
 
 - A leaked token grants write access (insert/update, not delete or read-all) to the owner's transactions until revoked. Mitigated by: shown-once plaintext, per-device naming, `last_used_at` visibility, one-click revoke.

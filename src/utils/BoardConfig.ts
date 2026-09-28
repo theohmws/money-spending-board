@@ -303,6 +303,7 @@ export type I18nDict = {
   apiUsageStep3: string;
   apiUsageUpdateHint: string;
   shortcutBadgeLabel: string;
+  slipBadgeLabel: string;
 };
 
 export const I18N: Record<Lang, I18nDict> = {
@@ -459,6 +460,7 @@ export const I18N: Record<Lang, I18nDict> = {
     apiUsageUpdateHint:
       'ต้องมีแค่ amount ส่วนช่องอื่นไม่บังคับ ถ้าใส่ id จะเป็นการแก้ไขรายการเดิมแทน โดยเปลี่ยนเฉพาะช่องที่ส่งมา:',
     shortcutBadgeLabel: 'Shortcut',
+    slipBadgeLabel: 'สลิป',
   },
   en: {
     loadingLabel: 'Loading…',
@@ -616,5 +618,6 @@ export const I18N: Record<Lang, I18nDict> = {
     apiUsageUpdateHint:
       'Only amount is required. Include an id to update an existing transaction instead — only the fields you send are changed:',
     shortcutBadgeLabel: 'Shortcut',
+    slipBadgeLabel: 'Slip',
   },
 };

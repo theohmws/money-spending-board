@@ -45,6 +45,7 @@ import {
 const SOURCE_LABELS: Record<string, string | ((t: I18nDict) => string)> = {
   ktc_import: 'KTC',
   ios_shortcut: (t) => t.shortcutBadgeLabel,
+  slip_ocr: (t) => t.slipBadgeLabel,
 };
 
 const GRID_COLUMN_SPAN: Partial<Record<CategoryId, string>> = {

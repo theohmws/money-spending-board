@@ -10,9 +10,11 @@
 - [x] 2.3 `[functions.shortcut-transaction] verify_jwt = false` in `supabase/config.toml`.
 - [ ] 2.4 Deploy the function and smoke-test insert/update/invalid-token with curl.
 
+- [x] 2.5 `slip.ts`: K PLUS slip OCR parsing (Thai + English, BE years, OCR-tolerant) + tests; slip mode in `index.ts` with reference-based idempotency and `needs_review = true`.
+
 ## 3. Board UI
 
 - [x] 3.1 `src/utils/apiTokens.ts` (generate/hash/prefix/endpoint URL) + tests.
 - [x] 3.2 `useApiTokens` hook (load/create/revoke, show-once plaintext) + tests; composed in `useSpendingBoard`, loaded on session resolve, cleared on sign-out.
 - [x] 3.3 `ApiTokensModal` + "iOS Shortcuts / API" row in `ProfileModal`; Thai/English strings.
-- [x] 3.4 "Shortcut" source badge for `source = 'ios_shortcut'` rows.
+- [x] 3.4 "Shortcut" / "Slip" source badges for `ios_shortcut` / `slip_ocr` rows.

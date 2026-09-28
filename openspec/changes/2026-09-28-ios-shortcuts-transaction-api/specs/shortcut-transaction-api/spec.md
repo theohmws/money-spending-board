@@ -34,5 +34,20 @@ The board SHALL let a signed-in user create named API tokens, see them listed wi
 - **WHEN** the body is invalid (non-positive amount, unknown type/category, bad date)
 - **THEN** the response is 400 with a message naming the problem
 
+### Requirement: The endpoint accepts OCR'd bank-slip text
+A body with a `text` string and no `amount` SHALL be treated as the OCR text of a bank transfer slip and parsed into an expense.
+
+#### Scenario: A K PLUS slip is saved for review
+- **WHEN** the body is `{ "ts": "...", "text": "<OCR of a K PLUS slip>", "album": "K PLUS" }`
+- **THEN** an expense is created with the slip's amount, the slip's date (else `ts`, else today), the memo or recipient as its note, `source = 'slip_ocr'` and `needs_review = true`
+
+#### Scenario: Re-sending the same slip does not duplicate it
+- **WHEN** a slip with the same reference number is sent again by the same user
+- **THEN** no new row is created and the response status is `duplicate`
+
+#### Scenario: Unreadable image
+- **WHEN** no amount can be found in the text
+- **THEN** the response is 200 with status `skipped` and nothing is saved
+
 ### Requirement: Shortcut-created rows are labeled
-Transactions with `source = 'ios_shortcut'` SHALL show a "Shortcut" source badge in the transaction list.
+Transactions with `source = 'ios_shortcut'` SHALL show a "Shortcut" source badge, and `slip_ocr` rows a "Slip" badge, in the transaction list.
