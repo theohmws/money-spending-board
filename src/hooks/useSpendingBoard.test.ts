@@ -460,6 +460,13 @@ describe('useSpendingBoard', () => {
           source: 'slip_ocr',
           needs_review: true,
         }),
+        tx({
+          id: 'from-bbl-slip',
+          date: '2024-03-09',
+          note: 'บ้าน',
+          source: 'slip_ocr:BBL',
+          needs_review: true,
+        }),
       ];
       const { result } = await renderBoard();
 
@@ -473,6 +480,7 @@ describe('useSpendingBoard', () => {
       expect(labels).toEqual({
         'from-shortcut': 'Shortcut',
         'from-slip': 'สลิป',
+        'from-bbl-slip': 'BBL',
       });
     });
 

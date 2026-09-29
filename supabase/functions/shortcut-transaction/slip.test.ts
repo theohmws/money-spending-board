@@ -1,4 +1,4 @@
-import { extractDate, isSlipBody, parseSlipText } from './slip';
+import { detectBank, extractDate, isSlipBody, parseSlipText } from './slip';
 
 // Shaped like iOS "Extract Text from Image" output for a K PLUS transfer
 // slip: labels and values on separate lines, as OCR usually splits them.
@@ -61,6 +61,7 @@ describe('parseSlipText', () => {
       reference: '2026092821573023002929008',
       memo: 'บ้าน',
       recipient: 'TUSSANEE WONGSON',
+      bank: 'BBL',
     });
   });
 
@@ -93,6 +94,7 @@ describe('parseSlipText', () => {
       reference: '016271140512BPM04321',
       memo: 'ค่าอาหาร',
       recipient: 'น.ส. สมหญิง รักดี',
+      bank: 'KBank',
     });
   });
 
@@ -103,6 +105,7 @@ describe('parseSlipText', () => {
       reference: '016271094100APM01234',
       memo: null,
       recipient: null,
+      bank: 'KBank',
     });
   });
 
@@ -136,6 +139,19 @@ describe('parseSlipText', () => {
 
   it('returns null when there is no amount at all', () => {
     expect(parseSlipText('Some random photo text\nno numbers')).toBeNull();
+  });
+});
+
+describe('detectBank', () => {
+  it("picks the slip's own (sender's) bank, the first one mentioned", () => {
+    // Bangkok Bank slip paying into a GHB account, and a KBank slip paying
+    // into SCB: the recipient's bank must not win.
+    expect(detectBank(BBL_SLIP.split('\n'))).toBe('BBL');
+    expect(detectBank(THAI_SLIP.split('\n'))).toBe('KBank');
+  });
+
+  it('does not mistake a place name for a bank', () => {
+    expect(detectBank(['SHOPEETH BANGKOK TH', 'กรุงเทพมหานคร'])).toBeNull();
   });
 });
 

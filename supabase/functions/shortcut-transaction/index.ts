@@ -20,7 +20,7 @@ import {
   parseDate,
   parsePayload,
   SHORTCUT_SOURCE,
-  SLIP_SOURCE,
+  slipSource,
   todayIn,
 } from './payload.ts';
 import { isSlipBody, parseSlipText } from './slip.ts';
@@ -121,11 +121,12 @@ Deno.serve(async (req) => {
       0,
       32
     )}`;
-    // Falls back to the Shortcut's album name (e.g. "K PLUS", "BBL") so an
-    // unlabeled slip still says which bank it came from.
+    // Bank detected from the slip text, else the Shortcut's album name
+    // (e.g. "K PLUS"), so an unlabeled slip still says which bank it's from.
     const album =
       typeof slipBody?.album === 'string' ? slipBody.album.trim() : '';
-    const note = slip.memo ?? slip.recipient ?? (album || 'Bank slip');
+    const bankLabel = slip.bank ?? (album || null);
+    const note = slip.memo ?? slip.recipient ?? bankLabel ?? 'Bank slip';
     const row = {
       id,
       user_id: userId,
@@ -134,7 +135,7 @@ Deno.serve(async (req) => {
       note,
       amount: slip.amount,
       date: slip.date ?? parseDate(slipBody?.ts) ?? todayIn(BOARD_TIMEZONE),
-      source: SLIP_SOURCE,
+      source: slipSource(slip.bank, album || null),
       // OCR is a best guess — flag it for the board's "Needs review" filter.
       needs_review: true,
     };
@@ -147,6 +148,7 @@ Deno.serve(async (req) => {
     return json(created ? 201 : 200, {
       status: created ? 'created' : 'duplicate',
       slipId: slip.reference,
+      bank: bankLabel,
       message: `${created ? 'Saved' : 'Already saved'} ฿${slip.amount.toFixed(
         2
       )} · ${note}`,

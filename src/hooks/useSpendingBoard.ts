@@ -405,6 +405,12 @@ export const useSpendingBoard = () => {
     };
 
     const sourceLabelFor = (source: string | null) => {
+      // Bank slips carry their bank after a colon ("slip_ocr:BBL") — shown
+      // as-is, like the fixed "KTC" label for statement imports.
+      const slipBank = source?.startsWith('slip_ocr:')
+        ? source.slice('slip_ocr:'.length)
+        : '';
+      if (slipBank) return slipBank;
       const label = source ? SOURCE_LABELS[source] : undefined;
       if (!label) return null;
       return typeof label === 'function' ? label(t) : label;
