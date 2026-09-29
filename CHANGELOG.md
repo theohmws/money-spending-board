@@ -1,3 +1,13 @@
+# [1.5.0](https://github.com/theohmws/money-spending-board/compare/v1.4.0...v1.5.0) (2026-09-29)
+
+
+### Features
+
+* add transfer transaction type ([7b3e684](https://github.com/theohmws/money-spending-board/commit/7b3e6845fa0aaa72b9cdf6b6a713681966d8288e))
+* **board:** show the landing page again after signing out ([9643701](https://github.com/theohmws/money-spending-board/commit/9643701bc1f225a0f58cc18d260abc5f409bf513))
+* show monthly transfer total in overview header ([f3fcd6d](https://github.com/theohmws/money-spending-board/commit/f3fcd6d6bd72eeb6f85fd24d9671fd1d555f1c17))
+* transfer type in Shortcuts API with own-name matching ([a5c0581](https://github.com/theohmws/money-spending-board/commit/a5c0581cfbb0405ffe7b00cb9df7a92c6d558995))
+
 # [1.4.0](https://github.com/theohmws/money-spending-board/compare/v1.3.0...v1.4.0) (2026-09-29)
 
 
