@@ -13,6 +13,8 @@
 
 - [x] 2.5 `slip.ts`: K PLUS slip OCR parsing (Thai + English, BE years, OCR-tolerant) + tests; slip mode in `index.ts` with reference-based idempotency and `needs_review = true`.
 
+- [x] 2.7 Bangkok Bank slips: fixture from a real BBL slip; recipient read from the "ไปที่"/"To" label (BBL recipients have no honorific); note falls back to the Shortcut's `album` name instead of a hard-coded "K PLUS".
+
 ## 3. Board UI
 
 - [x] 3.1 `src/utils/apiTokens.ts` (generate/hash/prefix/endpoint URL) + tests.

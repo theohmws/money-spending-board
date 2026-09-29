@@ -29,7 +29,57 @@ Transaction ID: 016271094100APM01234
 Amount: 85.00 Baht
 Fee: 0.00 Baht`;
 
+// Bangkok Bank (Bualuang mBanking) transfer slip: "ไปที่" labels the
+// recipient, and the slip carries two references — the short
+// "หมายเลขอ้างอิง" and the long, unique "เลขที่อ้างอิง" used as the slip ID.
+const BBL_SLIP = `Bangkok Bank
+รายการสำเร็จ
+28 ก.ย. 69, 21:57
+จำนวนเงิน
+3,000.00 THB
+จาก
+นาย อภิสิทธิ์
+980-4-xxx022
+ธนาคารกรุงเทพ
+ไปที่
+TUSSANEE WONGSON
+309-9-xxxxx3-04
+ธนาคารอาคารสงเคราะห์
+ค่าธรรมเนียม 0.00 THB
+บันทึก บ้าน
+หมายเลขอ้างอิง
+483776
+เลขที่อ้างอิง
+2026092821573023002929008
+สแกนเพื่อตรวจสอบ`;
+
 describe('parseSlipText', () => {
+  it('parses a Bangkok Bank transfer slip', () => {
+    expect(parseSlipText(BBL_SLIP)).toEqual({
+      amount: 3000,
+      date: '2026-09-28',
+      reference: '2026092821573023002929008',
+      memo: 'บ้าน',
+      recipient: 'TUSSANEE WONGSON',
+    });
+  });
+
+  it('still finds the Bangkok Bank slip ID when OCR groups labels before values', () => {
+    const grouped = BBL_SLIP.replace(
+      'หมายเลขอ้างอิง\n483776\nเลขที่อ้างอิง\n2026092821573023002929008',
+      'หมายเลขอ้างอิง\nเลขที่อ้างอิง\n483776\n2026092821573023002929008'
+    );
+    expect(parseSlipText(grouped)?.reference).toBe('2026092821573023002929008');
+  });
+
+  it('reads a same-line "ไปที่" recipient', () => {
+    const sameLine = BBL_SLIP.replace(
+      'ไปที่\nTUSSANEE WONGSON',
+      'ไปที่ TUSSANEE WONGSON'
+    );
+    expect(parseSlipText(sameLine)?.recipient).toBe('TUSSANEE WONGSON');
+  });
+
   it('parses a Thai K PLUS transfer slip', () => {
     expect(parseSlipText(THAI_SLIP)).toEqual({
       amount: 1250,

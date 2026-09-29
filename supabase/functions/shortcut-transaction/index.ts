@@ -5,7 +5,7 @@
 //   Authorization: Bearer msb_...
 //   { "amount": 120, "note": "Coffee", "category": "wants", "date": "2026-09-28" }
 //   { "id": "<existing id>", "amount": 150 }   <- update, only given fields
-//   { "ts": "...", "text": "<OCR of a K PLUS slip>", "album": "K PLUS" }
+//   { "ts": "...", "text": "<OCR of a bank slip>", "album": "K PLUS" }
 //                                              <- parse a bank slip (slip.ts)
 //
 // Deployed with verify_jwt = false (supabase/config.toml): the bearer token
@@ -121,7 +121,11 @@ Deno.serve(async (req) => {
       0,
       32
     )}`;
-    const note = slip.memo ?? slip.recipient ?? 'K PLUS';
+    // Falls back to the Shortcut's album name (e.g. "K PLUS", "BBL") so an
+    // unlabeled slip still says which bank it came from.
+    const album =
+      typeof slipBody?.album === 'string' ? slipBody.album.trim() : '';
+    const note = slip.memo ?? slip.recipient ?? (album || 'Bank slip');
     const row = {
       id,
       user_id: userId,

@@ -26,6 +26,10 @@ const FEE_LABEL_RE = /(ค่าธรรมเนียม|fee)/i;
 const REFERENCE_LABEL_RE =
   /(เลขที่รายการ|รหัสอ้างอิง|เลขที่อ้างอิง|transaction\s*(id|no)|ref(erence)?\s*(no|id)?)/i;
 const MEMO_LABEL_RE = /(บันทึกช่วยจำ|บันทึก|memo|note)\s*[:：]?\s*/i;
+// "To" label on slips that name the recipient with a label (Bangkok Bank:
+// "ไปที่") rather than just listing sender then recipient (K PLUS). Matched
+// against a whole line so "Total" etc. can't trigger it.
+const RECIPIENT_LABEL_RE = /^(ไปที่|ไปยัง|ถึง|ผู้รับ|to)\s*[:：]?\s*(.*)$/i;
 const NAME_PREFIX_RE =
   /^(นาย|นาง|น\.?\s?ส\.?|ด\.?\s?[ชญ]\.?|บจก\.?|บริษัท|หจก\.?|mr\.?|mrs\.?|ms\.?|miss)\s*\S/i;
 
@@ -142,9 +146,17 @@ export const extractMemo = (all: string[]): string | null => {
   return null;
 };
 
-// A slip lists the sender first and the recipient second; both usually
-// start with an honorific or company prefix.
+// Prefer an explicit "To" label (value on the same or the next line);
+// otherwise a slip lists the sender first and the recipient second, both
+// usually starting with an honorific or company prefix.
 export const extractRecipient = (all: string[]): string | null => {
+  for (let i = 0; i < all.length; i += 1) {
+    const match = RECIPIENT_LABEL_RE.exec(all[i]!);
+    if (match) {
+      const value = (match[2] || all[i + 1] || '').trim();
+      if (value) return value;
+    }
+  }
   const names = all.filter((line) => NAME_PREFIX_RE.test(line));
   return names[1] ?? null;
 };
