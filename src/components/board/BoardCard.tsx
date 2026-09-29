@@ -150,6 +150,7 @@ export const BoardCard = () => {
                 balanceLabel={board.balanceLabel}
                 incomeLabel={board.incomeLabel}
                 expenseLabel={board.expenseLabel}
+                transferLabel={board.transferLabel}
               />
 
               <div className="flex-1 overflow-y-auto px-6 pb-[100px] pt-5.5">
@@ -343,6 +344,8 @@ export const BoardCard = () => {
         ruleError={board.ruleError}
         categoryChoices={board.categoryChoices}
         badgeColorsForm={board.badgeColorsForm}
+        ownNamesForm={board.ownNamesForm}
+        onOwnNamesFormChange={board.onOwnNamesFormChange}
         selectBadgeColor={board.selectBadgeColor}
         saveBadgeColors={board.saveBadgeColors}
         badgeColorsError={board.badgeColorsError}

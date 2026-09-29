@@ -17,6 +17,8 @@ export type ParsedSlip = {
   reference: string | null;
   memo: string | null;
   recipient: string | null;
+  // The slip owner's own name (listed before the recipient's).
+  sender: string | null;
   // Short name of the bank that issued the slip (e.g. "BBL"), if known.
   bank: string | null;
 };
@@ -184,6 +186,47 @@ export const extractRecipient = (all: string[]): string | null => {
   return names[1] ?? null;
 };
 
+// The sender is the slip owner, listed before the recipient.
+export const extractSender = (all: string[]): string | null =>
+  all.filter((line) => NAME_PREFIX_RE.test(line))[0] ?? null;
+
+const HONORIFIC_RE =
+  /^(นางสาว|นาย|นาง|น\.?\s?ส\.?|ด\.?\s?[ชญ]\.?|mrs|mr|ms|miss)\.?\s*/i;
+
+// Lower-cased, honorific- and punctuation-stripped form of a name, so
+// "MR. Somchai  Jaidee" and "นาย สมชาย ใจดี" reduce to "somchaijaidee" /
+// "สมชายใจดี".
+export const normalizeName = (name: string): string =>
+  name
+    .trim()
+    .replace(HONORIFIC_RE, '')
+    .replace(/[^\p{L}\p{M}\p{N}]/gu, '')
+    .toLowerCase();
+
+// K PLUS truncates the recipient's surname to its first letter ("นาย
+// สมชาย ใ"), so two names match when one is a prefix of the other. Very
+// short names never match, to avoid collisions.
+const MIN_NAME_LENGTH = 3;
+const sameName = (a: string, b: string) => {
+  const x = normalizeName(a);
+  const y = normalizeName(b);
+  if (x.length < MIN_NAME_LENGTH || y.length < MIN_NAME_LENGTH) return false;
+  return x.startsWith(y) || y.startsWith(x);
+};
+
+// A slip is a transfer between the user's own accounts when the recipient
+// is the sender (same script) or one of the user's configured names (which
+// can be in either language).
+export const isOwnTransfer = (
+  slip: ParsedSlip,
+  ownNames: string[]
+): boolean => {
+  if (!slip.recipient) return false;
+  const { recipient } = slip;
+  if (slip.sender && sameName(slip.sender, recipient)) return true;
+  return ownNames.some((name) => sameName(name, recipient));
+};
+
 const isoDate = (y: number, m: number, d: number) => {
   const date = new Date(Date.UTC(y, m - 1, d));
   if (
@@ -266,6 +309,7 @@ export const parseSlipText = (text: string): ParsedSlip | null => {
     reference: extractReference(all),
     memo: extractMemo(all),
     recipient: extractRecipient(all),
+    sender: extractSender(all),
     bank: detectBank(all),
   };
 };

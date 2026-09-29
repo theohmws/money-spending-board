@@ -3,7 +3,7 @@
 // (imported by index.ts) and jest (payload.test.ts).
 
 export type CategoryId = 'needs' | 'savings' | 'wants';
-export type TxType = 'expense' | 'income';
+export type TxType = 'expense' | 'income' | 'transfer';
 
 export const SHORTCUT_SOURCE = 'ios_shortcut';
 export const SLIP_SOURCE = 'slip_ocr';
@@ -21,7 +21,7 @@ export const slipSource = (
 export const TOKEN_PREFIX = 'msb_';
 
 const CATEGORIES: readonly CategoryId[] = ['needs', 'savings', 'wants'];
-const TYPES: readonly TxType[] = ['expense', 'income'];
+const TYPES: readonly TxType[] = ['expense', 'income', 'transfer'];
 const MAX_NOTE_LENGTH = 200;
 
 export type InsertPayload = {
@@ -30,7 +30,7 @@ export type InsertPayload = {
   amount: number;
   note: string | null;
   // null means "not given": the function guesses it from the note for an
-  // expense, and it's always null for income.
+  // expense, and it's always null for income and transfer.
   category: CategoryId | null;
   date: string | null;
 };
@@ -129,7 +129,8 @@ export const parsePayload = (body: unknown): ParseResult => {
   const input = body as Record<string, unknown>;
 
   const type = parseType(input.type);
-  if (type === null) return fail('type must be "expense" or "income"');
+  if (type === null)
+    return fail('type must be "expense", "income" or "transfer"');
 
   const category = parseCategory(input.category);
   if (category === null) {
@@ -163,9 +164,9 @@ export const parsePayload = (body: unknown): ParseResult => {
     if (note !== undefined) changes.note = note;
     if (date !== undefined) changes.date = date;
     if (category !== undefined) changes.category = category;
-    // Switching a row to income drops its category, same as the in-app
-    // edit form (income never carries one).
-    if (type === 'income') changes.category = null;
+    // Switching a row to income or transfer drops its category, same as
+    // the in-app edit form (only expenses carry one).
+    if (type === 'income' || type === 'transfer') changes.category = null;
 
     if (Object.keys(changes).length === 0) {
       return fail('Nothing to update');
@@ -183,7 +184,7 @@ export const parsePayload = (body: unknown): ParseResult => {
       type: resolvedType,
       amount,
       note: note || null,
-      category: resolvedType === 'income' ? null : category ?? null,
+      category: resolvedType === 'expense' ? category ?? null : null,
       date: date ?? null,
     },
   };

@@ -89,6 +89,9 @@ export const useTransactions = (
   const expense = monthTx
     .filter((tx) => tx.type === 'expense')
     .reduce((a, tx) => a + Number(tx.amount), 0);
+  const transfer = monthTx
+    .filter((tx) => tx.type === 'transfer')
+    .reduce((a, tx) => a + Number(tx.amount), 0);
   const balance = income - expense;
 
   const openAddModal = useCallback(() => {
@@ -170,7 +173,7 @@ export const useTransactions = (
       id: editingTxId ?? uid(),
       type: txType,
       category: txType === 'expense' ? txForm.category : null,
-      note: txForm.note || (txType === 'income' ? t.income : t.expense),
+      note: txForm.note || t[txType],
       amount,
       date: txForm.date || todayStr(),
       source: existing?.source ?? null,
@@ -263,6 +266,7 @@ export const useTransactions = (
     monthTx,
     income,
     expense,
+    transfer,
     balance,
     showAddModal,
     openAddModal,

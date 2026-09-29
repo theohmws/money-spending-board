@@ -1,4 +1,11 @@
-import { detectBank, extractDate, isSlipBody, parseSlipText } from './slip';
+import {
+  detectBank,
+  extractDate,
+  isOwnTransfer,
+  isSlipBody,
+  normalizeName,
+  parseSlipText,
+} from './slip';
 
 // Shaped like iOS "Extract Text from Image" output for a K PLUS transfer
 // slip: labels and values on separate lines, as OCR usually splits them.
@@ -61,6 +68,7 @@ describe('parseSlipText', () => {
       reference: '2026092821573023002929008',
       memo: 'บ้าน',
       recipient: 'TUSSANEE WONGSON',
+      sender: 'นาย อภิสิทธิ์',
       bank: 'BBL',
     });
   });
@@ -94,6 +102,7 @@ describe('parseSlipText', () => {
       reference: '016271140512BPM04321',
       memo: 'ค่าอาหาร',
       recipient: 'น.ส. สมหญิง รักดี',
+      sender: 'นาย สมชาย ใจดี',
       bank: 'KBank',
     });
   });
@@ -105,6 +114,7 @@ describe('parseSlipText', () => {
       reference: '016271094100APM01234',
       memo: null,
       recipient: null,
+      sender: 'MR. SOMCHAI JAIDEE',
       bank: 'KBank',
     });
   });
@@ -178,5 +188,33 @@ describe('isSlipBody', () => {
     ).toBe(true);
     expect(isSlipBody({ text: 'x', amount: 10 })).toBe(false);
     expect(isSlipBody({ amount: 10 })).toBe(false);
+  });
+});
+
+describe('isOwnTransfer', () => {
+  const slip = (sender: string | null, recipient: string | null) =>
+    ({ sender, recipient } as Parameters<typeof isOwnTransfer>[0]);
+
+  it('normalizes honorifics, case and punctuation', () => {
+    expect(normalizeName('MR. Somchai  Jaidee')).toBe('somchaijaidee');
+    expect(normalizeName('นาย สมชาย ใจดี')).toBe('สมชายใจดี');
+  });
+
+  it('matches sender and recipient, including a truncated surname', () => {
+    expect(isOwnTransfer(slip('นาย สมชาย ใจดี', 'นาย สมชาย ใ'), [])).toBe(true);
+    expect(isOwnTransfer(slip('MR. A BEE', 'Mr. A Bee'), [])).toBe(true);
+  });
+
+  it('matches a configured name in another language', () => {
+    expect(
+      isOwnTransfer(slip('MR. SOMCHAI JAIDEE', 'นาย สมชาย ใ'), ['สมชาย ใจดี'])
+    ).toBe(true);
+  });
+
+  it('does not match different people or a missing recipient', () => {
+    expect(isOwnTransfer(slip('นาย สมชาย ใจดี', 'น.ส. สมหญิง รักดี'), [])).toBe(
+      false
+    );
+    expect(isOwnTransfer(slip('นาย สมชาย ใจดี', null), ['สมชาย'])).toBe(false);
   });
 });

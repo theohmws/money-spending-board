@@ -229,6 +229,7 @@ export const useSpendingBoard = () => {
     monthTx,
     income,
     expense,
+    transfer,
     balance,
     showAddModal,
     openAddModal,
@@ -262,6 +263,8 @@ export const useSpendingBoard = () => {
   const {
     badgeColors,
     badgeColorsForm,
+    ownNamesForm,
+    onOwnNamesFormChange,
     settingsError: badgeColorsError,
     selectBadgeColor,
     saveBadgeColors,
@@ -426,20 +429,34 @@ export const useSpendingBoard = () => {
         const meta = tx.category
           ? categoryMeta[tx.category] ?? DEFAULT_CATEGORY_META[tx.category]
           : null;
-        const netAmount =
-          tx.type === 'income' ? Number(tx.amount) : -Number(tx.amount);
+        const isTransfer = tx.type === 'transfer';
+        // A transfer only moves money between the user's own accounts, so it
+        // contributes nothing to the day's net.
+        let netAmount = 0;
+        if (tx.type === 'income') netAmount = Number(tx.amount);
+        else if (tx.type === 'expense') netAmount = -Number(tx.amount);
+        let initial = category?.name[0] ?? 'O';
+        let color = meta?.color ?? '#64748B';
+        if (tx.type === 'income') {
+          initial = '+';
+          color = '#0E8F5F';
+        } else if (isTransfer) {
+          initial = '⇄';
+          color = '#3B82F6';
+        }
         const title = tx.note || category?.name || 'Other';
         return {
           id: tx.id,
           date: tx.date,
           dayLabel: dayLabelFor(tx.date),
-          initial: tx.type === 'income' ? '+' : category?.name[0] ?? 'O',
-          color: tx.type === 'income' ? '#0E8F5F' : meta?.color ?? '#64748B',
+          initial,
+          color,
           title,
-          subtitle:
-            category?.name ?? (tx.type === 'income' ? t.income : t.expense),
+          subtitle: category?.name ?? t[tx.type],
           netAmount,
-          amountLabel: fmtSignedMoney(netAmount),
+          amountLabel: isTransfer
+            ? fmtMoney(Number(tx.amount))
+            : fmtSignedMoney(netAmount),
           amountColor: tx.type === 'income' ? '#0E8F5F' : themeTokens.text,
           needsReview: tx.needs_review,
           sourceLabel: sourceLabelFor(tx.source),
@@ -485,7 +502,7 @@ export const useSpendingBoard = () => {
       };
       if (tx.type === 'income') {
         entry.income += Number(tx.amount);
-      } else {
+      } else if (tx.type === 'expense') {
         entry.expense += Number(tx.amount);
         if (tx.category) entry.categorySpend[tx.category] += Number(tx.amount);
       }
@@ -729,6 +746,7 @@ export const useSpendingBoard = () => {
     balanceLabel: fmtMoney(balance),
     incomeLabel: fmtMoney(income),
     expenseLabel: fmtMoney(expense),
+    transferLabel: fmtMoney(transfer),
     categoryCards,
     transactionRows,
     transactionFilter,
@@ -790,6 +808,8 @@ export const useSpendingBoard = () => {
     addRule,
     ruleError,
     badgeColorsForm,
+    ownNamesForm,
+    onOwnNamesFormChange,
     selectBadgeColor,
     saveBadgeColors,
     badgeColorsError,
