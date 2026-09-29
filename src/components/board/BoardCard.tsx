@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
+import { usePublicStats } from '@/hooks/usePublicStats';
 import { useSpendingBoard } from '@/hooks/useSpendingBoard';
 import { AppConfig } from '@/utils/AppConfig';
 
@@ -27,6 +28,10 @@ export const BoardCard = () => {
   const board = useSpendingBoard();
   const { isDesktop, themeTokens } = board;
   const [showAuthForm, setShowAuthForm] = useState(false);
+  const publicStats = usePublicStats(
+    board.clientRef,
+    board.showLogin && !showAuthForm
+  );
 
   // The landing page is for visitors who have never signed in on this
   // browser; returning users go straight to the sign-in form.
@@ -97,6 +102,7 @@ export const BoardCard = () => {
               lang={board.lang}
               toggleLang={board.toggleLang}
               themeTokens={themeTokens}
+              stats={publicStats}
               onGetStarted={() => {
                 if (board.authMode === 'signin') board.toggleAuthMode();
                 setShowAuthForm(true);

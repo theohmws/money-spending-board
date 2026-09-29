@@ -183,6 +183,8 @@ export type I18nDict = {
   landingGetStarted: string;
   landingSignIn: string;
   landingFeaturesTitle: string;
+  landingStatUsers: string;
+  landingStatTransactions: string;
   landingFeatures: { icon: string; title: string; desc: string }[];
   signOut: string;
   available: string;
@@ -337,6 +339,8 @@ export const I18N: Record<Lang, I18nDict> = {
     landingGetStarted: 'เริ่มใช้งานฟรี',
     landingSignIn: 'เข้าสู่ระบบ',
     landingFeaturesTitle: 'ฟีเจอร์ทั้งหมด',
+    landingStatUsers: 'ผู้ใช้งาน',
+    landingStatTransactions: 'รายการที่บันทึกแล้ว',
     landingFeatures: [
       {
         icon: '📝',
@@ -536,6 +540,8 @@ export const I18N: Record<Lang, I18nDict> = {
     landingGetStarted: 'Get started free',
     landingSignIn: 'Sign in',
     landingFeaturesTitle: 'What you get',
+    landingStatUsers: 'users',
+    landingStatTransactions: 'transactions logged',
     landingFeatures: [
       {
         icon: '📝',

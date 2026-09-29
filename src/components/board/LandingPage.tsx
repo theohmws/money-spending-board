@@ -1,9 +1,13 @@
+import type { PublicStats } from '@/hooks/usePublicStats';
 import type { useSpendingBoard } from '@/hooks/useSpendingBoard';
+
+import { CountUp } from './CountUp';
 
 type Props = Pick<
   ReturnType<typeof useSpendingBoard>,
   't' | 'lang' | 'toggleLang' | 'themeTokens'
 > & {
+  stats: PublicStats | null;
   onGetStarted: () => void;
   onSignIn: () => void;
 };
@@ -13,6 +17,7 @@ export const LandingPage = ({
   lang,
   toggleLang,
   themeTokens,
+  stats,
   onGetStarted,
   onSignIn,
 }: Props) => (
@@ -82,6 +87,34 @@ export const LandingPage = ({
         </button>
       </div>
     </div>
+
+    {stats && (
+      <dl className="mx-auto mt-12 flex w-full max-w-screen-sm justify-center gap-4">
+        {[
+          { value: stats.users, label: t.landingStatUsers },
+          { value: stats.transactions, label: t.landingStatTransactions },
+        ].map((stat) => (
+          <div
+            key={stat.label}
+            className="flex flex-1 flex-col-reverse rounded-2xl border px-4 py-5 text-center"
+            style={{ borderColor: themeTokens.inputBorder }}
+          >
+            <dt
+              className="mt-1 text-[13px]"
+              style={{ color: themeTokens.subtext }}
+            >
+              {stat.label}
+            </dt>
+            <dd
+              className="font-manrope text-[30px] font-extrabold"
+              style={{ color: '#0E8F5F' }}
+            >
+              <CountUp value={stat.value} />
+            </dd>
+          </div>
+        ))}
+      </dl>
+    )}
 
     <h2
       className="mt-14 font-manrope text-lg font-extrabold"
