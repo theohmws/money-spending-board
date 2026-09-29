@@ -1,6 +1,6 @@
 export type Lang = 'th' | 'en';
 export type Theme = 'light' | 'dark';
-export type TxType = 'expense' | 'income';
+export type TxType = 'expense' | 'income' | 'transfer';
 export type CategoryId = 'needs' | 'savings' | 'wants';
 
 export type Group = {
@@ -193,6 +193,7 @@ export type I18nDict = {
   addTransaction: string;
   editTransaction: string;
   expense: string;
+  transfer: string;
   amount: string;
   category: string;
   note: string;
@@ -340,6 +341,7 @@ export const I18N: Record<Lang, I18nDict> = {
     addTransaction: 'เพิ่มรายการ',
     editTransaction: 'แก้ไขรายการ',
     expense: 'รายจ่าย',
+    transfer: 'ย้ายเงิน',
     amount: 'จำนวนเงิน',
     category: 'หมวดหมู่',
     note: 'บันทึกช่วยจำ',
@@ -495,6 +497,7 @@ export const I18N: Record<Lang, I18nDict> = {
     addTransaction: 'Add transaction',
     editTransaction: 'Edit transaction',
     expense: 'Expense',
+    transfer: 'Transfer',
     amount: 'Amount',
     category: 'Category',
     note: 'Note',

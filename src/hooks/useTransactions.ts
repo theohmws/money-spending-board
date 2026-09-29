@@ -170,7 +170,7 @@ export const useTransactions = (
       id: editingTxId ?? uid(),
       type: txType,
       category: txType === 'expense' ? txForm.category : null,
-      note: txForm.note || (txType === 'income' ? t.income : t.expense),
+      note: txForm.note || t[txType],
       amount,
       date: txForm.date || todayStr(),
       source: existing?.source ?? null,
