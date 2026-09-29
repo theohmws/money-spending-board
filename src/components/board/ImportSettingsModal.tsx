@@ -17,6 +17,8 @@ type Props = Pick<
   | 'ruleError'
   | 'categoryChoices'
   | 'badgeColorsForm'
+  | 'ownNamesForm'
+  | 'onOwnNamesFormChange'
   | 'selectBadgeColor'
   | 'saveBadgeColors'
   | 'badgeColorsError'
@@ -36,6 +38,8 @@ export const ImportSettingsModal = ({
   ruleError,
   categoryChoices,
   badgeColorsForm,
+  ownNamesForm,
+  onOwnNamesFormChange,
   selectBadgeColor,
   saveBadgeColors,
   badgeColorsError,
@@ -175,6 +179,35 @@ export const ImportSettingsModal = ({
               {ruleError}
             </div>
           )}
+        </div>
+
+        <div className="mt-5.5">
+          <label
+            htmlFor="own-names"
+            className="text-sm font-bold"
+            style={{ color: themeTokens.text }}
+          >
+            {t.ownNamesTitle}
+          </label>
+          <div
+            className="mt-1 text-[12.5px] leading-relaxed"
+            style={{ color: themeTokens.subtext }}
+          >
+            {t.ownNamesDesc}
+          </div>
+          <input
+            id="own-names"
+            type="text"
+            value={ownNamesForm}
+            onChange={(e) => onOwnNamesFormChange(e.target.value)}
+            placeholder={t.ownNamesPlaceholder}
+            className="mt-2 w-full rounded-[10px] border px-3 py-2 text-[13px]"
+            style={{
+              borderColor: themeTokens.inputBorder,
+              color: themeTokens.text,
+              background: themeTokens.inputBg,
+            }}
+          />
         </div>
 
         <div className="mt-5.5">

@@ -262,6 +262,8 @@ export const useSpendingBoard = () => {
   const {
     badgeColors,
     badgeColorsForm,
+    ownNamesForm,
+    onOwnNamesFormChange,
     settingsError: badgeColorsError,
     selectBadgeColor,
     saveBadgeColors,
@@ -804,6 +806,8 @@ export const useSpendingBoard = () => {
     addRule,
     ruleError,
     badgeColorsForm,
+    ownNamesForm,
+    onOwnNamesFormChange,
     selectBadgeColor,
     saveBadgeColors,
     badgeColorsError,

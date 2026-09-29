@@ -23,7 +23,7 @@ import {
   slipSource,
   todayIn,
 } from './payload.ts';
-import { isSlipBody, parseSlipText } from './slip.ts';
+import { isOwnTransfer, isSlipBody, parseSlipText } from './slip.ts';
 
 const BOARD_TIMEZONE = Deno.env.get('BOARD_TIMEZONE') ?? 'Asia/Bangkok';
 
@@ -127,11 +127,22 @@ Deno.serve(async (req) => {
       typeof slipBody?.album === 'string' ? slipBody.album.trim() : '';
     const bankLabel = slip.bank ?? (album || null);
     const note = slip.memo ?? slip.recipient ?? bankLabel ?? 'Bank slip';
+    const { data: settings } = await admin
+      .from('board_settings')
+      .select('own_names')
+      .eq('user_id', userId)
+      .maybeSingle();
+    const isTransfer = isOwnTransfer(
+      slip,
+      (settings?.own_names as string[] | null) ?? []
+    );
     const row = {
       id,
       user_id: userId,
-      type: 'expense',
-      category: await guess(`${slip.memo ?? ''} ${slip.recipient ?? ''}`),
+      type: isTransfer ? 'transfer' : 'expense',
+      category: isTransfer
+        ? null
+        : await guess(`${slip.memo ?? ''} ${slip.recipient ?? ''}`),
       note,
       amount: slip.amount,
       date: slip.date ?? parseDate(slipBody?.ts) ?? todayIn(BOARD_TIMEZONE),
@@ -185,7 +196,11 @@ Deno.serve(async (req) => {
       user_id: userId,
       type: payload.type,
       category,
-      note: payload.note ?? (payload.type === 'income' ? 'Income' : 'Expense'),
+      note:
+        payload.note ??
+        { expense: 'Expense', income: 'Income', transfer: 'Transfer' }[
+          payload.type
+        ],
       amount: payload.amount,
       date: payload.date ?? todayIn(BOARD_TIMEZONE),
       source: SHORTCUT_SOURCE,

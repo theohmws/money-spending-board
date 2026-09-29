@@ -301,6 +301,8 @@ export const BoardCard = () => {
         ruleError={board.ruleError}
         categoryChoices={board.categoryChoices}
         badgeColorsForm={board.badgeColorsForm}
+        ownNamesForm={board.ownNamesForm}
+        onOwnNamesFormChange={board.onOwnNamesFormChange}
         selectBadgeColor={board.selectBadgeColor}
         saveBadgeColors={board.saveBadgeColors}
         badgeColorsError={board.badgeColorsError}

@@ -165,3 +165,31 @@ describe('bearerToken', () => {
     expect(bearerToken('Bearer eyJhbGciOi.jwt')).toBeNull();
   });
 });
+
+describe('transfer type', () => {
+  it('accepts an insert with no category', () => {
+    expect(
+      parsePayload({ amount: 500, type: 'transfer', category: 'needs' })
+    ).toEqual({
+      ok: true,
+      value: {
+        kind: 'insert',
+        type: 'transfer',
+        amount: 500,
+        note: null,
+        category: null,
+        date: null,
+      },
+    });
+  });
+
+  it('clears the category when updating a row to transfer', () => {
+    const result = parsePayload({ id: 'x', type: 'transfer' });
+    expect(
+      result.ok && result.value.kind === 'update' && result.value.changes
+    ).toEqual({
+      type: 'transfer',
+      category: null,
+    });
+  });
+});

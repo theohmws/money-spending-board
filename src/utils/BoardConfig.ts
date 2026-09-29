@@ -273,6 +273,9 @@ export type I18nDict = {
   categoryRuleKeywordPlaceholder: string;
   addRuleBtn: string;
   removeRuleAria: string;
+  ownNamesTitle: string;
+  ownNamesDesc: string;
+  ownNamesPlaceholder: string;
   badgeColorsTitle: string;
   needsReviewColorLabel: string;
   sourceColorLabel: string;
@@ -427,6 +430,10 @@ export const I18N: Record<Lang, I18nDict> = {
     categoryRuleKeywordPlaceholder: 'เช่น STARBUCKS',
     addRuleBtn: 'เพิ่ม',
     removeRuleAria: 'ลบคำนี้',
+    ownNamesTitle: 'ชื่อของฉัน',
+    ownNamesDesc:
+      'ใช้ตรวจสลิปโอนเงินจาก Shortcut: ถ้าผู้รับเป็นชื่อเหล่านี้ จะบันทึกเป็น “ย้ายเงิน” แทนรายจ่าย ใส่ได้หลายชื่อ (ไทย/อังกฤษ) คั่นด้วยจุลภาค',
+    ownNamesPlaceholder: 'สมชาย ใจดี, Somchai Jaidee',
     badgeColorsTitle: 'สีของป้ายกำกับ',
     needsReviewColorLabel: 'แถบ "รอตรวจสอบ"',
     sourceColorLabel: 'ป้าย "นำเข้า"',
@@ -585,6 +592,10 @@ export const I18N: Record<Lang, I18nDict> = {
     categoryRuleKeywordPlaceholder: 'e.g. STARBUCKS',
     addRuleBtn: 'Add',
     removeRuleAria: 'Remove this keyword',
+    ownNamesTitle: 'My names',
+    ownNamesDesc:
+      'Used to check bank slips from the Shortcut: if the recipient is one of these names, the slip is saved as a transfer instead of an expense. Add several names (Thai/English), separated by commas.',
+    ownNamesPlaceholder: 'Somchai Jaidee, สมชาย ใจดี',
     badgeColorsTitle: 'Badge colors',
     needsReviewColorLabel: '"Needs review" stripe',
     sourceColorLabel: '"Imported" label',
