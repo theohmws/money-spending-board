@@ -5,13 +5,16 @@ import { useEffect, useState } from 'react';
 
 import type { BoardSupabaseClient } from '@/hooks/useAuthSession';
 
-export type PublicStats = { users: number; transactions: number };
+// `null` means the count is below its display minimum, so the card is hidden.
+export type PublicStats = {
+  users: number | null;
+  transactions: number | null;
+};
 
 const isPublicStats = (value: unknown): value is PublicStats => {
   const stats = value as PublicStats | null;
-  return (
-    typeof stats?.users === 'number' && typeof stats?.transactions === 'number'
-  );
+  const isCount = (n: unknown) => n === null || typeof n === 'number';
+  return !!stats && isCount(stats.users) && isCount(stats.transactions);
 };
 
 // Fetches the landing page's aggregate counts once `enabled` flips on.

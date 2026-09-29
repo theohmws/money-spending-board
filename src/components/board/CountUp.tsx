@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from 'react';
 
-type Props = { value: number; durationMs?: number };
+type Props = { value: number; suffix?: string; durationMs?: number };
 
 const easeOutCubic = (x: number) => 1 - (1 - x) ** 3;
 
-export const CountUp = ({ value, durationMs = 1400 }: Props) => {
+export const CountUp = ({ value, suffix = '', durationMs = 1400 }: Props) => {
   const [shown, setShown] = useState(0);
 
   useEffect(() => {
@@ -29,5 +29,10 @@ export const CountUp = ({ value, durationMs = 1400 }: Props) => {
     return () => cancelAnimationFrame(frame);
   }, [value, durationMs]);
 
-  return <span className="tabular-nums">{shown.toLocaleString('en-US')}</span>;
+  return (
+    <span className="tabular-nums">
+      {shown.toLocaleString('en-US')}
+      {suffix}
+    </span>
+  );
 };

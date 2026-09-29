@@ -22,6 +22,19 @@ describe('usePublicStats', () => {
     expect(rpc).toHaveBeenCalledWith('public_stats');
   });
 
+  it('keeps null counts so below-minimum cards can be hidden', async () => {
+    const rpc = jest.fn().mockResolvedValue({
+      data: { users: null, transactions: 150 },
+      error: null,
+    });
+
+    const { result } = renderHook(() => usePublicStats(refWith(rpc), true));
+
+    await waitFor(() =>
+      expect(result.current).toEqual({ users: null, transactions: 150 })
+    );
+  });
+
   it('does not call the RPC while disabled', () => {
     const rpc = jest.fn();
 
