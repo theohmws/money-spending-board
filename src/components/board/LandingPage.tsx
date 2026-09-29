@@ -21,7 +21,7 @@ export const LandingPage = ({
       <div className="flex items-center gap-2.5">
         <img src="/icon-512.png" alt="" className="size-9 rounded-xl" />
         <span
-          className="font-manrope text-[15px] font-extrabold"
+          className="hidden whitespace-nowrap font-manrope text-[15px] font-extrabold sm:inline"
           style={{ color: themeTokens.text }}
         >
           {t.landingTagline}
@@ -39,7 +39,7 @@ export const LandingPage = ({
         <button
           type="button"
           onClick={onSignIn}
-          className="rounded-lg px-3 py-1.5 text-[13px] font-semibold"
+          className="whitespace-nowrap rounded-lg px-3 py-1.5 text-[13px] font-semibold"
           style={{ color: themeTokens.text }}
         >
           {t.landingSignIn}
