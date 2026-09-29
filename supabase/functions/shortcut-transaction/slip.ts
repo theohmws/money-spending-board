@@ -17,7 +17,28 @@ export type ParsedSlip = {
   reference: string | null;
   memo: string | null;
   recipient: string | null;
+  // Short name of the bank that issued the slip (e.g. "BBL"), if known.
+  bank: string | null;
 };
+
+// Thai banks by the short name shown on the board's source badge. Patterns
+// are deliberately specific ("ธนาคารกรุงเทพ", not bare "กรุงเทพ") so a
+// merchant or address containing a city name isn't mistaken for a bank.
+const BANKS: [string, RegExp][] = [
+  ['KBank', /กสิกร|kasikorn|kbank|k ?plus/i],
+  ['BBL', /(ธนาคาร|ธ\.)\s?กรุงเทพ|bangkok bank|bualuang/i],
+  ['SCB', /ไทยพาณิชย์|siam commercial|\bscb\b/i],
+  ['KTB', /กรุงไทย|krungthai|\bktb\b/i],
+  ['Krungsri', /กรุงศรี|krungsri/i],
+  ['ttb', /ทหารไทยธนชาต|tmbthanachart|\bttb\b/i],
+  ['GSB', /ออมสิน|\bgsb\b|\bmymo\b/i],
+  ['GHB', /อาคารสงเคราะห์|\bghb\b/i],
+  ['BAAC', /เพื่อการเกษตร|ธ\.ก\.ส|\bbaac\b/i],
+  ['UOB', /ยูโอบี|\buob\b/i],
+  ['CIMB', /ซีไอเอ็มบี|\bcimb\b/i],
+  ['KKP', /เกียรตินาคิน|\bkkp\b/i],
+  ['LH Bank', /แลนด์ แอนด์ เฮ้าส์|lh ?bank/i],
+];
 
 const MONEY_RE = /(\d{1,3}(?:,\d{3})+|\d+)\.\d{2}(?!\d)/g;
 
@@ -26,6 +47,12 @@ const FEE_LABEL_RE = /(ค่าธรรมเนียม|fee)/i;
 const REFERENCE_LABEL_RE =
   /(เลขที่รายการ|รหัสอ้างอิง|เลขที่อ้างอิง|transaction\s*(id|no)|ref(erence)?\s*(no|id)?)/i;
 const MEMO_LABEL_RE = /(บันทึกช่วยจำ|บันทึก|memo|note)\s*[:：]?\s*/i;
+// "To" label on slips that name the recipient with a label (Bangkok Bank:
+// "ไปที่") rather than just listing sender then recipient (K PLUS). The
+// label must start the line and be followed by a colon, whitespace or the
+// end of the line, so "Total ..." or "ถึงวันที่ ..." can't trigger it.
+const RECIPIENT_LABEL_RE =
+  /^(ไปที่|ไปยัง|ถึง|ผู้รับ|to)(?:\s*[:：]\s*|\s+|$)(.*)$/i;
 const NAME_PREFIX_RE =
   /^(นาย|นาง|น\.?\s?ส\.?|ด\.?\s?[ชญ]\.?|บจก\.?|บริษัท|หจก\.?|mr\.?|mrs\.?|ms\.?|miss)\s*\S/i;
 
@@ -142,9 +169,17 @@ export const extractMemo = (all: string[]): string | null => {
   return null;
 };
 
-// A slip lists the sender first and the recipient second; both usually
-// start with an honorific or company prefix.
+// Prefer an explicit "To" label (value on the same or the next line);
+// otherwise a slip lists the sender first and the recipient second, both
+// usually starting with an honorific or company prefix.
 export const extractRecipient = (all: string[]): string | null => {
+  for (let i = 0; i < all.length; i += 1) {
+    const match = RECIPIENT_LABEL_RE.exec(all[i]!);
+    if (match) {
+      const value = (match[2] || all[i + 1] || '').trim();
+      if (value) return value;
+    }
+  }
   const names = all.filter((line) => NAME_PREFIX_RE.test(line));
   return names[1] ?? null;
 };
@@ -206,6 +241,21 @@ export const extractDate = (all: string[]): string | null => {
   return null;
 };
 
+// A slip shows the sender's account (the slip owner's bank) before the
+// recipient's, and a bank's own branding sits at the top, so the bank
+// mentioned *earliest* in the text is the one that issued the slip — e.g. a
+// Bangkok Bank slip to a GHB account names "Bangkok Bank" first.
+export const detectBank = (all: string[]): string | null => {
+  const text = all.join('\n');
+  const hits = BANKS.map(([name, pattern]) => ({
+    name,
+    index: text.search(pattern),
+  }))
+    .filter((hit) => hit.index >= 0)
+    .sort((a, b) => a.index - b.index);
+  return hits[0]?.name ?? null;
+};
+
 export const parseSlipText = (text: string): ParsedSlip | null => {
   const all = lines(text);
   const amount = extractAmount(all);
@@ -216,6 +266,7 @@ export const parseSlipText = (text: string): ParsedSlip | null => {
     reference: extractReference(all),
     memo: extractMemo(all),
     recipient: extractRecipient(all),
+    bank: detectBank(all),
   };
 };
 

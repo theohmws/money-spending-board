@@ -7,6 +7,17 @@ export type TxType = 'expense' | 'income';
 
 export const SHORTCUT_SOURCE = 'ios_shortcut';
 export const SLIP_SOURCE = 'slip_ocr';
+
+// `slip_ocr:<bank>` (e.g. "slip_ocr:BBL") when the issuing bank is known —
+// from the slip text first, else the Shortcut's album name — so the board
+// can badge the row with the bank; plain `slip_ocr` otherwise.
+export const slipSource = (
+  bank: string | null,
+  album: string | null
+): string => {
+  const label = (bank ?? album ?? '').replace(/\s+/g, ' ').trim().slice(0, 20);
+  return label ? `${SLIP_SOURCE}:${label}` : SLIP_SOURCE;
+};
 export const TOKEN_PREFIX = 'msb_';
 
 const CATEGORIES: readonly CategoryId[] = ['needs', 'savings', 'wants'];

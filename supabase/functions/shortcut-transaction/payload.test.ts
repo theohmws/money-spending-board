@@ -4,6 +4,7 @@ import {
   parseAmount,
   parseDate,
   parsePayload,
+  slipSource,
   todayIn,
 } from './payload';
 
@@ -34,6 +35,14 @@ describe('parseDate', () => {
     expect(parseDate('28/09/2026')).toBeNull();
     expect(parseDate('2026-02-31')).toBeNull();
     expect(parseDate(20260928)).toBeNull();
+  });
+});
+
+describe('slipSource', () => {
+  it('tags the source with the bank, else the album, else nothing', () => {
+    expect(slipSource('BBL', 'K PLUS')).toBe('slip_ocr:BBL');
+    expect(slipSource(null, ' K  PLUS ')).toBe('slip_ocr:K PLUS');
+    expect(slipSource(null, null)).toBe('slip_ocr');
   });
 });
 

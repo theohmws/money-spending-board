@@ -5,7 +5,7 @@
 //   Authorization: Bearer msb_...
 //   { "amount": 120, "note": "Coffee", "category": "wants", "date": "2026-09-28" }
 //   { "id": "<existing id>", "amount": 150 }   <- update, only given fields
-//   { "ts": "...", "text": "<OCR of a K PLUS slip>", "album": "K PLUS" }
+//   { "ts": "...", "text": "<OCR of a bank slip>", "album": "K PLUS" }
 //                                              <- parse a bank slip (slip.ts)
 //
 // Deployed with verify_jwt = false (supabase/config.toml): the bearer token
@@ -20,7 +20,7 @@ import {
   parseDate,
   parsePayload,
   SHORTCUT_SOURCE,
-  SLIP_SOURCE,
+  slipSource,
   todayIn,
 } from './payload.ts';
 import { isSlipBody, parseSlipText } from './slip.ts';
@@ -121,7 +121,12 @@ Deno.serve(async (req) => {
       0,
       32
     )}`;
-    const note = slip.memo ?? slip.recipient ?? 'K PLUS';
+    // Bank detected from the slip text, else the Shortcut's album name
+    // (e.g. "K PLUS"), so an unlabeled slip still says which bank it's from.
+    const album =
+      typeof slipBody?.album === 'string' ? slipBody.album.trim() : '';
+    const bankLabel = slip.bank ?? (album || null);
+    const note = slip.memo ?? slip.recipient ?? bankLabel ?? 'Bank slip';
     const row = {
       id,
       user_id: userId,
@@ -130,7 +135,7 @@ Deno.serve(async (req) => {
       note,
       amount: slip.amount,
       date: slip.date ?? parseDate(slipBody?.ts) ?? todayIn(BOARD_TIMEZONE),
-      source: SLIP_SOURCE,
+      source: slipSource(slip.bank, album || null),
       // OCR is a best guess — flag it for the board's "Needs review" filter.
       needs_review: true,
     };
@@ -143,6 +148,7 @@ Deno.serve(async (req) => {
     return json(created ? 201 : 200, {
       status: created ? 'created' : 'duplicate',
       slipId: slip.reference,
+      bank: bankLabel,
       message: `${created ? 'Saved' : 'Already saved'} ฿${slip.amount.toFixed(
         2
       )} · ${note}`,
