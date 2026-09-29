@@ -177,6 +177,15 @@ export type I18nDict = {
   toggleToSignUp: string;
   toggleToSignIn: string;
   footerAuth: string;
+  landingTagline: string;
+  landingHeadline: string;
+  landingSubhead: string;
+  landingGetStarted: string;
+  landingSignIn: string;
+  landingFeaturesTitle: string;
+  landingStatUsers: string;
+  landingStatTransactions: string;
+  landingFeatures: { icon: string; title: string; desc: string }[];
   signOut: string;
   available: string;
   income: string;
@@ -323,6 +332,52 @@ export const I18N: Record<Lang, I18nDict> = {
     toggleToSignUp: 'ยังไม่มีบัญชี? สมัครสมาชิก',
     toggleToSignIn: 'มีบัญชีแล้ว? เข้าสู่ระบบ',
     footerAuth: 'บอร์ดการเงินส่วนตัว · ปลอดภัยด้วย Supabase Auth',
+    landingTagline: 'Money Spending Board',
+    landingHeadline: 'รู้ทุกบาทที่ใช้ ในที่เดียว',
+    landingSubhead:
+      'บอร์ดบันทึกรายรับรายจ่ายส่วนตัว แบ่งงบตามหลัก 50/30/20 ดูแนวโน้มการใช้จ่าย และนำเข้ารายการจากสลิปหรือใบแจ้งหนี้บัตรเครดิตได้ในไม่กี่ขั้นตอน',
+    landingGetStarted: 'เริ่มใช้งานฟรี',
+    landingSignIn: 'เข้าสู่ระบบ',
+    landingFeaturesTitle: 'ฟีเจอร์ทั้งหมด',
+    landingStatUsers: 'ผู้ใช้งาน',
+    landingStatTransactions: 'รายการที่บันทึกแล้ว',
+    landingFeatures: [
+      {
+        icon: '📝',
+        title: 'บันทึกรายรับรายจ่าย',
+        desc: 'เพิ่ม แก้ไข และลบรายการได้ทุกเมื่อ แยกตามหมวดหมู่และเดือน',
+      },
+      {
+        icon: '🧮',
+        title: 'แบ่งงบ 50/30/20',
+        desc: 'แบ่งเป็นจำเป็น ออม และอยากได้ ปรับสัดส่วนเองได้ตามรายได้ของคุณ',
+      },
+      {
+        icon: '📊',
+        title: 'กราฟแนวโน้มและเปรียบเทียบ',
+        desc: 'ดูการใช้จ่ายย้อนหลังหลายเดือน และเทียบเดือนนี้กับเดือนก่อนแต่ละหมวด',
+      },
+      {
+        icon: '💳',
+        title: 'นำเข้าใบแจ้งหนี้บัตรเครดิต',
+        desc: 'อ่านไฟล์ PDF ในเบราว์เซอร์ของคุณเอง แล้วจัดหมวดอัตโนมัติจากกฎที่ตั้งไว้',
+      },
+      {
+        icon: '📱',
+        title: 'iOS Shortcuts และสลิปธนาคาร',
+        desc: 'ส่งรายการเข้าบอร์ดอัตโนมัติจากสลิป K PLUS หรือ Bangkok Bank ผ่านโทเคน API',
+      },
+      {
+        icon: '🌐',
+        title: 'ไทย / อังกฤษ และติดตั้งเป็นแอป',
+        desc: 'สลับภาษา โหมดสว่าง/มืด และติดตั้ง PWA ใช้เปิดดูได้แม้ออฟไลน์',
+      },
+      {
+        icon: '🔒',
+        title: 'ปลอดภัยและเป็นส่วนตัว',
+        desc: 'ล็อกอินด้วยอีเมลหรือ Google ข้อมูลของคุณเห็นได้เฉพาะคุณเท่านั้น',
+      },
+    ],
     signOut: 'ออกจากระบบ',
     available: 'คงเหลือ',
     income: 'รายรับ',
@@ -478,6 +533,52 @@ export const I18N: Record<Lang, I18nDict> = {
     toggleToSignUp: 'Don’t have an account? Sign up',
     toggleToSignIn: 'Have an account? Sign in',
     footerAuth: 'Personal spending board · secured by Supabase Auth',
+    landingTagline: 'Money Spending Board',
+    landingHeadline: 'Every baht you spend, in one place',
+    landingSubhead:
+      'A personal income and expense board with a 50/30/20 budget split, spending trends, and quick imports from bank slips and credit-card statements.',
+    landingGetStarted: 'Get started free',
+    landingSignIn: 'Sign in',
+    landingFeaturesTitle: 'What you get',
+    landingStatUsers: 'users',
+    landingStatTransactions: 'transactions logged',
+    landingFeatures: [
+      {
+        icon: '📝',
+        title: 'Track income & expenses',
+        desc: 'Add, edit, and delete transactions, organized by category and month.',
+      },
+      {
+        icon: '🧮',
+        title: '50/30/20 budget split',
+        desc: 'Needs, savings, and wants — adjust the ratios to fit your income.',
+      },
+      {
+        icon: '📊',
+        title: 'Trend & compare charts',
+        desc: 'See spending over several months and compare this month with last, per category.',
+      },
+      {
+        icon: '💳',
+        title: 'Credit-card statement import',
+        desc: 'Parse PDF statements right in your browser and auto-categorize with your own rules.',
+      },
+      {
+        icon: '📱',
+        title: 'iOS Shortcuts & bank slips',
+        desc: 'Send K PLUS or Bangkok Bank slips straight to your board via an API token.',
+      },
+      {
+        icon: '🌐',
+        title: 'Thai / English, installable',
+        desc: 'Switch language and light/dark theme, and install it as a PWA that opens offline.',
+      },
+      {
+        icon: '🔒',
+        title: 'Private & secure',
+        desc: 'Sign in with email or Google — your data is visible only to you.',
+      },
+    ],
     signOut: 'Sign out',
     available: 'Available',
     income: 'Income',

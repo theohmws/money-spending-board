@@ -143,6 +143,7 @@ export const useSpendingBoard = () => {
   );
 
   const {
+    clientRef: authClientRef,
     booting,
     session,
     configMissing,
@@ -687,6 +688,7 @@ export const useSpendingBoard = () => {
     t,
     lang,
     toggleLang,
+    clientRef: authClientRef,
     theme,
     setTheme,
     themeTokens,
