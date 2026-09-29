@@ -1,3 +1,18 @@
+# [1.4.0](https://github.com/theohmws/money-spending-board/compare/v1.3.0...v1.4.0) (2026-09-29)
+
+
+### Bug Fixes
+
+* **board:** stop landing header overlapping on narrow screens ([644faa2](https://github.com/theohmws/money-spending-board/commit/644faa21a0f1891d03426a6da1d90293bf8c10d5))
+
+
+### Features
+
+* **board:** add pre-login landing page describing the app and its features ([949d5e4](https://github.com/theohmws/money-spending-board/commit/949d5e4e9b88f81536adc0c9495667e763c2fcca))
+* **board:** animated user and transaction stats on the landing page ([b16dd03](https://github.com/theohmws/money-spending-board/commit/b16dd03cd8989977ecbb9322bc658dc04dbd9a3c))
+* **board:** round landing stats down and hide cards below a minimum ([af619e7](https://github.com/theohmws/money-spending-board/commit/af619e752ef81e4fea1405bc8ab7e53332b08176))
+* **board:** show landing page only to visitors who have never logged in ([62a90bb](https://github.com/theohmws/money-spending-board/commit/62a90bb25a2535f2a93a0a6539ea0c86f2edd683))
+
 # [1.3.0](https://github.com/theohmws/money-spending-board/compare/v1.2.0...v1.3.0) (2026-09-29)
 
 
