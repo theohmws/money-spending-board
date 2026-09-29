@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useSpendingBoard } from '@/hooks/useSpendingBoard';
 import { AppConfig } from '@/utils/AppConfig';
@@ -21,10 +21,26 @@ import { RatioModal } from './RatioModal';
 import { TransactionList } from './TransactionList';
 import { TrendChart } from './TrendChart';
 
+const HAS_LOGGED_IN_KEY = 'msb_has_logged_in';
+
 export const BoardCard = () => {
   const board = useSpendingBoard();
   const { isDesktop, themeTokens } = board;
   const [showAuthForm, setShowAuthForm] = useState(false);
+
+  // The landing page is for visitors who have never signed in on this
+  // browser; returning users go straight to the sign-in form.
+  useEffect(() => {
+    try {
+      if (board.showApp) {
+        localStorage.setItem(HAS_LOGGED_IN_KEY, '1');
+      } else if (localStorage.getItem(HAS_LOGGED_IN_KEY)) {
+        setShowAuthForm(true);
+      }
+    } catch {
+      // storage unavailable — fall back to always showing the landing page
+    }
+  }, [board.showApp]);
 
   return (
     <div

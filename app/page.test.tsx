@@ -68,6 +68,16 @@ describe('Index page', () => {
       expect(screen.queryByLabelText('อีเมล')).not.toBeInTheDocument();
     });
 
+    it('should skip the landing page for users who have logged in before', async () => {
+      localStorage.setItem('msb_has_logged_in', '1');
+      render(<Index />);
+
+      expect(await screen.findByLabelText('อีเมล')).toBeInTheDocument();
+      expect(
+        screen.queryByText('รู้ทุกบาทที่ใช้ ในที่เดียว')
+      ).not.toBeInTheDocument();
+    });
+
     it('should sign in against the configured Supabase project and show the dashboard', async () => {
       render(<Index />);
 
