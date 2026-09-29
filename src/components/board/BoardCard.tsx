@@ -47,6 +47,19 @@ export const BoardCard = () => {
     }
   }, [board.showApp]);
 
+  // Signing out sends the user back to the landing page, so forget that they
+  // have logged in before. Cleared before signing out so the effect above
+  // doesn't skip the landing page when the session goes away.
+  const handleSignOut = () => {
+    try {
+      localStorage.removeItem(HAS_LOGGED_IN_KEY);
+    } catch {
+      // storage unavailable — nothing to clear
+    }
+    setShowAuthForm(false);
+    return board.signOut();
+  };
+
   return (
     <div
       className="flex min-h-screen items-start justify-center"
@@ -143,7 +156,7 @@ export const BoardCard = () => {
                 headerAvatarBg={board.headerAvatarBg}
                 headerAvatarInitial={board.headerAvatarInitial}
                 userEmail={board.userEmail}
-                signOut={board.signOut}
+                signOut={handleSignOut}
                 selectedMonth={board.selectedMonth}
                 monthOptions={board.monthOptions}
                 onMonthChange={board.onMonthChange}
