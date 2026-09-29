@@ -72,6 +72,12 @@ describe('parseSlipText', () => {
     expect(parseSlipText(grouped)?.reference).toBe('2026092821573023002929008');
   });
 
+  it('does not mistake a "Total" line for a "To" label', () => {
+    expect(
+      parseSlipText('Total 3,000.00\nนาย ก\nนาย ข\nAmount 3,000.00')?.recipient
+    ).toBe('นาย ข');
+  });
+
   it('reads a same-line "ไปที่" recipient', () => {
     const sameLine = BBL_SLIP.replace(
       'ไปที่\nTUSSANEE WONGSON',

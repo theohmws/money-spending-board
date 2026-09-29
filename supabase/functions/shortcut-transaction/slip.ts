@@ -27,9 +27,11 @@ const REFERENCE_LABEL_RE =
   /(เลขที่รายการ|รหัสอ้างอิง|เลขที่อ้างอิง|transaction\s*(id|no)|ref(erence)?\s*(no|id)?)/i;
 const MEMO_LABEL_RE = /(บันทึกช่วยจำ|บันทึก|memo|note)\s*[:：]?\s*/i;
 // "To" label on slips that name the recipient with a label (Bangkok Bank:
-// "ไปที่") rather than just listing sender then recipient (K PLUS). Matched
-// against a whole line so "Total" etc. can't trigger it.
-const RECIPIENT_LABEL_RE = /^(ไปที่|ไปยัง|ถึง|ผู้รับ|to)\s*[:：]?\s*(.*)$/i;
+// "ไปที่") rather than just listing sender then recipient (K PLUS). The
+// label must start the line and be followed by a colon, whitespace or the
+// end of the line, so "Total ..." or "ถึงวันที่ ..." can't trigger it.
+const RECIPIENT_LABEL_RE =
+  /^(ไปที่|ไปยัง|ถึง|ผู้รับ|to)(?:\s*[:：]\s*|\s+|$)(.*)$/i;
 const NAME_PREFIX_RE =
   /^(นาย|นาง|น\.?\s?ส\.?|ด\.?\s?[ชญ]\.?|บจก\.?|บริษัท|หจก\.?|mr\.?|mrs\.?|ms\.?|miss)\s*\S/i;
 
