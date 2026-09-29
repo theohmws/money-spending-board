@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 import { useSpendingBoard } from '@/hooks/useSpendingBoard';
 import { AppConfig } from '@/utils/AppConfig';
 
@@ -13,6 +15,7 @@ import { CategorySettingsModal } from './CategorySettingsModal';
 import { CompareChart } from './CompareChart';
 import { ImportPreviewModal } from './ImportPreviewModal';
 import { ImportSettingsModal } from './ImportSettingsModal';
+import { LandingPage } from './LandingPage';
 import { ProfileModal } from './ProfileModal';
 import { RatioModal } from './RatioModal';
 import { TransactionList } from './TransactionList';
@@ -21,6 +24,7 @@ import { TrendChart } from './TrendChart';
 export const BoardCard = () => {
   const board = useSpendingBoard();
   const { isDesktop, themeTokens } = board;
+  const [showAuthForm, setShowAuthForm] = useState(false);
 
   return (
     <div
@@ -71,7 +75,24 @@ export const BoardCard = () => {
             </div>
           )}
 
-          {board.showLogin && (
+          {board.showLogin && !showAuthForm && (
+            <LandingPage
+              t={board.t}
+              lang={board.lang}
+              toggleLang={board.toggleLang}
+              themeTokens={themeTokens}
+              onGetStarted={() => {
+                if (board.authMode === 'signin') board.toggleAuthMode();
+                setShowAuthForm(true);
+              }}
+              onSignIn={() => {
+                if (board.authMode === 'signup') board.toggleAuthMode();
+                setShowAuthForm(true);
+              }}
+            />
+          )}
+
+          {board.showLogin && showAuthForm && (
             <AuthScreen
               t={board.t}
               lang={board.lang}
