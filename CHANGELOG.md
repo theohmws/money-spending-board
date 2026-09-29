@@ -1,3 +1,16 @@
+# [1.3.0](https://github.com/theohmws/money-spending-board/compare/v1.2.0...v1.3.0) (2026-09-29)
+
+
+### Bug Fixes
+
+* don't read a "Total" line as the slip's "To" recipient label ([62c831a](https://github.com/theohmws/money-spending-board/commit/62c831a88841258fb2f86a225f55d6bb9bbfd45f))
+
+
+### Features
+
+* show which bank a slip came from ([6f5d647](https://github.com/theohmws/money-spending-board/commit/6f5d647221f72dd28b03b2cf7ee497c0bd97f781))
+* support Bangkok Bank slips in the Shortcut slip parser ([957e9a3](https://github.com/theohmws/money-spending-board/commit/957e9a3a8fe605ec5400ded81786fcf07081b4ac))
+
 # [1.2.0](https://github.com/theohmws/money-spending-board/compare/v1.1.1...v1.2.0) (2026-09-28)
 
 
