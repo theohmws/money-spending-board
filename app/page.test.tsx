@@ -65,6 +65,10 @@ describe('Index page', () => {
         await screen.findByText('รู้ทุกบาทที่ใช้ ในที่เดียว')
       ).toBeInTheDocument();
       expect(screen.getByText('แบ่งงบ 50/30/20')).toBeInTheDocument();
+      expect(screen.getByText('รองรับเฉพาะ KTC')).toBeInTheDocument();
+      expect(
+        screen.getByText('รองรับ K PLUS และ BBL เท่านั้น')
+      ).toBeInTheDocument();
       expect(screen.queryByLabelText('อีเมล')).not.toBeInTheDocument();
     });
 
