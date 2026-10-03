@@ -145,6 +145,14 @@ export const LandingPage = ({
             >
               {feature.title}
             </div>
+            {feature.pill && (
+              <span
+                className="mt-1.5 inline-block rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold"
+                style={{ background: '#FDF3E2', color: '#8A5A00' }}
+              >
+                {feature.pill}
+              </span>
+            )}
             <div
               className="mt-1 text-[13.5px] leading-relaxed"
               style={{ color: themeTokens.subtext }}

@@ -185,7 +185,12 @@ export type I18nDict = {
   landingFeaturesTitle: string;
   landingStatUsers: string;
   landingStatTransactions: string;
-  landingFeatures: { icon: string; title: string; desc: string }[];
+  landingFeatures: {
+    icon: string;
+    title: string;
+    desc: string;
+    pill?: string;
+  }[];
   signOut: string;
   available: string;
   income: string;
@@ -368,11 +373,13 @@ export const I18N: Record<Lang, I18nDict> = {
         icon: '💳',
         title: 'นำเข้าใบแจ้งหนี้บัตรเครดิต',
         desc: 'อ่านไฟล์ PDF ในเบราว์เซอร์ของคุณเอง แล้วจัดหมวดอัตโนมัติจากกฎที่ตั้งไว้',
+        pill: 'รองรับเฉพาะ KTC',
       },
       {
         icon: '📱',
         title: 'iOS Shortcuts และสลิปธนาคาร',
         desc: 'ส่งรายการเข้าบอร์ดอัตโนมัติจากสลิป K PLUS หรือ Bangkok Bank ผ่านโทเคน API',
+        pill: 'รองรับ K PLUS และ BBL เท่านั้น',
       },
       {
         icon: '🌐',
@@ -577,11 +584,13 @@ export const I18N: Record<Lang, I18nDict> = {
         icon: '💳',
         title: 'Credit-card statement import',
         desc: 'Parse PDF statements right in your browser and auto-categorize with your own rules.',
+        pill: 'KTC only',
       },
       {
         icon: '📱',
         title: 'iOS Shortcuts & bank slips',
         desc: 'Send K PLUS or Bangkok Bank slips straight to your board via an API token.',
+        pill: 'K PLUS and BBL only',
       },
       {
         icon: '🌐',
