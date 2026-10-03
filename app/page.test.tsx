@@ -57,6 +57,10 @@ describe('Index page', () => {
     it('should show the sign-in screen once booting settles', async () => {
       render(<Index />);
 
+      fireEvent.click(
+        (await screen.findAllByRole('button', { name: 'เข้าสู่ระบบ' }))[0]!
+      );
+
       expect(await screen.findByLabelText('อีเมล')).toBeInTheDocument();
       expect(screen.getByLabelText('รหัสผ่าน')).toBeInTheDocument();
       expect(
@@ -64,9 +68,55 @@ describe('Index page', () => {
       ).toBeInTheDocument();
     });
 
+    it('should show the landing page with features before login', async () => {
+      render(<Index />);
+
+      expect(
+        await screen.findByText('รู้ทุกบาทที่ใช้ ในที่เดียว')
+      ).toBeInTheDocument();
+      expect(screen.getByText('แบ่งงบ 50/30/20')).toBeInTheDocument();
+      expect(screen.queryByLabelText('อีเมล')).not.toBeInTheDocument();
+    });
+
+    it('should return to the landing page after signing out', async () => {
+      render(<Index />);
+
+      fireEvent.click(
+        (await screen.findAllByRole('button', { name: 'เข้าสู่ระบบ' }))[0]!
+      );
+      fireEvent.change(await screen.findByLabelText('อีเมล'), {
+        target: { value: 'demo@example.com' },
+      });
+      fireEvent.change(screen.getByLabelText('รหัสผ่าน'), {
+        target: { value: 'password123' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: 'เข้าสู่ระบบ' }));
+      expect(await screen.findByText('กิจกรรมล่าสุด')).toBeInTheDocument();
+
+      fireEvent.click(screen.getByRole('button', { name: 'ออกจากระบบ' }));
+
+      expect(
+        await screen.findByText('รู้ทุกบาทที่ใช้ ในที่เดียว')
+      ).toBeInTheDocument();
+      expect(localStorage.getItem('msb_has_logged_in')).toBeNull();
+    });
+
+    it('should skip the landing page for users who have logged in before', async () => {
+      localStorage.setItem('msb_has_logged_in', '1');
+      render(<Index />);
+
+      expect(await screen.findByLabelText('อีเมล')).toBeInTheDocument();
+      expect(
+        screen.queryByText('รู้ทุกบาทที่ใช้ ในที่เดียว')
+      ).not.toBeInTheDocument();
+    });
+
     it('should sign in against the configured Supabase project and show the dashboard', async () => {
       render(<Index />);
 
+      fireEvent.click(
+        (await screen.findAllByRole('button', { name: 'เข้าสู่ระบบ' }))[0]!
+      );
       fireEvent.change(await screen.findByLabelText('อีเมล'), {
         target: { value: 'demo@example.com' },
       });

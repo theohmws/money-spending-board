@@ -3,3 +3,7 @@ out
 next-env.d.ts
 !.storybook
 public/sw.js
+# Deno Edge Function entrypoints (npm:/jsr: specifiers, .ts import
+# extensions, Deno globals); their pure logic lives in sibling modules
+# that are linted/type-checked/tested normally.
+supabase/functions/*/index.ts

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { useApiTokens } from '@/hooks/useApiTokens';
 import type { BoardSupabaseClient } from '@/hooks/useAuthSession';
 import { useAuthSession } from '@/hooks/useAuthSession';
 import { useBoardSettings } from '@/hooks/useBoardSettings';
@@ -17,7 +18,7 @@ import { useProfile } from '@/hooks/useProfile';
 import { useRatios } from '@/hooks/useRatios';
 import { useTheme } from '@/hooks/useTheme';
 import { useTransactions } from '@/hooks/useTransactions';
-import type { CategoryId } from '@/utils/BoardConfig';
+import type { CategoryId, I18nDict } from '@/utils/BoardConfig';
 import {
   CAT_ITEMS,
   CAT_NAMES,
@@ -39,6 +40,14 @@ import {
 // full-width); savings/wants are left to grid auto-flow, which places them
 // in row 2 automatically once row 1 is fully occupied. Avoids the old
 // two-row-tall needs card whose content didn't fill that much height.
+// Short badge text per `transactions.source` value; a source not listed here
+// (including null = manually entered) gets no badge.
+const SOURCE_LABELS: Record<string, string | ((t: I18nDict) => string)> = {
+  ktc_import: 'KTC',
+  ios_shortcut: (t) => t.shortcutBadgeLabel,
+  slip_ocr: (t) => t.slipBadgeLabel,
+};
+
 const GRID_COLUMN_SPAN: Partial<Record<CategoryId, string>> = {
   needs: '1 / 3',
 };
@@ -78,6 +87,7 @@ export const useSpendingBoard = () => {
     resolvedUserId,
     t
   );
+  const apiTokensSlice = useApiTokens(clientRefLocal, resolvedUserId, t);
   const creditCardImportSlice = useCreditCardImport(
     t,
     txSlice.transactions,
@@ -87,6 +97,7 @@ export const useSpendingBoard = () => {
 
   const [showRuleInfo, setShowRuleInfo] = useState(false);
   const [showImportSettings, setShowImportSettings] = useState(false);
+  const [showApiTokens, setShowApiTokens] = useState(false);
   const [transactionFilter, setTransactionFilter] = useState<
     'all' | 'needsReview'
   >('all');
@@ -116,6 +127,7 @@ export const useSpendingBoard = () => {
       categoryMetaSlice.load(client, currentUserId, currentEmail);
       importRulesSlice.load(client);
       boardSettingsSlice.load(client);
+      apiTokensSlice.load(client);
     },
     [
       txSlice.load,
@@ -124,10 +136,12 @@ export const useSpendingBoard = () => {
       categoryMetaSlice.load,
       importRulesSlice.load,
       boardSettingsSlice.load,
+      apiTokensSlice.load,
     ]
   );
 
   const {
+    clientRef: authClientRef,
     booting,
     session,
     configMissing,
@@ -152,6 +166,8 @@ export const useSpendingBoard = () => {
     categoryMetaSlice.clear();
     importRulesSlice.clear();
     boardSettingsSlice.clear();
+    apiTokensSlice.clear();
+    setShowApiTokens(false);
   }, [
     authSignOut,
     txSlice.clear,
@@ -160,6 +176,7 @@ export const useSpendingBoard = () => {
     categoryMetaSlice.clear,
     importRulesSlice.clear,
     boardSettingsSlice.clear,
+    apiTokensSlice.clear,
   ]);
 
   useEffect(() => {
@@ -219,6 +236,7 @@ export const useSpendingBoard = () => {
     monthTx,
     income,
     expense,
+    transfer,
     balance,
     showAddModal,
     openAddModal,
@@ -252,10 +270,25 @@ export const useSpendingBoard = () => {
   const {
     badgeColors,
     badgeColorsForm,
+    ownNamesForm,
+    onOwnNamesFormChange,
     settingsError: badgeColorsError,
     selectBadgeColor,
     saveBadgeColors,
   } = boardSettingsSlice;
+
+  const {
+    apiTokens,
+    newTokenName,
+    onNewTokenNameChange,
+    revealedToken,
+    dismissRevealedToken,
+    apiTokenError,
+    creatingToken,
+    createApiToken,
+    revokeApiToken,
+    shortcutEndpoint,
+  } = apiTokensSlice;
 
   const {
     importStatus,
@@ -297,6 +330,17 @@ export const useSpendingBoard = () => {
     () => setShowImportSettings(false),
     []
   );
+
+  const openApiTokens = useCallback(() => {
+    setShowApiTokens(true);
+    closeProfile();
+  }, [closeProfile]);
+  // Closing the modal also forgets any just-created plaintext token, so it
+  // can't be shown again by reopening the modal.
+  const closeApiTokens = useCallback(() => {
+    setShowApiTokens(false);
+    dismissRevealedToken();
+  }, [dismissRevealedToken]);
 
   const startImport = useCallback(() => {
     closeProfile();
@@ -371,6 +415,18 @@ export const useSpendingBoard = () => {
       });
     };
 
+    const sourceLabelFor = (source: string | null) => {
+      // Bank slips carry their bank after a colon ("slip_ocr:BBL") — shown
+      // as-is, like the fixed "KTC" label for statement imports.
+      const slipBank = source?.startsWith('slip_ocr:')
+        ? source.slice('slip_ocr:'.length)
+        : '';
+      if (slipBank) return slipBank;
+      const label = source ? SOURCE_LABELS[source] : undefined;
+      if (!label) return null;
+      return typeof label === 'function' ? label(t) : label;
+    };
+
     return monthTx
       .filter((tx) => transactionFilter === 'all' || tx.needs_review)
       .slice()
@@ -380,25 +436,37 @@ export const useSpendingBoard = () => {
         const meta = tx.category
           ? categoryMeta[tx.category] ?? DEFAULT_CATEGORY_META[tx.category]
           : null;
-        const netAmount =
-          tx.type === 'income' ? Number(tx.amount) : -Number(tx.amount);
+        const isTransfer = tx.type === 'transfer';
+        // A transfer only moves money between the user's own accounts, so it
+        // contributes nothing to the day's net.
+        let netAmount = 0;
+        if (tx.type === 'income') netAmount = Number(tx.amount);
+        else if (tx.type === 'expense') netAmount = -Number(tx.amount);
+        let initial = category?.name[0] ?? 'O';
+        let color = meta?.color ?? '#64748B';
+        if (tx.type === 'income') {
+          initial = '+';
+          color = '#0E8F5F';
+        } else if (isTransfer) {
+          initial = '⇄';
+          color = '#3B82F6';
+        }
         const title = tx.note || category?.name || 'Other';
         return {
           id: tx.id,
           date: tx.date,
           dayLabel: dayLabelFor(tx.date),
-          initial: tx.type === 'income' ? '+' : category?.name[0] ?? 'O',
-          color: tx.type === 'income' ? '#0E8F5F' : meta?.color ?? '#64748B',
+          initial,
+          color,
           title,
-          subtitle:
-            category?.name ?? (tx.type === 'income' ? t.income : t.expense),
+          subtitle: category?.name ?? t[tx.type],
           netAmount,
-          amountLabel: fmtSignedMoney(netAmount),
+          amountLabel: isTransfer
+            ? fmtMoney(Number(tx.amount))
+            : fmtSignedMoney(netAmount),
           amountColor: tx.type === 'income' ? '#0E8F5F' : themeTokens.text,
           needsReview: tx.needs_review,
-          // Only one source exists today (KTC), so this is a fixed lookup
-          // rather than a registry — see design.md Decision 2.
-          sourceLabel: tx.source === 'ktc_import' ? 'KTC' : null,
+          sourceLabel: sourceLabelFor(tx.source),
           ariaLabel: tx.needs_review
             ? `${title}, ${t.needsReviewBadgeAriaSuffix}`
             : title,
@@ -441,7 +509,7 @@ export const useSpendingBoard = () => {
       };
       if (tx.type === 'income') {
         entry.income += Number(tx.amount);
-      } else {
+      } else if (tx.type === 'expense') {
         entry.expense += Number(tx.amount);
         if (tx.category) entry.categorySpend[tx.category] += Number(tx.amount);
       }
@@ -551,6 +619,25 @@ export const useSpendingBoard = () => {
     [rules, catById, removeRule]
   );
 
+  const apiTokenRows = useMemo(
+    () =>
+      apiTokens.map((token) => ({
+        id: token.id,
+        name: token.name,
+        prefix: token.token_prefix,
+        lastUsedLabel: token.last_used_at
+          ? `${t.apiTokenLastUsed} ${new Date(
+              token.last_used_at
+            ).toLocaleString(locale, {
+              dateStyle: 'medium',
+              timeStyle: 'short',
+            })}`
+          : t.apiTokenNeverUsed,
+        onRevoke: () => revokeApiToken(token.id),
+      })),
+    [apiTokens, locale, revokeApiToken, t]
+  );
+
   const importPreviewRows = useMemo(
     () =>
       importRows.map((row) => ({
@@ -625,6 +712,7 @@ export const useSpendingBoard = () => {
     t,
     lang,
     toggleLang,
+    clientRef: authClientRef,
     theme,
     setTheme,
     themeTokens,
@@ -665,6 +753,7 @@ export const useSpendingBoard = () => {
     balanceLabel: fmtMoney(balance),
     incomeLabel: fmtMoney(income),
     expenseLabel: fmtMoney(expense),
+    transferLabel: fmtMoney(transfer),
     categoryCards,
     transactionRows,
     transactionFilter,
@@ -729,10 +818,25 @@ export const useSpendingBoard = () => {
     addRule,
     ruleError,
     badgeColorsForm,
+    ownNamesForm,
+    onOwnNamesFormChange,
     selectBadgeColor,
     saveBadgeColors,
     badgeColorsError,
     badgeColors,
+
+    showApiTokens,
+    openApiTokens,
+    closeApiTokens,
+    apiTokenRows,
+    newTokenName,
+    onNewTokenNameChange,
+    createApiToken,
+    creatingToken,
+    revealedToken,
+    dismissRevealedToken,
+    apiTokenError,
+    shortcutEndpoint,
 
     startImport,
     importStatus,

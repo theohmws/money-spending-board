@@ -1,3 +1,54 @@
+# [1.5.0](https://github.com/theohmws/money-spending-board/compare/v1.4.0...v1.5.0) (2026-09-29)
+
+
+### Features
+
+* add transfer transaction type ([7b3e684](https://github.com/theohmws/money-spending-board/commit/7b3e6845fa0aaa72b9cdf6b6a713681966d8288e))
+* **board:** show the landing page again after signing out ([9643701](https://github.com/theohmws/money-spending-board/commit/9643701bc1f225a0f58cc18d260abc5f409bf513))
+* show monthly transfer total in overview header ([f3fcd6d](https://github.com/theohmws/money-spending-board/commit/f3fcd6d6bd72eeb6f85fd24d9671fd1d555f1c17))
+* transfer type in Shortcuts API with own-name matching ([a5c0581](https://github.com/theohmws/money-spending-board/commit/a5c0581cfbb0405ffe7b00cb9df7a92c6d558995))
+
+# [1.4.0](https://github.com/theohmws/money-spending-board/compare/v1.3.0...v1.4.0) (2026-09-29)
+
+
+### Bug Fixes
+
+* **board:** stop landing header overlapping on narrow screens ([644faa2](https://github.com/theohmws/money-spending-board/commit/644faa21a0f1891d03426a6da1d90293bf8c10d5))
+
+
+### Features
+
+* **board:** add pre-login landing page describing the app and its features ([949d5e4](https://github.com/theohmws/money-spending-board/commit/949d5e4e9b88f81536adc0c9495667e763c2fcca))
+* **board:** animated user and transaction stats on the landing page ([b16dd03](https://github.com/theohmws/money-spending-board/commit/b16dd03cd8989977ecbb9322bc658dc04dbd9a3c))
+* **board:** round landing stats down and hide cards below a minimum ([af619e7](https://github.com/theohmws/money-spending-board/commit/af619e752ef81e4fea1405bc8ab7e53332b08176))
+* **board:** show landing page only to visitors who have never logged in ([62a90bb](https://github.com/theohmws/money-spending-board/commit/62a90bb25a2535f2a93a0a6539ea0c86f2edd683))
+
+# [1.3.0](https://github.com/theohmws/money-spending-board/compare/v1.2.0...v1.3.0) (2026-09-29)
+
+
+### Bug Fixes
+
+* don't read a "Total" line as the slip's "To" recipient label ([62c831a](https://github.com/theohmws/money-spending-board/commit/62c831a88841258fb2f86a225f55d6bb9bbfd45f))
+
+
+### Features
+
+* show which bank a slip came from ([6f5d647](https://github.com/theohmws/money-spending-board/commit/6f5d647221f72dd28b03b2cf7ee497c0bd97f781))
+* support Bangkok Bank slips in the Shortcut slip parser ([957e9a3](https://github.com/theohmws/money-spending-board/commit/957e9a3a8fe605ec5400ded81786fcf07081b4ac))
+
+# [1.2.0](https://github.com/theohmws/money-spending-board/compare/v1.1.1...v1.2.0) (2026-09-28)
+
+
+### Bug Fixes
+
+* dedupe slip uploads by the slip's transaction ID only ([8c1ac89](https://github.com/theohmws/money-spending-board/commit/8c1ac89f76572dc4b40d95e0181d50894f792cb9))
+
+
+### Features
+
+* accept OCR'd K PLUS bank slips from the iOS Shortcut endpoint ([8f03cfe](https://github.com/theohmws/money-spending-board/commit/8f03cfe337d680cacadaa85a8f7d5b0ccad08585))
+* add token-authenticated API for iOS Shortcuts to insert/update transactions ([c152163](https://github.com/theohmws/money-spending-board/commit/c152163841d7ea17014e7cc7343a0366bdaede6a))
+
 ## [1.1.1](https://github.com/theohmws/money-spending-board/compare/v1.1.0...v1.1.1) (2026-08-24)
 
 

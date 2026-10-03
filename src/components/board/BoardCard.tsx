@@ -1,9 +1,13 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+
+import { usePublicStats } from '@/hooks/usePublicStats';
 import { useSpendingBoard } from '@/hooks/useSpendingBoard';
 import { AppConfig } from '@/utils/AppConfig';
 
 import { AddTransactionModal } from './AddTransactionModal';
+import { ApiTokensModal } from './ApiTokensModal';
 import { AuthScreen } from './AuthScreen';
 import { BoardHeader } from './BoardHeader';
 import { BoardTabs } from './BoardTabs';
@@ -12,14 +16,49 @@ import { CategorySettingsModal } from './CategorySettingsModal';
 import { CompareChart } from './CompareChart';
 import { ImportPreviewModal } from './ImportPreviewModal';
 import { ImportSettingsModal } from './ImportSettingsModal';
+import { LandingPage } from './LandingPage';
 import { ProfileModal } from './ProfileModal';
 import { RatioModal } from './RatioModal';
 import { TransactionList } from './TransactionList';
 import { TrendChart } from './TrendChart';
 
+const HAS_LOGGED_IN_KEY = 'msb_has_logged_in';
+
 export const BoardCard = () => {
   const board = useSpendingBoard();
   const { isDesktop, themeTokens } = board;
+  const [showAuthForm, setShowAuthForm] = useState(false);
+  const publicStats = usePublicStats(
+    board.clientRef,
+    board.showLogin && !showAuthForm
+  );
+
+  // The landing page is for visitors who have never signed in on this
+  // browser; returning users go straight to the sign-in form.
+  useEffect(() => {
+    try {
+      if (board.showApp) {
+        localStorage.setItem(HAS_LOGGED_IN_KEY, '1');
+      } else if (localStorage.getItem(HAS_LOGGED_IN_KEY)) {
+        setShowAuthForm(true);
+      }
+    } catch {
+      // storage unavailable — fall back to always showing the landing page
+    }
+  }, [board.showApp]);
+
+  // Signing out sends the user back to the landing page, so forget that they
+  // have logged in before. Cleared before signing out so the effect above
+  // doesn't skip the landing page when the session goes away.
+  const handleSignOut = () => {
+    try {
+      localStorage.removeItem(HAS_LOGGED_IN_KEY);
+    } catch {
+      // storage unavailable — nothing to clear
+    }
+    setShowAuthForm(false);
+    return board.signOut();
+  };
 
   return (
     <div
@@ -70,7 +109,25 @@ export const BoardCard = () => {
             </div>
           )}
 
-          {board.showLogin && (
+          {board.showLogin && !showAuthForm && (
+            <LandingPage
+              t={board.t}
+              lang={board.lang}
+              toggleLang={board.toggleLang}
+              themeTokens={themeTokens}
+              stats={publicStats}
+              onGetStarted={() => {
+                if (board.authMode === 'signin') board.toggleAuthMode();
+                setShowAuthForm(true);
+              }}
+              onSignIn={() => {
+                if (board.authMode === 'signup') board.toggleAuthMode();
+                setShowAuthForm(true);
+              }}
+            />
+          )}
+
+          {board.showLogin && showAuthForm && (
             <AuthScreen
               t={board.t}
               lang={board.lang}
@@ -99,13 +156,14 @@ export const BoardCard = () => {
                 headerAvatarBg={board.headerAvatarBg}
                 headerAvatarInitial={board.headerAvatarInitial}
                 userEmail={board.userEmail}
-                signOut={board.signOut}
+                signOut={handleSignOut}
                 selectedMonth={board.selectedMonth}
                 monthOptions={board.monthOptions}
                 onMonthChange={board.onMonthChange}
                 balanceLabel={board.balanceLabel}
                 incomeLabel={board.incomeLabel}
                 expenseLabel={board.expenseLabel}
+                transferLabel={board.transferLabel}
               />
 
               <div className="flex-1 overflow-y-auto px-6 pb-[100px] pt-5.5">
@@ -263,6 +321,7 @@ export const BoardCard = () => {
         editSplitFromProfile={board.editSplitFromProfile}
         openCategorySettings={board.openCategorySettings}
         openImportSettings={board.openImportSettings}
+        openApiTokens={board.openApiTokens}
         profileRatioLabel={board.profileRatioLabel}
         userEmail={board.userEmail}
         theme={board.theme}
@@ -301,9 +360,27 @@ export const BoardCard = () => {
         ruleError={board.ruleError}
         categoryChoices={board.categoryChoices}
         badgeColorsForm={board.badgeColorsForm}
+        ownNamesForm={board.ownNamesForm}
+        onOwnNamesFormChange={board.onOwnNamesFormChange}
         selectBadgeColor={board.selectBadgeColor}
         saveBadgeColors={board.saveBadgeColors}
         badgeColorsError={board.badgeColorsError}
+        themeTokens={themeTokens}
+      />
+      <ApiTokensModal
+        t={board.t}
+        showApiTokens={board.showApiTokens}
+        closeApiTokens={board.closeApiTokens}
+        apiTokenRows={board.apiTokenRows}
+        newTokenName={board.newTokenName}
+        onNewTokenNameChange={board.onNewTokenNameChange}
+        createApiToken={board.createApiToken}
+        creatingToken={board.creatingToken}
+        revealedToken={board.revealedToken}
+        dismissRevealedToken={board.dismissRevealedToken}
+        apiTokenError={board.apiTokenError}
+        shortcutEndpoint={board.shortcutEndpoint}
+        isOnline={board.isOnline}
         themeTokens={themeTokens}
       />
     </div>

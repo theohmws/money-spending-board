@@ -129,6 +129,35 @@ describe('useTransactions', () => {
     expect(client.from).toHaveBeenCalledWith('transactions');
   });
 
+  it('should save a transfer without a category and keep it out of income/expense totals', async () => {
+    const { client, insertSelect } = makeClient();
+    insertSelect.mockResolvedValue({ data: null, error: null });
+    const clientRef = { current: client as any };
+    const { result } = renderHook(() =>
+      useTransactions(clientRef, 'user-1', t, locale)
+    );
+
+    act(() => {
+      result.current.openAddModal();
+      result.current.setTxType('transfer');
+      result.current.onTxAmountChange('500');
+    });
+
+    await act(async () => {
+      await result.current.saveTransaction();
+    });
+
+    const saved = result.current.transactions[0];
+    expect(saved).toMatchObject({
+      type: 'transfer',
+      category: null,
+      note: t.transfer,
+      amount: 500,
+    });
+    expect(result.current.income).toBe(0);
+    expect(result.current.expense).toBe(0);
+  });
+
   it('should not save when there is no authenticated user id', async () => {
     const { client } = makeClient();
     const clientRef = { current: client as any };

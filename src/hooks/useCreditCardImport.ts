@@ -19,7 +19,9 @@ type ImportSourceDef = {
   sourceTag: string;
   // Looked up against I18nDict at the composition root, where every other
   // localized label is built — keeps this registry itself i18n-agnostic.
-  labelKey: keyof I18nDict;
+  labelKey: {
+    [K in keyof I18nDict]: I18nDict[K] extends string ? K : never;
+  }[keyof I18nDict];
   parse: (
     text: string
   ) => { date: string; description: string; amount: number }[];

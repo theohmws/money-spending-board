@@ -90,11 +90,22 @@ export const AddTransactionModal = ({
             onClick={() => setTxType('income')}
             className="flex-1 rounded-lg p-2.5 text-[13.5px] font-semibold"
             style={{
-              background: !isExpense ? '#132119' : 'transparent',
-              color: !isExpense ? '#EFFCF4' : themeTokens.label,
+              background: txType === 'income' ? '#132119' : 'transparent',
+              color: txType === 'income' ? '#EFFCF4' : themeTokens.label,
             }}
           >
             {t.income}
+          </button>
+          <button
+            type="button"
+            onClick={() => setTxType('transfer')}
+            className="flex-1 rounded-lg p-2.5 text-[13.5px] font-semibold"
+            style={{
+              background: txType === 'transfer' ? '#132119' : 'transparent',
+              color: txType === 'transfer' ? '#EFFCF4' : themeTokens.label,
+            }}
+          >
+            {t.transfer}
           </button>
         </div>
 

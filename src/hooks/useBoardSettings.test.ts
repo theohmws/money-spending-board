@@ -116,6 +116,7 @@ describe('useBoardSettings', () => {
         ...DEFAULT_BADGE_COLORS,
         source: { color: '#ABCDEF', dark: '#123456' },
       },
+      own_names: [],
     });
     expect(result.current.badgeColors.source).toEqual({
       color: '#ABCDEF',
@@ -136,6 +137,26 @@ describe('useBoardSettings', () => {
     });
 
     expect(result.current.settingsError).toBe('Failed to fetch');
+  });
+
+  it('saves comma-separated own names as a trimmed list', async () => {
+    const { client, upsert } = makeClient();
+    const clientRef = { current: client as any };
+    const { result } = renderHook(() =>
+      useBoardSettings(clientRef, 'user-1', t)
+    );
+
+    act(() => {
+      result.current.onOwnNamesFormChange('สมชาย ใจดี,  Somchai Jaidee ,');
+    });
+    await act(async () => {
+      await result.current.saveBadgeColors();
+    });
+
+    expect(upsert).toHaveBeenCalledWith(
+      expect.objectContaining({ own_names: ['สมชาย ใจดี', 'Somchai Jaidee'] })
+    );
+    expect(result.current.ownNames).toEqual(['สมชาย ใจดี', 'Somchai Jaidee']);
   });
 
   it('resets to defaults on clear', async () => {

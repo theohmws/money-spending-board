@@ -1,6 +1,6 @@
 export type Lang = 'th' | 'en';
 export type Theme = 'light' | 'dark';
-export type TxType = 'expense' | 'income';
+export type TxType = 'expense' | 'income' | 'transfer';
 export type CategoryId = 'needs' | 'savings' | 'wants';
 
 export type Group = {
@@ -43,6 +43,14 @@ export type ImportCategoryRule = {
   id: string;
   keyword: string;
   category: CategoryId;
+};
+
+export type ApiToken = {
+  id: string;
+  name: string;
+  token_prefix: string;
+  created_at: string;
+  last_used_at: string | null;
 };
 
 export type BadgeColorPair = { color: string; dark: string };
@@ -169,6 +177,15 @@ export type I18nDict = {
   toggleToSignUp: string;
   toggleToSignIn: string;
   footerAuth: string;
+  landingTagline: string;
+  landingHeadline: string;
+  landingSubhead: string;
+  landingGetStarted: string;
+  landingSignIn: string;
+  landingFeaturesTitle: string;
+  landingStatUsers: string;
+  landingStatTransactions: string;
+  landingFeatures: { icon: string; title: string; desc: string }[];
   signOut: string;
   available: string;
   income: string;
@@ -185,6 +202,7 @@ export type I18nDict = {
   addTransaction: string;
   editTransaction: string;
   expense: string;
+  transfer: string;
   amount: string;
   category: string;
   note: string;
@@ -264,6 +282,9 @@ export type I18nDict = {
   categoryRuleKeywordPlaceholder: string;
   addRuleBtn: string;
   removeRuleAria: string;
+  ownNamesTitle: string;
+  ownNamesDesc: string;
+  ownNamesPlaceholder: string;
   badgeColorsTitle: string;
   needsReviewColorLabel: string;
   sourceColorLabel: string;
@@ -274,6 +295,31 @@ export type I18nDict = {
   profileSaveError: string;
   ratiosSaveError: string;
   categoryMetaSaveError: string;
+  apiTokensEntryLabel: string;
+  apiTokensEntryDesc: string;
+  apiTokensTitle: string;
+  apiTokensDesc: string;
+  apiEndpointLabel: string;
+  apiTokenNamePlaceholder: string;
+  apiTokenCreateBtn: string;
+  apiTokenRevealTitle: string;
+  apiTokenRevealHint: string;
+  apiTokenCopyBtn: string;
+  apiTokenCopiedLabel: string;
+  apiTokenDoneBtn: string;
+  apiTokenRevokeAria: string;
+  apiTokenNeverUsed: string;
+  apiTokenLastUsed: string;
+  apiTokensEmpty: string;
+  apiTokenSaveError: string;
+  apiTokenDeleteError: string;
+  apiUsageTitle: string;
+  apiUsageStep1: string;
+  apiUsageStep2: string;
+  apiUsageStep3: string;
+  apiUsageUpdateHint: string;
+  shortcutBadgeLabel: string;
+  slipBadgeLabel: string;
 };
 
 export const I18N: Record<Lang, I18nDict> = {
@@ -293,6 +339,52 @@ export const I18N: Record<Lang, I18nDict> = {
     toggleToSignUp: 'ยังไม่มีบัญชี? สมัครสมาชิก',
     toggleToSignIn: 'มีบัญชีแล้ว? เข้าสู่ระบบ',
     footerAuth: 'บอร์ดการเงินส่วนตัว · ปลอดภัยด้วย Supabase Auth',
+    landingTagline: 'Money Spending Board',
+    landingHeadline: 'รู้ทุกบาทที่ใช้ ในที่เดียว',
+    landingSubhead:
+      'บอร์ดบันทึกรายรับรายจ่ายส่วนตัว แบ่งงบตามหลัก 50/30/20 ดูแนวโน้มการใช้จ่าย และนำเข้ารายการจากสลิปหรือใบแจ้งหนี้บัตรเครดิตได้ในไม่กี่ขั้นตอน',
+    landingGetStarted: 'เริ่มใช้งานฟรี',
+    landingSignIn: 'เข้าสู่ระบบ',
+    landingFeaturesTitle: 'ฟีเจอร์ทั้งหมด',
+    landingStatUsers: 'ผู้ใช้งาน',
+    landingStatTransactions: 'รายการที่บันทึกแล้ว',
+    landingFeatures: [
+      {
+        icon: '📝',
+        title: 'บันทึกรายรับรายจ่าย',
+        desc: 'เพิ่ม แก้ไข และลบรายการได้ทุกเมื่อ แยกตามหมวดหมู่และเดือน',
+      },
+      {
+        icon: '🧮',
+        title: 'แบ่งงบ 50/30/20',
+        desc: 'แบ่งเป็นจำเป็น ออม และอยากได้ ปรับสัดส่วนเองได้ตามรายได้ของคุณ',
+      },
+      {
+        icon: '📊',
+        title: 'กราฟแนวโน้มและเปรียบเทียบ',
+        desc: 'ดูการใช้จ่ายย้อนหลังหลายเดือน และเทียบเดือนนี้กับเดือนก่อนแต่ละหมวด',
+      },
+      {
+        icon: '💳',
+        title: 'นำเข้าใบแจ้งหนี้บัตรเครดิต',
+        desc: 'อ่านไฟล์ PDF ในเบราว์เซอร์ของคุณเอง แล้วจัดหมวดอัตโนมัติจากกฎที่ตั้งไว้',
+      },
+      {
+        icon: '📱',
+        title: 'iOS Shortcuts และสลิปธนาคาร',
+        desc: 'ส่งรายการเข้าบอร์ดอัตโนมัติจากสลิป K PLUS หรือ Bangkok Bank ผ่านโทเคน API',
+      },
+      {
+        icon: '🌐',
+        title: 'ไทย / อังกฤษ และติดตั้งเป็นแอป',
+        desc: 'สลับภาษา โหมดสว่าง/มืด และติดตั้ง PWA ใช้เปิดดูได้แม้ออฟไลน์',
+      },
+      {
+        icon: '🔒',
+        title: 'ปลอดภัยและเป็นส่วนตัว',
+        desc: 'ล็อกอินด้วยอีเมลหรือ Google ข้อมูลของคุณเห็นได้เฉพาะคุณเท่านั้น',
+      },
+    ],
     signOut: 'ออกจากระบบ',
     available: 'คงเหลือ',
     income: 'รายรับ',
@@ -310,6 +402,7 @@ export const I18N: Record<Lang, I18nDict> = {
     addTransaction: 'เพิ่มรายการ',
     editTransaction: 'แก้ไขรายการ',
     expense: 'รายจ่าย',
+    transfer: 'ย้ายเงิน',
     amount: 'จำนวนเงิน',
     category: 'หมวดหมู่',
     note: 'บันทึกช่วยจำ',
@@ -395,6 +488,10 @@ export const I18N: Record<Lang, I18nDict> = {
     categoryRuleKeywordPlaceholder: 'เช่น STARBUCKS',
     addRuleBtn: 'เพิ่ม',
     removeRuleAria: 'ลบคำนี้',
+    ownNamesTitle: 'ชื่อของฉัน',
+    ownNamesDesc:
+      'ใช้ตรวจสลิปโอนเงินจาก Shortcut: ถ้าผู้รับเป็นชื่อเหล่านี้ จะบันทึกเป็น “ย้ายเงิน” แทนรายจ่าย ใส่ได้หลายชื่อ (ไทย/อังกฤษ) คั่นด้วยจุลภาค',
+    ownNamesPlaceholder: 'สมชาย ใจดี, Somchai Jaidee',
     badgeColorsTitle: 'สีของป้ายกำกับ',
     needsReviewColorLabel: 'แถบ "รอตรวจสอบ"',
     sourceColorLabel: 'ป้าย "นำเข้า"',
@@ -405,6 +502,35 @@ export const I18N: Record<Lang, I18nDict> = {
     profileSaveError: 'บันทึกโปรไฟล์ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
     ratiosSaveError: 'บันทึกสัดส่วนไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
     categoryMetaSaveError: 'บันทึกหมวดหมู่ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+    apiTokensEntryLabel: 'iOS Shortcuts / API',
+    apiTokensEntryDesc: 'โทเคนสำหรับเพิ่มหรือแก้ไขรายการจากคำสั่งลัด',
+    apiTokensTitle: 'iOS Shortcuts / API',
+    apiTokensDesc:
+      'สร้างโทเคนเพื่อให้คำสั่งลัด (Shortcuts) บน iPhone เพิ่มหรือแก้ไขรายการได้โดยไม่ต้องเปิดแอป เก็บโทเคนเป็นความลับ — ใครมีโทเคนก็เขียนรายการในบอร์ดของคุณได้',
+    apiEndpointLabel: 'URL ของ API',
+    apiTokenNamePlaceholder: 'ชื่อโทเคน เช่น iPhone',
+    apiTokenCreateBtn: 'สร้าง',
+    apiTokenRevealTitle: 'โทเคนใหม่ของคุณ',
+    apiTokenRevealHint:
+      'คัดลอกตอนนี้ — จะไม่แสดงอีก ใส่ไว้ใน header Authorization เป็น "Bearer <โทเคน>"',
+    apiTokenCopyBtn: 'คัดลอก',
+    apiTokenCopiedLabel: 'คัดลอกแล้ว',
+    apiTokenDoneBtn: 'เสร็จแล้ว',
+    apiTokenRevokeAria: 'ยกเลิกโทเคน',
+    apiTokenNeverUsed: 'ยังไม่เคยใช้',
+    apiTokenLastUsed: 'ใช้ล่าสุด',
+    apiTokensEmpty: 'ยังไม่มีโทเคน',
+    apiTokenSaveError: 'สร้างโทเคนไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+    apiTokenDeleteError: 'ยกเลิกโทเคนไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+    apiUsageTitle: 'วิธีใช้ใน Shortcuts',
+    apiUsageStep1:
+      'เพิ่มการทำงาน "รับเนื้อหาของ URL" ใส่ URL ด้านบน และตั้ง Method เป็น POST',
+    apiUsageStep2: 'Headers → Authorization: Bearer <โทเคน>',
+    apiUsageStep3: 'เนื้อหาคำขอ (Request Body) เป็น JSON เช่น',
+    apiUsageUpdateHint:
+      'ต้องมีแค่ amount ส่วนช่องอื่นไม่บังคับ ถ้าใส่ id จะเป็นการแก้ไขรายการเดิมแทน โดยเปลี่ยนเฉพาะช่องที่ส่งมา:',
+    shortcutBadgeLabel: 'Shortcut',
+    slipBadgeLabel: 'สลิป',
   },
   en: {
     loadingLabel: 'Loading…',
@@ -422,6 +548,52 @@ export const I18N: Record<Lang, I18nDict> = {
     toggleToSignUp: 'Don’t have an account? Sign up',
     toggleToSignIn: 'Have an account? Sign in',
     footerAuth: 'Personal spending board · secured by Supabase Auth',
+    landingTagline: 'Money Spending Board',
+    landingHeadline: 'Every baht you spend, in one place',
+    landingSubhead:
+      'A personal income and expense board with a 50/30/20 budget split, spending trends, and quick imports from bank slips and credit-card statements.',
+    landingGetStarted: 'Get started free',
+    landingSignIn: 'Sign in',
+    landingFeaturesTitle: 'What you get',
+    landingStatUsers: 'users',
+    landingStatTransactions: 'transactions logged',
+    landingFeatures: [
+      {
+        icon: '📝',
+        title: 'Track income & expenses',
+        desc: 'Add, edit, and delete transactions, organized by category and month.',
+      },
+      {
+        icon: '🧮',
+        title: '50/30/20 budget split',
+        desc: 'Needs, savings, and wants — adjust the ratios to fit your income.',
+      },
+      {
+        icon: '📊',
+        title: 'Trend & compare charts',
+        desc: 'See spending over several months and compare this month with last, per category.',
+      },
+      {
+        icon: '💳',
+        title: 'Credit-card statement import',
+        desc: 'Parse PDF statements right in your browser and auto-categorize with your own rules.',
+      },
+      {
+        icon: '📱',
+        title: 'iOS Shortcuts & bank slips',
+        desc: 'Send K PLUS or Bangkok Bank slips straight to your board via an API token.',
+      },
+      {
+        icon: '🌐',
+        title: 'Thai / English, installable',
+        desc: 'Switch language and light/dark theme, and install it as a PWA that opens offline.',
+      },
+      {
+        icon: '🔒',
+        title: 'Private & secure',
+        desc: 'Sign in with email or Google — your data is visible only to you.',
+      },
+    ],
     signOut: 'Sign out',
     available: 'Available',
     income: 'Income',
@@ -439,6 +611,7 @@ export const I18N: Record<Lang, I18nDict> = {
     addTransaction: 'Add transaction',
     editTransaction: 'Edit transaction',
     expense: 'Expense',
+    transfer: 'Transfer',
     amount: 'Amount',
     category: 'Category',
     note: 'Note',
@@ -526,6 +699,10 @@ export const I18N: Record<Lang, I18nDict> = {
     categoryRuleKeywordPlaceholder: 'e.g. STARBUCKS',
     addRuleBtn: 'Add',
     removeRuleAria: 'Remove this keyword',
+    ownNamesTitle: 'My names',
+    ownNamesDesc:
+      'Used to check bank slips from the Shortcut: if the recipient is one of these names, the slip is saved as a transfer instead of an expense. Add several names (Thai/English), separated by commas.',
+    ownNamesPlaceholder: 'Somchai Jaidee, สมชาย ใจดี',
     badgeColorsTitle: 'Badge colors',
     needsReviewColorLabel: '"Needs review" stripe',
     sourceColorLabel: '"Imported" label',
@@ -536,5 +713,35 @@ export const I18N: Record<Lang, I18nDict> = {
     profileSaveError: 'Could not save the profile. Please try again.',
     ratiosSaveError: 'Could not save the split. Please try again.',
     categoryMetaSaveError: 'Could not save the categories. Please try again.',
+    apiTokensEntryLabel: 'iOS Shortcuts / API',
+    apiTokensEntryDesc:
+      'Tokens for adding or editing transactions from Shortcuts',
+    apiTokensTitle: 'iOS Shortcuts / API',
+    apiTokensDesc:
+      'Create a token so an iPhone Shortcut can add or edit transactions without opening the app. Keep it secret — anyone with the token can write to your board.',
+    apiEndpointLabel: 'API URL',
+    apiTokenNamePlaceholder: 'Token name, e.g. iPhone',
+    apiTokenCreateBtn: 'Create',
+    apiTokenRevealTitle: 'Your new token',
+    apiTokenRevealHint:
+      'Copy it now — it will not be shown again. Send it in the Authorization header as "Bearer <token>".',
+    apiTokenCopyBtn: 'Copy',
+    apiTokenCopiedLabel: 'Copied',
+    apiTokenDoneBtn: 'Done',
+    apiTokenRevokeAria: 'Revoke token',
+    apiTokenNeverUsed: 'Never used',
+    apiTokenLastUsed: 'Last used',
+    apiTokensEmpty: 'No tokens yet',
+    apiTokenSaveError: 'Could not create the token. Please try again.',
+    apiTokenDeleteError: 'Could not revoke the token. Please try again.',
+    apiUsageTitle: 'Using it in Shortcuts',
+    apiUsageStep1:
+      'Add a "Get Contents of URL" action with the API URL above, Method: POST',
+    apiUsageStep2: 'Headers → Authorization: Bearer <token>',
+    apiUsageStep3: 'Request Body: JSON, e.g.',
+    apiUsageUpdateHint:
+      'Only amount is required. Include an id to update an existing transaction instead — only the fields you send are changed:',
+    shortcutBadgeLabel: 'Shortcut',
+    slipBadgeLabel: 'Slip',
   },
 };

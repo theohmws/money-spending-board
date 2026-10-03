@@ -16,6 +16,7 @@ type Props = Pick<
   | 'balanceLabel'
   | 'incomeLabel'
   | 'expenseLabel'
+  | 'transferLabel'
 >;
 
 export const BoardHeader = ({
@@ -33,6 +34,7 @@ export const BoardHeader = ({
   balanceLabel,
   incomeLabel,
   expenseLabel,
+  transferLabel,
 }: Props) => (
   <div
     className="px-6 pb-[30px] pt-6.5"
@@ -120,6 +122,17 @@ export const BoardHeader = ({
           style={{ fontVariantNumeric: 'tabular-nums' }}
         >
           {expenseLabel}
+        </div>
+      </div>
+      <div>
+        <div className="text-[11.5px]" style={{ color: '#7FAF95' }}>
+          {t.transfer}
+        </div>
+        <div
+          className="mt-0.5 text-[15px] font-bold"
+          style={{ fontVariantNumeric: 'tabular-nums' }}
+        >
+          {transferLabel}
         </div>
       </div>
     </div>
