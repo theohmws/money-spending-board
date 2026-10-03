@@ -1,3 +1,11 @@
+# [1.6.0](https://github.com/theohmws/money-spending-board/compare/v1.5.0...v1.6.0) (2026-10-03)
+
+
+### Features
+
+* **board:** add limitation pills to landing page features ([46b5a15](https://github.com/theohmws/money-spending-board/commit/46b5a15cfad50c6fe06e601712eb313a9be2ce17))
+* **board:** migrate profile/ratios/categoryMeta from localStorage to Supabase ([9c567a4](https://github.com/theohmws/money-spending-board/commit/9c567a49ea46fc694798457d311e54f9ea5d287c))
+
 # [1.5.0](https://github.com/theohmws/money-spending-board/compare/v1.4.0...v1.5.0) (2026-09-29)
 
 
