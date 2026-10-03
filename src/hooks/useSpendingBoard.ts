@@ -61,22 +61,21 @@ export const useSpendingBoard = () => {
   const isOnline = useOnlineStatus();
   const locale = lang === 'en' ? 'en-US' : 'th-TH';
 
-  // Mirrors the auth session's email/client specifically for the hooks
-  // below — set synchronously inside handleSessionResolved, since
-  // useAuthSession's own session/client aren't reachable until after it's
-  // called, and it needs handleSessionResolved (built from these hooks'
-  // `load`) as an argument.
-  const [resolvedEmail, setResolvedEmail] = useState<string | undefined>(
-    undefined
-  );
+  // Mirrors the auth session's userId specifically for the hooks below —
+  // set synchronously inside handleSessionResolved, since useAuthSession's
+  // own session/client aren't reachable until after it's called, and it
+  // needs handleSessionResolved (built from these hooks' `load`) as an
+  // argument. (email/client themselves are passed straight through to each
+  // slice's `load` from handleSessionResolved's own arguments, not mirrored
+  // in state, since they're only needed at load time.)
   const [resolvedUserId, setResolvedUserId] = useState<string | undefined>(
     undefined
   );
   const clientRefLocal = useRef<BoardSupabaseClient | null>(null);
 
-  const ratiosSlice = useRatios(resolvedEmail);
-  const profileSlice = useProfile(resolvedEmail);
-  const categoryMetaSlice = useCategoryMeta(resolvedEmail);
+  const ratiosSlice = useRatios(clientRefLocal, resolvedUserId, t);
+  const profileSlice = useProfile(clientRefLocal, resolvedUserId, t);
+  const categoryMetaSlice = useCategoryMeta(clientRefLocal, resolvedUserId, t);
   const txSlice = useTransactions(clientRefLocal, resolvedUserId, t, locale);
   const importRulesSlice = useImportCategoryRules(
     clientRefLocal,
@@ -120,13 +119,12 @@ export const useSpendingBoard = () => {
       currentEmail: string | undefined,
       currentUserId: string | undefined
     ) => {
-      setResolvedEmail(currentEmail);
       setResolvedUserId(currentUserId);
       clientRefLocal.current = client;
       txSlice.load(client);
-      ratiosSlice.load(currentEmail);
-      profileSlice.load(currentEmail);
-      categoryMetaSlice.load(currentEmail);
+      ratiosSlice.load(client, currentUserId, currentEmail);
+      profileSlice.load(client, currentUserId, currentEmail);
+      categoryMetaSlice.load(client, currentUserId, currentEmail);
       importRulesSlice.load(client);
       boardSettingsSlice.load(client);
       apiTokensSlice.load(client);
@@ -163,6 +161,9 @@ export const useSpendingBoard = () => {
   const signOut = useCallback(async () => {
     await authSignOut();
     txSlice.clear();
+    ratiosSlice.clear();
+    profileSlice.clear();
+    categoryMetaSlice.clear();
     importRulesSlice.clear();
     boardSettingsSlice.clear();
     apiTokensSlice.clear();
@@ -170,6 +171,9 @@ export const useSpendingBoard = () => {
   }, [
     authSignOut,
     txSlice.clear,
+    ratiosSlice.clear,
+    profileSlice.clear,
+    categoryMetaSlice.clear,
     importRulesSlice.clear,
     boardSettingsSlice.clear,
     apiTokensSlice.clear,
@@ -196,6 +200,7 @@ export const useSpendingBoard = () => {
     onRatioChange,
     ratioSum,
     saveRatios,
+    ratiosSaveError,
   } = ratiosSlice;
 
   const {
@@ -208,6 +213,7 @@ export const useSpendingBoard = () => {
     onProfileIncomeChange,
     avatarSwatches,
     saveProfile,
+    profileSaveError,
   } = profileSlice;
 
   const {
@@ -219,6 +225,7 @@ export const useSpendingBoard = () => {
     selectCategoryIcon,
     selectCategoryPalette,
     saveCategoryMeta,
+    categoryMetaSaveError,
   } = categoryMetaSlice;
 
   const {
@@ -775,6 +782,7 @@ export const useSpendingBoard = () => {
     ratioRows,
     ratioSum,
     saveRatios,
+    ratiosSaveError,
 
     headerAvatarBg: profile.avatarColor || '#0E8F5F',
     headerAvatarInitial: profileInitial,
@@ -786,6 +794,7 @@ export const useSpendingBoard = () => {
     onProfileIncomeChange,
     avatarSwatches,
     saveProfile,
+    profileSaveError,
     editSplitFromProfile,
     profileRatioLabel: `${ratios.needs}/${ratios.wants}/${ratios.savings}`,
 
@@ -794,6 +803,7 @@ export const useSpendingBoard = () => {
     showCategorySettings,
     categorySettingsRows,
     saveCategoryMeta,
+    categoryMetaSaveError,
 
     categoryChoices,
 

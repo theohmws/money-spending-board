@@ -292,6 +292,9 @@ export type I18nDict = {
   categoryRuleSaveError: string;
   categoryRuleDeleteError: string;
   boardSettingsSaveError: string;
+  profileSaveError: string;
+  ratiosSaveError: string;
+  categoryMetaSaveError: string;
   apiTokensEntryLabel: string;
   apiTokensEntryDesc: string;
   apiTokensTitle: string;
@@ -496,6 +499,9 @@ export const I18N: Record<Lang, I18nDict> = {
     categoryRuleSaveError: 'บันทึกคำไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
     categoryRuleDeleteError: 'ลบคำไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
     boardSettingsSaveError: 'บันทึกสีไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+    profileSaveError: 'บันทึกโปรไฟล์ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+    ratiosSaveError: 'บันทึกสัดส่วนไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+    categoryMetaSaveError: 'บันทึกหมวดหมู่ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
     apiTokensEntryLabel: 'iOS Shortcuts / API',
     apiTokensEntryDesc: 'โทเคนสำหรับเพิ่มหรือแก้ไขรายการจากคำสั่งลัด',
     apiTokensTitle: 'iOS Shortcuts / API',
@@ -704,6 +710,9 @@ export const I18N: Record<Lang, I18nDict> = {
     categoryRuleSaveError: 'Could not save the keyword. Please try again.',
     categoryRuleDeleteError: 'Could not remove the keyword. Please try again.',
     boardSettingsSaveError: 'Could not save the colors. Please try again.',
+    profileSaveError: 'Could not save the profile. Please try again.',
+    ratiosSaveError: 'Could not save the split. Please try again.',
+    categoryMetaSaveError: 'Could not save the categories. Please try again.',
     apiTokensEntryLabel: 'iOS Shortcuts / API',
     apiTokensEntryDesc:
       'Tokens for adding or editing transactions from Shortcuts',

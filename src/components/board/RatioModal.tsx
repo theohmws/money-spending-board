@@ -8,6 +8,7 @@ type Props = Pick<
   | 'ratioRows'
   | 'ratioSum'
   | 'saveRatios'
+  | 'ratiosSaveError'
   | 'themeTokens'
 >;
 
@@ -18,6 +19,7 @@ export const RatioModal = ({
   ratioRows,
   ratioSum,
   saveRatios,
+  ratiosSaveError,
   themeTokens,
 }: Props) => {
   if (!showRatioModal) return null;
@@ -113,6 +115,15 @@ export const RatioModal = ({
             {ratioSum}%
           </span>
         </div>
+
+        {ratiosSaveError && (
+          <div
+            className="mt-3.5 rounded-[10px] px-3 py-2.5 text-[13px]"
+            style={{ background: '#FBEAEC', color: '#C0374A' }}
+          >
+            {ratiosSaveError}
+          </div>
+        )}
 
         <button
           type="button"
