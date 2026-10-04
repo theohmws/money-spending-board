@@ -1,3 +1,11 @@
+# [1.7.0](https://github.com/theohmws/money-spending-board/compare/v1.6.0...v1.7.0) (2026-10-04)
+
+
+### Features
+
+* **ui:** add Tinysoy UI Edamame tokens and Tailwind mapping ([7956ae3](https://github.com/theohmws/money-spending-board/commit/7956ae3bb93fa56645468d80a58def6c55a8691f))
+* **ui:** redesign the board with the Tinysoy UI design system ([d679dc5](https://github.com/theohmws/money-spending-board/commit/d679dc527558908ca7450fe22cd1b9e6220484d5))
+
 # [1.6.0](https://github.com/theohmws/money-spending-board/compare/v1.5.0...v1.6.0) (2026-10-03)
 
 
