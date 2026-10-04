@@ -57,7 +57,13 @@ export type TrendMonthLimit = (typeof TREND_MONTH_LIMIT_OPTIONS)[number];
 
 export const useSpendingBoard = () => {
   const { lang, toggleLang, t } = useI18n();
-  const { theme, setTheme, themeTokens } = useTheme();
+  const {
+    theme,
+    setTheme,
+    palette: colorPalette,
+    setPalette,
+    themeTokens,
+  } = useTheme();
   const isOnline = useOnlineStatus();
   const locale = lang === 'en' ? 'en-US' : 'th-TH';
 
@@ -464,7 +470,8 @@ export const useSpendingBoard = () => {
           amountLabel: isTransfer
             ? fmtMoney(Number(tx.amount))
             : fmtSignedMoney(netAmount),
-          amountColor: tx.type === 'income' ? '#0E8F5F' : themeTokens.text,
+          amountColor:
+            tx.type === 'income' ? 'var(--chart-2)' : themeTokens.text,
           needsReview: tx.needs_review,
           sourceLabel: sourceLabelFor(tx.source),
           ariaLabel: tx.needs_review
@@ -715,6 +722,8 @@ export const useSpendingBoard = () => {
     clientRef: authClientRef,
     theme,
     setTheme,
+    palette: colorPalette,
+    setPalette,
     themeTokens,
     isDesktop,
     isOnline,

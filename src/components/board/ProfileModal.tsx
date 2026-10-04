@@ -1,5 +1,20 @@
+import type { ReactNode } from 'react';
+
+import { Alert } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { useSpendingBoard } from '@/hooks/useSpendingBoard';
 import { AppConfig } from '@/utils/AppConfig';
+import type { Palette } from '@/utils/BoardConfig';
+import { PALETTES } from '@/utils/BoardConfig';
 
 type Props = Pick<
   ReturnType<typeof useSpendingBoard>,
@@ -21,8 +36,39 @@ type Props = Pick<
   | 'userEmail'
   | 'theme'
   | 'setTheme'
-  | 'themeTokens'
+  | 'palette'
+  | 'setPalette'
 >;
+
+// Light-mode theme hue of each Tinysoy palette, shown as the swatch.
+const PALETTE_SWATCH: Record<Palette, string> = {
+  edamame: 'oklch(0.5 0.13 140)',
+  kuromame: 'oklch(0.24 0.012 70)',
+  dry: 'oklch(0.5 0.035 80)',
+  thuanao: 'oklch(0.52 0.12 55)',
+};
+
+const SettingRow = ({
+  title,
+  description,
+  action,
+}: {
+  title: string;
+  description?: string;
+  action: ReactNode;
+}) => (
+  <div className="flex items-center justify-between gap-3 rounded-lg bg-muted px-3 py-2.5">
+    <div className="min-w-0">
+      <div className="text-sm font-medium">{title}</div>
+      {description && (
+        <div className="mt-0.5 text-xs text-muted-foreground">
+          {description}
+        </div>
+      )}
+    </div>
+    {action}
+  </div>
+);
 
 export const ProfileModal = ({
   t,
@@ -43,328 +89,175 @@ export const ProfileModal = ({
   userEmail,
   theme,
   setTheme,
-  themeTokens,
-}: Props) => {
-  if (!showProfile) return null;
+  palette,
+  setPalette,
+}: Props) => (
+  <Dialog
+    open={showProfile}
+    onOpenChange={(open) => {
+      if (!open) closeProfile();
+    }}
+  >
+    <DialogContent closeLabel={t.closeLabel}>
+      <DialogHeader>
+        <DialogTitle>{t.profileTitle}</DialogTitle>
+      </DialogHeader>
 
-  const isLight = theme !== 'dark';
-
-  return (
-    <div
-      className="fixed inset-0 z-20 flex items-center justify-center p-5"
-      style={{ background: 'rgba(15,20,17,0.45)' }}
-    >
-      <div
-        className="max-h-[85vh] w-[430px] max-w-full overflow-y-auto rounded-[20px] px-6 py-6.5"
-        style={{ background: themeTokens.cardBg }}
-      >
-        <div className="flex items-center justify-between">
-          <div
-            className="font-manrope text-[17px] font-extrabold"
-            style={{ color: themeTokens.text }}
-          >
-            {t.profileTitle}
-          </div>
-          <button
-            type="button"
-            onClick={closeProfile}
-            className="flex size-7.5 items-center justify-center rounded-[9px] text-base"
-            style={{
-              background: themeTokens.chipBg,
-              color: themeTokens.chipText,
-            }}
-          >
-            ×
-          </button>
-        </div>
-
-        <div className="mt-3.5 flex flex-col items-center">
-          <div
-            className="flex size-16 items-center justify-center rounded-full font-manrope text-2xl font-extrabold text-white"
-            style={{ background: profileForm.avatarColor }}
-          >
-            {headerAvatarInitial}
-          </div>
-          <div className="mt-3 flex gap-2">
-            {avatarSwatches.map((swatch) => (
-              <button
-                key={swatch.color}
-                type="button"
-                aria-label={swatch.color}
-                onClick={swatch.onSelect}
-                className="size-5.5 rounded-full border-2"
-                style={{
-                  background: swatch.color,
-                  borderColor: themeTokens.cardBg,
-                  boxShadow: swatch.selected
-                    ? `0 0 0 1.5px ${swatch.color}`
-                    : undefined,
-                }}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-5.5">
-          <label
-            htmlFor="profile-name"
-            className="text-[12.5px] font-semibold"
-            style={{ color: themeTokens.label }}
-          >
-            {t.name}
-          </label>
-          <input
-            id="profile-name"
-            type="text"
-            value={profileForm.name}
-            onChange={(e) => onProfileNameChange(e.target.value)}
-            placeholder="Your name"
-            className="mt-1.5 w-full rounded-[10px] border p-3 text-[14.5px]"
-            style={{
-              borderColor: themeTokens.inputBorder,
-              color: themeTokens.text,
-              background: themeTokens.inputBg,
-            }}
-          />
-        </div>
-
-        <div className="mt-3.5">
-          <div
-            className="text-[12.5px] font-semibold"
-            style={{ color: themeTokens.label }}
-          >
-            {t.email}
-          </div>
-          <div
-            className="mt-1.5 rounded-[10px] p-3 text-[14.5px]"
-            style={{
-              background: themeTokens.chipBg,
-              color: themeTokens.subtext,
-            }}
-          >
-            {userEmail}
-          </div>
-        </div>
-
-        <div className="mt-3.5">
-          <label
-            htmlFor="profile-income"
-            className="text-[12.5px] font-semibold"
-            style={{ color: themeTokens.label }}
-          >
-            {t.monthlyIncome}
-          </label>
-          <input
-            id="profile-income"
-            type="number"
-            value={profileForm.monthlyIncome}
-            onChange={(e) => onProfileIncomeChange(e.target.value)}
-            placeholder="e.g. 30000"
-            className="mt-1.5 w-full rounded-[10px] border p-3 text-[14.5px]"
-            style={{
-              borderColor: themeTokens.inputBorder,
-              color: themeTokens.text,
-              background: themeTokens.inputBg,
-            }}
-          />
-          <div
-            className="mt-1 text-[11.5px]"
-            style={{ color: themeTokens.subtext2 }}
-          >
-            {t.monthlyIncomeHint}
-          </div>
-        </div>
-
+      <div className="flex flex-col items-center">
         <div
-          className="mt-4.5 flex items-center justify-between rounded-xl px-3.5 py-3"
-          style={{ background: themeTokens.chipBg }}
+          className="flex size-16 items-center justify-center rounded-full text-2xl font-semibold text-white"
+          style={{ background: profileForm.avatarColor }}
         >
-          <div>
-            <div
-              className="text-sm font-semibold"
-              style={{ color: themeTokens.text }}
-            >
-              {t.splitRatio}
-            </div>
-            <div
-              className="mt-0.5 text-xs"
-              style={{ color: themeTokens.subtext }}
-            >
-              {profileRatioLabel} · {t.needsWantsSavings}
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={editSplitFromProfile}
-            className="text-[12.5px] font-semibold"
-            style={{ color: '#0E8F5F' }}
-          >
-            {t.edit}
-          </button>
+          {headerAvatarInitial}
         </div>
-
-        <div
-          className="mt-3 flex items-center justify-between rounded-xl px-3.5 py-3"
-          style={{ background: themeTokens.chipBg }}
-        >
-          <div>
-            <div
-              className="text-sm font-semibold"
-              style={{ color: themeTokens.text }}
-            >
-              {t.categories}
-            </div>
-            <div
-              className="mt-0.5 text-xs"
-              style={{ color: themeTokens.subtext }}
-            >
-              {t.iconColorPerCategory}
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={openCategorySettings}
-            className="text-[12.5px] font-semibold"
-            style={{ color: '#0E8F5F' }}
-          >
-            {t.edit}
-          </button>
-        </div>
-
-        <div
-          className="mt-3 flex items-center justify-between rounded-xl px-3.5 py-3"
-          style={{ background: themeTokens.chipBg }}
-        >
-          <div>
-            <div
-              className="text-sm font-semibold"
-              style={{ color: themeTokens.text }}
-            >
-              {t.importSettingsEntryLabel}
-            </div>
-            <div
-              className="mt-0.5 text-xs"
-              style={{ color: themeTokens.subtext }}
-            >
-              {t.importSettingsEntryDesc}
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={openImportSettings}
-            className="text-[12.5px] font-semibold"
-            style={{ color: '#0E8F5F' }}
-          >
-            {t.edit}
-          </button>
-        </div>
-
-        <div
-          className="mt-3 flex items-center justify-between rounded-xl px-3.5 py-3"
-          style={{ background: themeTokens.chipBg }}
-        >
-          <div>
-            <div
-              className="text-sm font-semibold"
-              style={{ color: themeTokens.text }}
-            >
-              {t.apiTokensEntryLabel}
-            </div>
-            <div
-              className="mt-0.5 text-xs"
-              style={{ color: themeTokens.subtext }}
-            >
-              {t.apiTokensEntryDesc}
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={openApiTokens}
-            className="text-[12.5px] font-semibold"
-            style={{ color: '#0E8F5F' }}
-          >
-            {t.edit}
-          </button>
-        </div>
-
-        <div
-          className="mt-3 flex items-center justify-between rounded-xl px-3.5 py-3"
-          style={{ background: themeTokens.chipBg }}
-        >
-          <div
-            className="text-sm font-semibold"
-            style={{ color: themeTokens.text }}
-          >
-            {t.currency}
-          </div>
-          <div className="text-[12.5px]" style={{ color: themeTokens.subtext }}>
-            {t.thaiBaht}
-          </div>
-        </div>
-
-        <div className="mt-4.5">
-          <div
-            className="text-[12.5px] font-semibold"
-            style={{ color: themeTokens.label }}
-          >
-            {t.appearance}
-          </div>
-          <div
-            className="mt-2 flex gap-2 rounded-[11px] p-1"
-            style={{ background: themeTokens.chipBg }}
-          >
+        <div className="mt-3 flex gap-2">
+          {avatarSwatches.map((swatch) => (
             <button
+              key={swatch.color}
               type="button"
-              onClick={() => setTheme('light')}
-              className="flex-1 rounded-lg p-2.5 text-[13.5px] font-semibold"
+              aria-label={swatch.color}
+              aria-pressed={swatch.selected}
+              onClick={swatch.onSelect}
+              className="size-6 rounded-full border-2 border-popover outline-none focus-visible:ring focus-visible:ring-ring/50"
               style={{
-                background: isLight ? '#132119' : 'transparent',
-                color: isLight ? '#EFFCF4' : themeTokens.label,
+                background: swatch.color,
+                boxShadow: swatch.selected
+                  ? `0 0 0 1.5px ${swatch.color}`
+                  : undefined,
               }}
-            >
-              {t.light}
-            </button>
-            <button
-              type="button"
-              onClick={() => setTheme('dark')}
-              className="flex-1 rounded-lg p-2.5 text-[13.5px] font-semibold"
-              style={{
-                background: !isLight ? '#132119' : 'transparent',
-                color: !isLight ? '#EFFCF4' : themeTokens.label,
-              }}
-            >
-              {t.dark}
-            </button>
-          </div>
+            />
+          ))}
         </div>
-
-        {profileSaveError && (
-          <div
-            className="mt-3.5 rounded-[10px] px-3 py-2.5 text-[13px]"
-            style={{ background: '#FBEAEC', color: '#C0374A' }}
-          >
-            {profileSaveError}
-          </div>
-        )}
-
-        <button
-          type="button"
-          onClick={saveProfile}
-          className="mt-5.5 w-full rounded-xl p-4 text-[15px] font-bold"
-          style={{ background: '#132119', color: '#EFFCF4' }}
-        >
-          {t.saveProfileBtn}
-        </button>
-
-        {AppConfig.versionLabel && (
-          <div
-            className="mt-4 text-center text-[11.5px]"
-            style={{ color: themeTokens.subtext3 }}
-          >
-            {AppConfig.versionLabel}
-          </div>
-        )}
       </div>
-    </div>
-  );
-};
+
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="profile-name">{t.name}</Label>
+        <Input
+          id="profile-name"
+          type="text"
+          value={profileForm.name}
+          onChange={(e) => onProfileNameChange(e.target.value)}
+          placeholder="Your name"
+        />
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <div className="text-sm font-medium leading-none">{t.email}</div>
+        <div className="flex h-8 items-center rounded-lg bg-muted px-2.5 text-sm text-muted-foreground">
+          {userEmail}
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="profile-income">{t.monthlyIncome}</Label>
+        <Input
+          id="profile-income"
+          type="number"
+          value={profileForm.monthlyIncome}
+          onChange={(e) => onProfileIncomeChange(e.target.value)}
+          placeholder="e.g. 30000"
+        />
+        <div className="text-xs text-muted-foreground">
+          {t.monthlyIncomeHint}
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <SettingRow
+          title={t.splitRatio}
+          description={`${profileRatioLabel} · ${t.needsWantsSavings}`}
+          action={
+            <Button variant="ghost" size="sm" onClick={editSplitFromProfile}>
+              {t.edit}
+            </Button>
+          }
+        />
+        <SettingRow
+          title={t.categories}
+          description={t.iconColorPerCategory}
+          action={
+            <Button variant="ghost" size="sm" onClick={openCategorySettings}>
+              {t.edit}
+            </Button>
+          }
+        />
+        <SettingRow
+          title={t.importSettingsEntryLabel}
+          description={t.importSettingsEntryDesc}
+          action={
+            <Button variant="ghost" size="sm" onClick={openImportSettings}>
+              {t.edit}
+            </Button>
+          }
+        />
+        <SettingRow
+          title={t.apiTokensEntryLabel}
+          description={t.apiTokensEntryDesc}
+          action={
+            <Button variant="ghost" size="sm" onClick={openApiTokens}>
+              {t.edit}
+            </Button>
+          }
+        />
+        <SettingRow
+          title={t.currency}
+          action={
+            <span className="text-sm text-muted-foreground">{t.thaiBaht}</span>
+          }
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <div className="text-sm font-medium leading-none">{t.appearance}</div>
+        <Tabs
+          value={theme}
+          onValueChange={(value) => setTheme(value as typeof theme)}
+        >
+          <TabsList>
+            <TabsTrigger value="light">{t.light}</TabsTrigger>
+            <TabsTrigger value="dark">{t.dark}</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <div className="text-sm font-medium leading-none">{t.paletteLabel}</div>
+        <div className="grid grid-cols-2 gap-2">
+          {PALETTES.map((name) => (
+            <Button
+              key={name}
+              variant="outline"
+              onClick={() => setPalette(name)}
+              aria-pressed={palette === name}
+              className={
+                palette === name
+                  ? 'justify-start border-primary ring-1 ring-primary'
+                  : 'justify-start'
+              }
+            >
+              <span
+                className="size-3.5 rounded-full"
+                style={{ background: PALETTE_SWATCH[name] }}
+              />
+              {t.paletteNames[name]}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      {profileSaveError && (
+        <Alert variant="destructive">{profileSaveError}</Alert>
+      )}
+
+      <Button size="lg" onClick={saveProfile}>
+        {t.saveProfileBtn}
+      </Button>
+
+      {AppConfig.versionLabel && (
+        <div className="text-center text-xs text-muted-foreground">
+          {AppConfig.versionLabel}
+        </div>
+      )}
+    </DialogContent>
+  </Dialog>
+);

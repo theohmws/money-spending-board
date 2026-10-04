@@ -1,3 +1,13 @@
+import { Alert } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import type { useSpendingBoard } from '@/hooks/useSpendingBoard';
 
 type Props = Pick<
@@ -9,7 +19,6 @@ type Props = Pick<
   | 'ratioSum'
   | 'saveRatios'
   | 'ratiosSaveError'
-  | 'themeTokens'
 >;
 
 export const RatioModal = ({
@@ -20,75 +29,41 @@ export const RatioModal = ({
   ratioSum,
   saveRatios,
   ratiosSaveError,
-  themeTokens,
 }: Props) => {
-  if (!showRatioModal) return null;
-
   const isBalanced = ratioSum === 100;
 
   return (
-    <div
-      className="fixed inset-0 z-20 flex items-center justify-center p-5"
-      style={{ background: 'rgba(15,20,17,0.45)' }}
+    <Dialog
+      open={showRatioModal}
+      onOpenChange={(open) => {
+        if (!open) closeRatioModal();
+      }}
     >
-      <div
-        className="w-[430px] max-w-full rounded-[20px] px-6 py-6.5"
-        style={{ background: themeTokens.cardBg }}
-      >
-        <div className="flex items-center justify-between">
-          <div
-            className="font-manrope text-[17px] font-extrabold"
-            style={{ color: themeTokens.text }}
-          >
-            {t.adjustSplit}
-          </div>
-          <button
-            type="button"
-            onClick={closeRatioModal}
-            className="flex size-7.5 items-center justify-center rounded-[9px] text-base"
-            style={{
-              background: themeTokens.chipBg,
-              color: themeTokens.chipText,
-            }}
-          >
-            ×
-          </button>
-        </div>
-        <div
-          className="mt-2 text-[13px] leading-relaxed"
-          style={{ color: themeTokens.subtext }}
-        >
-          {t.splitDesc}
-        </div>
+      <DialogContent closeLabel={t.closeLabel}>
+        <DialogHeader>
+          <DialogTitle>{t.adjustSplit}</DialogTitle>
+          <DialogDescription>{t.splitDesc}</DialogDescription>
+        </DialogHeader>
 
-        <div className="mt-5 flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
           {ratioRows.map((row) => (
             <div key={row.id}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div
-                    className="size-2.5 rounded-[3px]"
+                    className="size-2.5 rounded-sm"
                     style={{ background: row.color }}
                   />
-                  <span
-                    className="text-sm font-semibold"
-                    style={{ color: themeTokens.text }}
-                  >
-                    {row.name}
-                  </span>
+                  <span className="text-sm font-medium">{row.name}</span>
                 </div>
-                <input
+                <Input
                   type="number"
                   value={row.value}
                   onChange={(e) => row.onChange(Number(e.target.value))}
                   min={0}
                   max={100}
-                  className="w-16 rounded-[9px] border px-2.5 py-2 text-right text-sm"
-                  style={{
-                    borderColor: themeTokens.inputBorder,
-                    color: themeTokens.text,
-                    background: themeTokens.inputBg,
-                  }}
+                  aria-label={row.name}
+                  className="w-16 text-right"
                 />
               </div>
               <input
@@ -97,6 +72,7 @@ export const RatioModal = ({
                 onChange={(e) => row.onChange(Number(e.target.value))}
                 min={0}
                 max={100}
+                aria-label={row.name}
                 className="mt-2 w-full"
                 style={{ accentColor: row.color }}
               />
@@ -104,41 +80,25 @@ export const RatioModal = ({
           ))}
         </div>
 
-        <div className="mt-5 flex items-center justify-between">
-          <span className="text-[13px]" style={{ color: themeTokens.label }}>
-            {t.total}
-          </span>
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-muted-foreground">{t.total}</span>
           <span
-            className="text-[15px] font-bold"
-            style={{ color: isBalanced ? '#0E8F5F' : '#C0374A' }}
+            className={`text-base font-semibold tabular-nums ${
+              isBalanced ? 'text-primary' : 'text-destructive'
+            }`}
           >
             {ratioSum}%
           </span>
         </div>
 
         {ratiosSaveError && (
-          <div
-            className="mt-3.5 rounded-[10px] px-3 py-2.5 text-[13px]"
-            style={{ background: '#FBEAEC', color: '#C0374A' }}
-          >
-            {ratiosSaveError}
-          </div>
+          <Alert variant="destructive">{ratiosSaveError}</Alert>
         )}
 
-        <button
-          type="button"
-          onClick={saveRatios}
-          disabled={!isBalanced}
-          className="mt-4.5 w-full rounded-xl p-4 text-[15px] font-bold"
-          style={{
-            background: '#132119',
-            color: '#EFFCF4',
-            opacity: isBalanced ? 1 : 0.5,
-          }}
-        >
+        <Button size="lg" onClick={saveRatios} disabled={!isBalanced}>
           {t.saveSplit}
-        </button>
-      </div>
-    </div>
+        </Button>
+      </DialogContent>
+    </Dialog>
   );
 };

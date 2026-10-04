@@ -1,5 +1,9 @@
 export type Lang = 'th' | 'en';
 export type Theme = 'light' | 'dark';
+
+// Tinysoy UI soybean palettes; each ships in light and dark (see global.css).
+export const PALETTES = ['edamame', 'kuromame', 'dry', 'thuanao'] as const;
+export type Palette = (typeof PALETTES)[number];
 export type TxType = 'expense' | 'income' | 'transfer';
 export type CategoryId = 'needs' | 'savings' | 'wants';
 
@@ -235,6 +239,10 @@ export type I18nDict = {
   appearance: string;
   light: string;
   dark: string;
+  deleteLabel: string;
+  closeLabel: string;
+  paletteLabel: string;
+  paletteNames: Record<Palette, string>;
   saveProfileBtn: string;
   enterEmailPassword: string;
   authFailed: string;
@@ -439,6 +447,15 @@ export const I18N: Record<Lang, I18nDict> = {
     appearance: 'ธีม',
     light: 'สว่าง',
     dark: 'มืด',
+    deleteLabel: 'ลบรายการ',
+    closeLabel: 'ปิด',
+    paletteLabel: 'สีธีม',
+    paletteNames: {
+      edamame: 'เอดามาเมะ',
+      kuromame: 'คุโรมาเมะ',
+      dry: 'ถั่วแห้ง',
+      thuanao: 'ถั่วเน่า',
+    },
     saveProfileBtn: 'บันทึกโปรไฟล์',
     enterEmailPassword: 'กรุณากรอกอีเมลและรหัสผ่าน',
     continueWithProvider: 'ดำเนินการต่อด้วย {provider}',
@@ -651,6 +668,15 @@ export const I18N: Record<Lang, I18nDict> = {
     appearance: 'Appearance',
     light: 'Light',
     dark: 'Dark',
+    deleteLabel: 'Delete transaction',
+    closeLabel: 'Close',
+    paletteLabel: 'Theme colour',
+    paletteNames: {
+      edamame: 'Edamame',
+      kuromame: 'Kuromame',
+      dry: 'Dry',
+      thuanao: 'Thua Nao',
+    },
     saveProfileBtn: 'Save profile',
     enterEmailPassword: 'Enter email and password.',
     authFailed: 'Authentication failed.',

@@ -1,7 +1,9 @@
 'use client';
 
+import { Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { Button } from '@/components/ui/button';
 import { usePublicStats } from '@/hooks/usePublicStats';
 import { useSpendingBoard } from '@/hooks/useSpendingBoard';
 import { AppConfig } from '@/utils/AppConfig';
@@ -61,211 +63,171 @@ export const BoardCard = () => {
   };
 
   return (
-    <div
-      className="flex min-h-screen items-start justify-center"
-      style={{
-        padding: isDesktop ? '0' : '40px 16px',
-        background: themeTokens.pageBg,
-      }}
-    >
-      <div
-        className="flex w-full max-w-full flex-col overflow-hidden"
-        style={{
-          width: isDesktop ? '100%' : '430px',
-          background: themeTokens.cardBg,
-          borderRadius: isDesktop ? '0' : '28px',
-          boxShadow: isDesktop ? 'none' : '0 20px 60px rgba(20,30,25,0.10)',
-          minHeight: isDesktop ? '100vh' : '780px',
-        }}
-      >
-        <div
-          className="mx-auto flex w-full flex-1 flex-col"
-          style={{ maxWidth: isDesktop ? '960px' : '100%' }}
-        >
-          {!board.isOnline && (
-            <div
-              className="px-4 py-2.5 text-center text-[12.5px] font-semibold"
-              style={{ background: '#FDF3E2', color: '#8A5A00' }}
-            >
-              {board.t.offlineBanner}
-            </div>
-          )}
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col">
+        {!board.isOnline && (
+          <div
+            role="status"
+            className="bg-secondary px-4 py-2 text-center text-sm font-medium text-secondary-foreground"
+          >
+            {board.t.offlineBanner}
+          </div>
+        )}
 
-          {board.booting && (
-            <div
-              className="flex flex-1 items-center justify-center text-sm"
-              style={{ color: themeTokens.subtext2 }}
-            >
-              {board.t.loadingLabel}
-            </div>
-          )}
+        {board.booting && (
+          <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
+            {board.t.loadingLabel}
+          </div>
+        )}
 
-          {board.showConfigError && (
-            <div
-              className="flex flex-1 items-center justify-center px-8 text-center text-sm leading-relaxed"
-              style={{ color: themeTokens.subtext2 }}
-            >
-              {board.t.configMissing}
-            </div>
-          )}
+        {board.showConfigError && (
+          <div className="flex flex-1 items-center justify-center px-8 text-center text-sm leading-relaxed text-muted-foreground">
+            {board.t.configMissing}
+          </div>
+        )}
 
-          {board.showLogin && !showAuthForm && (
-            <LandingPage
+        {board.showLogin && !showAuthForm && (
+          <LandingPage
+            t={board.t}
+            lang={board.lang}
+            toggleLang={board.toggleLang}
+            stats={publicStats}
+            onGetStarted={() => {
+              if (board.authMode === 'signin') board.toggleAuthMode();
+              setShowAuthForm(true);
+            }}
+            onSignIn={() => {
+              if (board.authMode === 'signup') board.toggleAuthMode();
+              setShowAuthForm(true);
+            }}
+          />
+        )}
+
+        {board.showLogin && showAuthForm && (
+          <AuthScreen
+            t={board.t}
+            lang={board.lang}
+            toggleLang={board.toggleLang}
+            authMode={board.authMode}
+            authForm={board.authForm}
+            onAuthEmailChange={board.onAuthEmailChange}
+            onAuthPasswordChange={board.onAuthPasswordChange}
+            authError={board.authError}
+            authLoading={board.authLoading}
+            submitAuth={board.submitAuth}
+            oauthProviders={board.oauthProviders}
+            signInWithOAuth={board.signInWithOAuth}
+            toggleAuthMode={board.toggleAuthMode}
+          />
+        )}
+
+        {board.showApp && (
+          <div className="flex flex-1 flex-col">
+            <BoardHeader
               t={board.t}
               lang={board.lang}
               toggleLang={board.toggleLang}
-              themeTokens={themeTokens}
-              stats={publicStats}
-              onGetStarted={() => {
-                if (board.authMode === 'signin') board.toggleAuthMode();
-                setShowAuthForm(true);
-              }}
-              onSignIn={() => {
-                if (board.authMode === 'signup') board.toggleAuthMode();
-                setShowAuthForm(true);
-              }}
+              openProfile={board.openProfile}
+              headerAvatarBg={board.headerAvatarBg}
+              headerAvatarInitial={board.headerAvatarInitial}
+              userEmail={board.userEmail}
+              signOut={handleSignOut}
+              selectedMonth={board.selectedMonth}
+              monthOptions={board.monthOptions}
+              onMonthChange={board.onMonthChange}
+              balanceLabel={board.balanceLabel}
+              incomeLabel={board.incomeLabel}
+              expenseLabel={board.expenseLabel}
+              transferLabel={board.transferLabel}
             />
-          )}
 
-          {board.showLogin && showAuthForm && (
-            <AuthScreen
-              t={board.t}
-              lang={board.lang}
-              toggleLang={board.toggleLang}
-              authMode={board.authMode}
-              authForm={board.authForm}
-              onAuthEmailChange={board.onAuthEmailChange}
-              onAuthPasswordChange={board.onAuthPasswordChange}
-              authError={board.authError}
-              authLoading={board.authLoading}
-              submitAuth={board.submitAuth}
-              oauthProviders={board.oauthProviders}
-              signInWithOAuth={board.signInWithOAuth}
-              toggleAuthMode={board.toggleAuthMode}
-              themeTokens={themeTokens}
-            />
-          )}
-
-          {board.showApp && (
-            <div className="flex flex-1 flex-col">
-              <BoardHeader
+            <main className="flex flex-1 flex-col gap-5 px-4 pb-28 pt-5 sm:px-6">
+              <BoardTabs
                 t={board.t}
-                lang={board.lang}
-                toggleLang={board.toggleLang}
-                openProfile={board.openProfile}
-                headerAvatarBg={board.headerAvatarBg}
-                headerAvatarInitial={board.headerAvatarInitial}
-                userEmail={board.userEmail}
-                signOut={handleSignOut}
-                selectedMonth={board.selectedMonth}
-                monthOptions={board.monthOptions}
-                onMonthChange={board.onMonthChange}
-                balanceLabel={board.balanceLabel}
-                incomeLabel={board.incomeLabel}
-                expenseLabel={board.expenseLabel}
-                transferLabel={board.transferLabel}
+                activeTab={board.activeTab}
+                setActiveTab={board.setActiveTab}
+                activeGraphTab={board.activeGraphTab}
+                setActiveGraphTab={board.setActiveGraphTab}
               />
 
-              <div className="flex-1 overflow-y-auto px-6 pb-[100px] pt-5.5">
-                <BoardTabs
-                  t={board.t}
-                  activeTab={board.activeTab}
-                  setActiveTab={board.setActiveTab}
-                  activeGraphTab={board.activeGraphTab}
-                  setActiveGraphTab={board.setActiveGraphTab}
-                  themeTokens={themeTokens}
-                />
-
-                {board.activeTab === 'overview' && (
-                  <div className="mt-5.5">
-                    <BudgetSplit
-                      t={board.t}
-                      showRuleInfo={board.showRuleInfo}
-                      toggleRuleInfo={board.toggleRuleInfo}
-                      openRatioModal={board.openRatioModal}
-                      categoryCards={board.categoryCards}
-                      themeTokens={themeTokens}
-                    />
-                    <TransactionList
-                      t={board.t}
-                      transactionRows={board.transactionRows}
-                      transactionFilter={board.transactionFilter}
-                      setTransactionFilter={board.setTransactionFilter}
-                      badgeColors={board.badgeColors}
-                      startImport={board.startImport}
-                      deleteError={board.deleteError}
-                      isOnline={board.isOnline}
-                      themeTokens={themeTokens}
-                    />
-                  </div>
-                )}
-
-                {board.activeTab === 'graph' && (
-                  <div className="mt-5.5">
-                    {board.activeGraphTab === 'trend' && (
-                      <TrendChart
-                        t={board.t}
-                        monthlyTotals={board.monthlyTotals}
-                        trendMonthLimit={board.trendMonthLimit}
-                        setTrendMonthLimit={board.setTrendMonthLimit}
-                        trendSeries={board.trendSeries}
-                        setTrendSeries={board.setTrendSeries}
-                        themeTokens={themeTokens}
-                      />
-                    )}
-                    {board.activeGraphTab === 'compare' && (
-                      <CompareChart
-                        t={board.t}
-                        compareRows={board.compareRows}
-                        themeTokens={themeTokens}
-                      />
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {isDesktop && (
-                <div
-                  className="sticky bottom-0 px-6 pb-5.5 pt-4"
-                  style={{ background: themeTokens.fadeToCard }}
-                >
-                  <button
-                    type="button"
-                    onClick={board.openAddModal}
-                    disabled={!board.isOnline}
-                    className="w-full rounded-2xl p-4 text-[15px] font-bold disabled:cursor-not-allowed disabled:opacity-50"
-                    style={{ background: '#132119', color: '#EFFCF4' }}
-                  >
-                    + {board.t.addTransaction}
-                  </button>
-                </div>
+              {board.activeTab === 'overview' && (
+                <>
+                  <BudgetSplit
+                    t={board.t}
+                    showRuleInfo={board.showRuleInfo}
+                    toggleRuleInfo={board.toggleRuleInfo}
+                    openRatioModal={board.openRatioModal}
+                    categoryCards={board.categoryCards}
+                    themeTokens={themeTokens}
+                  />
+                  <TransactionList
+                    t={board.t}
+                    transactionRows={board.transactionRows}
+                    transactionFilter={board.transactionFilter}
+                    setTransactionFilter={board.setTransactionFilter}
+                    badgeColors={board.badgeColors}
+                    startImport={board.startImport}
+                    deleteError={board.deleteError}
+                    isOnline={board.isOnline}
+                    themeTokens={themeTokens}
+                  />
+                </>
               )}
-            </div>
-          )}
-        </div>
+
+              {board.activeTab === 'graph' && (
+                <>
+                  {board.activeGraphTab === 'trend' && (
+                    <TrendChart
+                      t={board.t}
+                      monthlyTotals={board.monthlyTotals}
+                      trendMonthLimit={board.trendMonthLimit}
+                      setTrendMonthLimit={board.setTrendMonthLimit}
+                      trendSeries={board.trendSeries}
+                      setTrendSeries={board.setTrendSeries}
+                      themeTokens={themeTokens}
+                    />
+                  )}
+                  {board.activeGraphTab === 'compare' && (
+                    <CompareChart
+                      t={board.t}
+                      compareRows={board.compareRows}
+                      themeTokens={themeTokens}
+                    />
+                  )}
+                </>
+              )}
+            </main>
+
+            {isDesktop && (
+              <div className="sticky bottom-0 bg-gradient-to-b from-transparent to-background to-30% px-6 pb-5 pt-4">
+                <Button
+                  size="lg"
+                  onClick={board.openAddModal}
+                  disabled={!board.isOnline}
+                  className="w-full"
+                >
+                  <Plus />
+                  {board.t.addTransaction}
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
 
         {board.showApp && !isDesktop && (
-          <button
-            type="button"
+          <Button
+            size="icon-lg"
             onClick={board.openAddModal}
             disabled={!board.isOnline}
             aria-label={board.t.addTransaction}
-            className="fixed bottom-6 right-6 z-10 flex size-14 items-center justify-center rounded-full text-2xl font-bold disabled:cursor-not-allowed disabled:opacity-50"
-            style={{
-              background: '#0E8F5F',
-              color: '#FFFFFF',
-              boxShadow: '0 10px 25px rgba(14,143,95,0.45)',
-            }}
+            className="fixed bottom-6 right-6 z-10 size-12 rounded-full shadow-md"
           >
-            +
-          </button>
+            <Plus className="size-5" />
+          </Button>
         )}
 
         {AppConfig.versionLabel && (
-          <div
-            className="px-6 pb-3 pt-1 text-center text-[10.5px]"
-            style={{ color: themeTokens.subtext3 }}
-          >
+          <div className="px-6 pb-3 pt-1 text-center text-xs text-muted-foreground">
             {AppConfig.versionLabel}
           </div>
         )}
@@ -286,7 +248,6 @@ export const BoardCard = () => {
         saveTransaction={board.saveTransaction}
         saveError={board.saveError}
         isOnline={board.isOnline}
-        themeTokens={themeTokens}
       />
       <RatioModal
         t={board.t}
@@ -296,7 +257,6 @@ export const BoardCard = () => {
         ratioSum={board.ratioSum}
         saveRatios={board.saveRatios}
         ratiosSaveError={board.ratiosSaveError}
-        themeTokens={themeTokens}
       />
       <CategorySettingsModal
         t={board.t}
@@ -305,7 +265,6 @@ export const BoardCard = () => {
         categorySettingsRows={board.categorySettingsRows}
         saveCategoryMeta={board.saveCategoryMeta}
         categoryMetaSaveError={board.categoryMetaSaveError}
-        themeTokens={themeTokens}
       />
       <ProfileModal
         t={board.t}
@@ -326,7 +285,8 @@ export const BoardCard = () => {
         userEmail={board.userEmail}
         theme={board.theme}
         setTheme={board.setTheme}
-        themeTokens={themeTokens}
+        palette={board.palette}
+        setPalette={board.setPalette}
       />
       <ImportPreviewModal
         t={board.t}
@@ -345,7 +305,6 @@ export const BoardCard = () => {
         editRowCategory={board.editRowCategory}
         confirmImport={board.confirmImport}
         categoryChoices={board.categoryChoices}
-        themeTokens={themeTokens}
       />
       <ImportSettingsModal
         t={board.t}
@@ -365,7 +324,6 @@ export const BoardCard = () => {
         selectBadgeColor={board.selectBadgeColor}
         saveBadgeColors={board.saveBadgeColors}
         badgeColorsError={board.badgeColorsError}
-        themeTokens={themeTokens}
       />
       <ApiTokensModal
         t={board.t}
@@ -381,7 +339,6 @@ export const BoardCard = () => {
         apiTokenError={board.apiTokenError}
         shortcutEndpoint={board.shortcutEndpoint}
         isOnline={board.isOnline}
-        themeTokens={themeTokens}
       />
     </div>
   );

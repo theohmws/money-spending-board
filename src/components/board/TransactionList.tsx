@@ -1,5 +1,8 @@
+import { ChevronDown, Plus, Upload, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { useSpendingBoard } from '@/hooks/useSpendingBoard';
 import { fmtSignedMoney } from '@/utils/boardHelpers';
 
@@ -62,7 +65,7 @@ export const TransactionList = ({
       return {
         ...group,
         netLabel: fmtSignedMoney(net),
-        netColor: net >= 0 ? '#0E8F5F' : '#C0374A',
+        netColor: net >= 0 ? 'text-chart-4' : 'text-destructive',
       };
     });
   }, [transactionRows]);
@@ -71,131 +74,61 @@ export const TransactionList = ({
     setCollapsedDays((prev) => ({ ...prev, [date]: !prev[date] }));
 
   return (
-    <div>
-      <div className="mt-7.5 flex items-center justify-between">
-        <div
-          className="font-manrope text-[15px] font-bold"
-          style={{ color: themeTokens.text }}
-        >
-          {t.recentActivity}
-        </div>
+    <section className="flex flex-col gap-2">
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="text-base font-semibold">{t.recentActivity}</h2>
         <div className="flex items-center gap-2">
-          <button
-            type="button"
+          <Button
+            variant="outline"
+            size="icon-sm"
             onClick={startImport}
             aria-label={t.importEntryLabel}
-            className="flex size-7 items-center justify-center rounded-[9px]"
-            style={{
-              background: themeTokens.chipBg,
-              color: themeTokens.chipText,
-            }}
           >
-            <svg
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12 3v12 M7 8l5-5 5 5 M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
-            </svg>
-          </button>
-          <div
-            className="flex gap-1 rounded-[9px] p-0.5"
-            style={{ background: themeTokens.chipBg }}
+            <Upload />
+          </Button>
+          <Tabs
+            value={transactionFilter}
+            onValueChange={(value) =>
+              setTransactionFilter(value as typeof transactionFilter)
+            }
           >
-            <button
-              type="button"
-              onClick={() => setTransactionFilter('all')}
-              className="rounded-lg px-2.5 py-1 text-[11.5px] font-semibold"
-              style={{
-                background:
-                  transactionFilter === 'all'
-                    ? themeTokens.cardBg
-                    : 'transparent',
-                color:
-                  transactionFilter === 'all'
-                    ? themeTokens.text
-                    : themeTokens.chipText,
-              }}
-            >
-              {t.allTransactionsFilterLabel}
-            </button>
-            <button
-              type="button"
-              onClick={() => setTransactionFilter('needsReview')}
-              className="rounded-lg px-2.5 py-1 text-[11.5px] font-semibold"
-              style={{
-                background:
-                  transactionFilter === 'needsReview'
-                    ? themeTokens.cardBg
-                    : 'transparent',
-                color:
-                  transactionFilter === 'needsReview'
-                    ? themeTokens.text
-                    : themeTokens.chipText,
-              }}
-            >
-              {t.needsReviewFilterLabel}
-            </button>
-          </div>
+            <TabsList className="h-7 w-auto">
+              <TabsTrigger value="all" className="px-2.5 text-xs">
+                {t.allTransactionsFilterLabel}
+              </TabsTrigger>
+              <TabsTrigger value="needsReview" className="px-2.5 text-xs">
+                {t.needsReviewFilterLabel}
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
       </div>
 
       {transactionFilter === 'needsReview' && (
-        <div
-          className="mt-2 text-[11.5px] leading-relaxed"
-          style={{ color: themeTokens.subtext2 }}
-        >
+        <div className="text-xs leading-relaxed text-muted-foreground">
           {t.needsReviewFilterHint}
         </div>
       )}
 
       {deleteError && (
         <div
-          className="mt-2.5 rounded-[10px] px-3 py-2.5 text-[13px]"
-          style={{ background: '#FBEAEC', color: '#C0374A' }}
+          role="alert"
+          className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive dark:bg-destructive/20"
         >
           {deleteError}
         </div>
       )}
 
-      <div className="mt-2.5 flex flex-col">
+      <div className="flex flex-col">
         {transactionRows.length === 0 && (
-          <div className="flex flex-col items-center py-7.5 text-center">
-            <div
-              className="flex size-11 items-center justify-center rounded-full"
-              style={{
-                background: themeTokens.chipBg,
-                color: themeTokens.subtext2,
-              }}
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M12 5v14 M5 12h14" />
-              </svg>
+          <div className="flex flex-col items-center py-8 text-center">
+            <div className="flex size-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
+              <Plus className="size-5" />
             </div>
-            <div
-              className="mt-3 text-[13.5px] font-semibold"
-              style={{ color: themeTokens.subtext }}
-            >
+            <div className="mt-3 text-sm font-medium">
               {t.noTransactionsYet}
             </div>
-            <div
-              className="mt-1 text-[12px]"
-              style={{ color: themeTokens.subtext3 }}
-            >
+            <div className="mt-1 text-xs text-muted-foreground">
               {t.noTransactionsHint}
             </div>
           </div>
@@ -208,50 +141,25 @@ export const TransactionList = ({
                 type="button"
                 onClick={() => toggleDay(group.date)}
                 aria-expanded={!isCollapsed}
-                className="flex w-full items-center justify-between border-b py-2 text-left"
-                style={{ borderColor: themeTokens.divider }}
+                className="flex w-full items-center justify-between border-b py-2 text-left outline-none focus-visible:ring focus-visible:ring-ring/50"
               >
-                <span
-                  className="text-[12.5px] font-bold"
-                  style={{ color: themeTokens.subtext }}
-                >
+                <span className="text-sm font-medium text-muted-foreground">
                   {group.dayLabel}
                 </span>
                 <div className="flex items-center gap-1.5">
-                  <span
-                    className="text-[11px] font-medium"
-                    style={{ color: themeTokens.subtext2 }}
-                  >
+                  <span className="text-xs text-muted-foreground">
                     {t.total}
                   </span>
                   <span
-                    className="text-[13.5px] font-bold"
-                    style={{
-                      color: group.netColor,
-                      fontVariantNumeric: 'tabular-nums',
-                    }}
+                    className={`text-sm font-semibold tabular-nums ${group.netColor}`}
                   >
                     {group.netLabel}
                   </span>
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    style={{
-                      color: themeTokens.subtext2,
-                      transform: isCollapsed
-                        ? 'rotate(-90deg)'
-                        : 'rotate(0deg)',
-                      transition: 'transform 0.15s ease',
-                    }}
-                  >
-                    <path d="M6 9l6 6 6-6" />
-                  </svg>
+                  <ChevronDown
+                    className={`size-4 text-muted-foreground transition-transform ${
+                      isCollapsed ? '-rotate-90' : ''
+                    }`}
+                  />
                 </div>
               </button>
 
@@ -269,12 +177,11 @@ export const TransactionList = ({
                         tx.onEdit();
                       }
                     }}
-                    className="relative flex items-center gap-3 border-b py-3 pl-2.5 text-left"
-                    style={{
-                      borderColor: themeTokens.divider,
-                      cursor: isOnline ? 'pointer' : 'default',
-                      opacity: isOnline ? 1 : 0.6,
-                    }}
+                    className={`relative flex items-center gap-3 border-b py-2.5 pl-2.5 text-left outline-none transition-colors focus-visible:ring focus-visible:ring-ring/50 ${
+                      isOnline
+                        ? 'cursor-pointer hover:bg-muted/50'
+                        : 'cursor-default opacity-60'
+                    }`}
                   >
                     {tx.needsReview && (
                       <span
@@ -284,29 +191,23 @@ export const TransactionList = ({
                       />
                     )}
                     <div
-                      className="flex size-9 shrink-0 items-center justify-center rounded-[10px] font-manrope text-[13px] font-bold text-white"
+                      className="flex size-8 shrink-0 items-center justify-center rounded-lg text-sm font-semibold text-white"
                       style={{ background: tx.color }}
                     >
                       {tx.initial}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div
-                        className="truncate text-sm font-semibold"
-                        style={{ color: themeTokens.text }}
-                      >
+                      <div className="truncate text-sm font-medium">
                         {tx.title}
                       </div>
                       {(tx.subtitle !== tx.title || tx.sourceLabel) && (
-                        <div
-                          className="mt-0.5 flex items-center gap-1.5 truncate text-xs"
-                          style={{ color: themeTokens.subtext2 }}
-                        >
+                        <div className="mt-0.5 flex items-center gap-1.5 truncate text-xs text-muted-foreground">
                           {tx.subtitle !== tx.title && (
                             <span>{tx.subtitle}</span>
                           )}
                           {tx.sourceLabel && (
                             <span
-                              className="font-manrope text-[10px] font-extrabold uppercase tracking-wide"
+                              className="text-[10px] font-semibold uppercase tracking-wide"
                               style={{ color: sourceColor }}
                             >
                               {tx.sourceLabel}
@@ -316,32 +217,30 @@ export const TransactionList = ({
                       )}
                     </div>
                     <div
-                      className="text-[14.5px] font-bold"
-                      style={{
-                        color: tx.amountColor,
-                        fontVariantNumeric: 'tabular-nums',
-                      }}
+                      className="text-sm font-semibold tabular-nums"
+                      style={{ color: tx.amountColor }}
                     >
                       {tx.amountLabel}
                     </div>
-                    <button
-                      type="button"
+                    <Button
+                      variant="ghost"
+                      size="icon-xs"
                       onClick={(e) => {
                         e.stopPropagation();
                         tx.onDelete();
                       }}
                       disabled={!isOnline}
-                      className="px-0.5 py-1 text-base disabled:cursor-not-allowed"
-                      style={{ color: themeTokens.subtext2 }}
+                      aria-label={t.deleteLabel}
+                      className="text-muted-foreground"
                     >
-                      ×
-                    </button>
+                      <X />
+                    </Button>
                   </div>
                 ))}
             </div>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 };

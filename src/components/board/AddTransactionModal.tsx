@@ -1,3 +1,14 @@
+import { Alert } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { useSpendingBoard } from '@/hooks/useSpendingBoard';
 
 type Props = Pick<
@@ -16,7 +27,6 @@ type Props = Pick<
   | 'saveTransaction'
   | 'saveError'
   | 'isOnline'
-  | 'themeTokens'
 >;
 
 export const AddTransactionModal = ({
@@ -34,200 +44,107 @@ export const AddTransactionModal = ({
   saveTransaction,
   saveError,
   isOnline,
-  themeTokens,
 }: Props) => {
-  if (!showAddModal) return null;
-
   const isExpense = txType === 'expense';
   const isEditing = editingTxId !== null;
 
   return (
-    <div
-      className="fixed inset-0 z-20 flex items-end justify-center"
-      style={{ background: 'rgba(15,20,17,0.45)' }}
+    <Dialog
+      open={showAddModal}
+      onOpenChange={(open) => {
+        if (!open) closeAddModal();
+      }}
     >
-      <div
-        className="max-h-[85vh] w-[430px] max-w-full overflow-y-auto rounded-t-3xl px-6 pb-7.5 pt-6.5"
-        style={{ background: themeTokens.cardBg }}
-      >
-        <div className="flex items-center justify-between">
-          <div
-            className="font-manrope text-lg font-extrabold"
-            style={{ color: themeTokens.text }}
-          >
+      <DialogContent closeLabel={t.closeLabel}>
+        <DialogHeader>
+          <DialogTitle>
             {isEditing ? t.editTransaction : t.addTransaction}
-          </div>
-          <button
-            type="button"
-            onClick={closeAddModal}
-            className="flex size-7.5 items-center justify-center rounded-[9px] text-base"
-            style={{
-              background: themeTokens.chipBg,
-              color: themeTokens.chipText,
-            }}
-          >
-            ×
-          </button>
-        </div>
+          </DialogTitle>
+        </DialogHeader>
 
-        <div
-          className="mt-5 flex gap-2 rounded-[11px] p-1"
-          style={{ background: themeTokens.chipBg }}
+        <Tabs
+          value={txType}
+          onValueChange={(value) => setTxType(value as typeof txType)}
         >
-          <button
-            type="button"
-            onClick={() => setTxType('expense')}
-            className="flex-1 rounded-lg p-2.5 text-[13.5px] font-semibold"
-            style={{
-              background: isExpense ? '#132119' : 'transparent',
-              color: isExpense ? '#EFFCF4' : themeTokens.label,
-            }}
-          >
-            {t.expense}
-          </button>
-          <button
-            type="button"
-            onClick={() => setTxType('income')}
-            className="flex-1 rounded-lg p-2.5 text-[13.5px] font-semibold"
-            style={{
-              background: txType === 'income' ? '#132119' : 'transparent',
-              color: txType === 'income' ? '#EFFCF4' : themeTokens.label,
-            }}
-          >
-            {t.income}
-          </button>
-          <button
-            type="button"
-            onClick={() => setTxType('transfer')}
-            className="flex-1 rounded-lg p-2.5 text-[13.5px] font-semibold"
-            style={{
-              background: txType === 'transfer' ? '#132119' : 'transparent',
-              color: txType === 'transfer' ? '#EFFCF4' : themeTokens.label,
-            }}
-          >
-            {t.transfer}
-          </button>
-        </div>
+          <TabsList>
+            <TabsTrigger value="expense">{t.expense}</TabsTrigger>
+            <TabsTrigger value="income">{t.income}</TabsTrigger>
+            <TabsTrigger value="transfer">{t.transfer}</TabsTrigger>
+          </TabsList>
+        </Tabs>
 
-        <div className="mt-4.5">
-          <label
-            htmlFor="tx-amount"
-            className="text-[12.5px] font-semibold"
-            style={{ color: themeTokens.label }}
-          >
-            {t.amount}
-          </label>
-          <input
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="tx-amount">{t.amount}</Label>
+          <Input
             id="tx-amount"
             type="number"
             value={txForm.amount}
             onChange={(e) => onTxAmountChange(e.target.value)}
             placeholder="0.00"
-            className="mt-1.5 w-full rounded-xl border px-3.5 py-3 text-[17px]"
-            style={{
-              borderColor: themeTokens.inputBorder,
-              color: themeTokens.text,
-              background: themeTokens.inputBg,
-            }}
+            className="h-10 text-lg tabular-nums"
           />
         </div>
 
         {isExpense && (
-          <div className="mt-3.5">
-            <div
-              className="text-[12.5px] font-semibold"
-              style={{ color: themeTokens.label }}
-            >
-              {t.category}
-            </div>
-            <div className="mt-2 flex flex-wrap gap-2">
+          <div className="flex flex-col gap-1.5">
+            <div className="text-sm font-medium leading-none">{t.category}</div>
+            <div className="flex flex-wrap gap-2">
               {categoryOptions.map((option) => (
-                <button
+                <Button
                   key={option.id}
-                  type="button"
+                  variant="outline"
+                  size="sm"
                   onClick={option.onSelect}
-                  className="rounded-[9px] border-[1.5px] px-3 py-2 text-[13px] font-semibold"
-                  style={{
-                    borderColor: option.selected
-                      ? option.color
-                      : themeTokens.inputBorder,
-                    background: option.selected
-                      ? option.color
-                      : themeTokens.cardBg,
-                    color: option.selected ? option.dark : themeTokens.chipText,
-                  }}
+                  aria-pressed={option.selected}
+                  className="border-2"
+                  style={
+                    option.selected
+                      ? {
+                          background: option.color,
+                          borderColor: option.color,
+                          color: option.dark,
+                        }
+                      : undefined
+                  }
                 >
                   {option.name}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
         )}
 
-        <div className="mt-3.5">
-          <label
-            htmlFor="tx-note"
-            className="text-[12.5px] font-semibold"
-            style={{ color: themeTokens.label }}
-          >
-            {t.note}
-          </label>
-          <input
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="tx-note">{t.note}</Label>
+          <Input
             id="tx-note"
             type="text"
             value={txForm.note}
             onChange={(e) => onTxNoteChange(e.target.value)}
             placeholder="Optional"
-            className="mt-1.5 w-full rounded-xl border px-3.5 py-3 text-[14.5px]"
-            style={{
-              borderColor: themeTokens.inputBorder,
-              color: themeTokens.text,
-              background: themeTokens.inputBg,
-            }}
           />
         </div>
 
-        <div className="mt-3.5">
-          <label
-            htmlFor="tx-date"
-            className="text-[12.5px] font-semibold"
-            style={{ color: themeTokens.label }}
-          >
-            {t.date}
-          </label>
-          <input
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="tx-date">{t.date}</Label>
+          <Input
             id="tx-date"
             type="date"
             value={txForm.date}
             onChange={(e) => onTxDateChange(e.target.value)}
-            className="mt-1.5 w-full rounded-xl border px-3.5 py-3 text-[14.5px]"
-            style={{
-              borderColor: themeTokens.inputBorder,
-              color: themeTokens.text,
-              background: themeTokens.inputBg,
-            }}
           />
         </div>
 
         {(saveError || !isOnline) && (
-          <div
-            className="mt-3.5 rounded-[10px] px-3 py-2.5 text-[13px]"
-            style={{ background: '#FBEAEC', color: '#C0374A' }}
-          >
+          <Alert variant="destructive">
             {isOnline ? saveError : t.offlineBanner}
-          </div>
+          </Alert>
         )}
 
-        <button
-          type="button"
-          onClick={saveTransaction}
-          disabled={!isOnline}
-          className="mt-5.5 w-full rounded-xl p-4 text-[15px] font-bold disabled:cursor-not-allowed disabled:opacity-50"
-          style={{ background: '#132119', color: '#EFFCF4' }}
-        >
+        <Button size="lg" onClick={saveTransaction} disabled={!isOnline}>
           {isEditing ? t.updateTransactionBtn : t.saveTransactionBtn}
-        </button>
-      </div>
-    </div>
+        </Button>
+      </DialogContent>
+    </Dialog>
   );
 };

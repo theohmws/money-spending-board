@@ -1,3 +1,8 @@
+import { LogOut } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { NativeSelect } from '@/components/ui/input';
 import type { useSpendingBoard } from '@/hooks/useSpendingBoard';
 
 type Props = Pick<
@@ -19,6 +24,15 @@ type Props = Pick<
   | 'transferLabel'
 >;
 
+const Stat = ({ label, value }: { label: string; value: string }) => (
+  <div className="min-w-0">
+    <div className="text-xs text-muted-foreground">{label}</div>
+    <div className="mt-0.5 truncate text-sm font-semibold tabular-nums">
+      {value}
+    </div>
+  </div>
+);
+
 export const BoardHeader = ({
   t,
   lang,
@@ -36,105 +50,58 @@ export const BoardHeader = ({
   expenseLabel,
   transferLabel,
 }: Props) => (
-  <div
-    className="px-6 pb-[30px] pt-6.5"
-    style={{ background: '#132119', color: '#EFFCF4' }}
-  >
-    <div className="flex items-center justify-between">
+  <header className="flex flex-col gap-4 px-4 pt-4 sm:px-6">
+    <div className="flex items-center justify-between gap-2">
       <button
         type="button"
         onClick={openProfile}
-        className="flex items-center gap-2.5"
+        className="flex min-w-0 items-center gap-2 rounded-lg p-1 text-left outline-none transition-colors hover:bg-muted focus-visible:ring focus-visible:ring-ring/50"
       >
         <div
-          className="flex size-8.5 items-center justify-center rounded-[10px] font-manrope text-[15px] font-extrabold text-white"
+          className="flex size-8 shrink-0 items-center justify-center rounded-lg text-sm font-semibold text-white"
           style={{ background: headerAvatarBg }}
         >
           {headerAvatarInitial}
         </div>
-        <div className="text-[13px]" style={{ color: '#9FCBB1' }}>
+        <div className="truncate text-sm text-muted-foreground">
           {userEmail}
         </div>
       </button>
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          onClick={toggleLang}
-          className="rounded-[9px] px-2.5 py-2 text-xs font-bold"
-          style={{ background: 'rgba(255,255,255,0.10)', color: '#D9F5E5' }}
-        >
+      <div className="flex shrink-0 items-center gap-2">
+        <Button variant="outline" size="sm" onClick={toggleLang}>
           {lang === 'th' ? 'EN' : 'TH'}
-        </button>
-        <button
-          type="button"
-          onClick={signOut}
-          className="rounded-[9px] px-3 py-2 text-[12.5px]"
-          style={{ background: 'rgba(255,255,255,0.10)', color: '#D9F5E5' }}
-        >
+        </Button>
+        <Button variant="outline" size="sm" onClick={signOut}>
+          <LogOut />
           {t.signOut}
-        </button>
+        </Button>
       </div>
     </div>
 
-    <div className="mt-5.5 flex items-center justify-between">
-      <div className="text-[13px]" style={{ color: '#8FBFA3' }}>
-        {t.available}
-      </div>
-      <select
-        value={selectedMonth}
-        onChange={(e) => onMonthChange(e.target.value)}
-        className="rounded-lg px-2.5 py-1.5 text-[12.5px] font-semibold"
-        style={{ background: 'rgba(255,255,255,0.10)', color: '#EFFCF4' }}
-      >
-        {monthOptions.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    </div>
-
-    <div
-      className="mt-1 font-manrope text-[38px] font-extrabold"
-      style={{ fontVariantNumeric: 'tabular-nums' }}
-    >
-      {balanceLabel}
-    </div>
-
-    <div className="mt-4 flex gap-5.5">
-      <div>
-        <div className="text-[11.5px]" style={{ color: '#7FAF95' }}>
-          {t.income}
-        </div>
-        <div
-          className="mt-0.5 text-[15px] font-bold"
-          style={{ fontVariantNumeric: 'tabular-nums' }}
+    <Card className="gap-3">
+      <div className="flex items-center justify-between gap-3 px-4">
+        <div className="text-sm text-muted-foreground">{t.available}</div>
+        <NativeSelect
+          value={selectedMonth}
+          onChange={(e) => onMonthChange(e.target.value)}
+          aria-label={t.available}
+          className="h-7 w-auto"
         >
-          {incomeLabel}
-        </div>
+          {monthOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </NativeSelect>
       </div>
-      <div>
-        <div className="text-[11.5px]" style={{ color: '#7FAF95' }}>
-          {t.spent}
-        </div>
-        <div
-          className="mt-0.5 text-[15px] font-bold"
-          style={{ fontVariantNumeric: 'tabular-nums' }}
-        >
-          {expenseLabel}
-        </div>
+      <div className="px-4 text-4xl font-semibold tabular-nums tracking-tight">
+        {balanceLabel}
       </div>
-      <div>
-        <div className="text-[11.5px]" style={{ color: '#7FAF95' }}>
-          {t.transfer}
-        </div>
-        <div
-          className="mt-0.5 text-[15px] font-bold"
-          style={{ fontVariantNumeric: 'tabular-nums' }}
-        >
-          {transferLabel}
-        </div>
+      <div className="grid grid-cols-3 gap-3 px-4">
+        <Stat label={t.income} value={incomeLabel} />
+        <Stat label={t.spent} value={expenseLabel} />
+        <Stat label={t.transfer} value={transferLabel} />
       </div>
-    </div>
-  </div>
+    </Card>
+  </header>
 );
