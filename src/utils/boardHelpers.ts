@@ -93,24 +93,21 @@ export const loadBoardSettingField = async <T>(
   return migrated;
 };
 
-export const themeTokens = (mode: Theme): ThemeTokens => {
-  const isDark = mode === 'dark';
-  return {
-    mode,
-    pageBg: isDark ? '#0B100D' : '#EEF1F0',
-    cardBg: isDark ? '#161D17' : '#FFFFFF',
-    text: isDark ? '#EAF3ED' : '#132119',
-    label: isDark ? '#93A599' : '#7A857D',
-    subtext: isDark ? '#8FA598' : '#8A948C',
-    subtext2: isDark ? '#71857A' : '#9AA39C',
-    subtext3: isDark ? '#4E5F55' : '#B7BFB6',
-    inputBg: isDark ? '#20281F' : '#FAFBF9',
-    inputBorder: isDark ? '#2C362B' : '#E3E7E3',
-    divider: isDark ? '#232B21' : '#F1F3F1',
-    chipBg: isDark ? '#242D24' : '#F2F4F2',
-    chipText: isDark ? '#C9D6CC' : '#4A554D',
-    fadeToCard: isDark
-      ? 'linear-gradient(180deg, rgba(22,29,23,0), #161D17 30%)'
-      : 'linear-gradient(180deg, rgba(255,255,255,0), #FFFFFF 30%)',
-  };
-};
+// Tinysoy UI tokens as CSS variable references, so charts and the few
+// remaining inline styles follow the active palette and light/dark mode.
+export const themeTokens = (mode: Theme): ThemeTokens => ({
+  mode,
+  pageBg: 'var(--background)',
+  cardBg: 'var(--card)',
+  text: 'var(--foreground)',
+  label: 'var(--muted-foreground)',
+  subtext: 'var(--muted-foreground)',
+  subtext2: 'var(--muted-foreground)',
+  subtext3: 'var(--muted-foreground)',
+  inputBg: 'var(--background)',
+  inputBorder: 'var(--input)',
+  divider: 'var(--border)',
+  chipBg: 'var(--muted)',
+  chipText: 'var(--secondary-foreground)',
+  fadeToCard: 'linear-gradient(180deg, transparent, var(--card) 30%)',
+});

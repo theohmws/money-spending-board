@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { useSpendingBoard } from '@/hooks/useSpendingBoard';
 import { TREND_MONTH_LIMIT_OPTIONS } from '@/hooks/useSpendingBoard';
 import { fmtMoney } from '@/utils/boardHelpers';
@@ -15,7 +17,7 @@ type Props = Pick<
   | 'themeTokens'
 >;
 
-const INCOME_COLOR = '#0E8F5F';
+const INCOME_COLOR = 'var(--chart-2)';
 
 type Segment = {
   id: string;
@@ -67,52 +69,28 @@ export const TrendChart = ({
 
   return (
     <div>
-      <div
-        className="flex gap-2 rounded-[11px] p-1"
-        style={{ background: themeTokens.chipBg }}
+      <Tabs
+        value={trendSeries}
+        onValueChange={(value) => setTrendSeries(value as typeof trendSeries)}
       >
-        <button
-          type="button"
-          onClick={() => setTrendSeries('income')}
-          className="flex-1 rounded-lg p-2 text-[12.5px] font-semibold"
-          style={{
-            background: !isExpense ? themeTokens.cardBg : 'transparent',
-            color: !isExpense ? themeTokens.text : themeTokens.subtext2,
-          }}
-        >
-          {t.income}
-        </button>
-        <button
-          type="button"
-          onClick={() => setTrendSeries('expense')}
-          className="flex-1 rounded-lg p-2 text-[12.5px] font-semibold"
-          style={{
-            background: isExpense ? themeTokens.cardBg : 'transparent',
-            color: isExpense ? themeTokens.text : themeTokens.subtext2,
-          }}
-        >
-          {t.expense}
-        </button>
-      </div>
+        <TabsList>
+          <TabsTrigger value="income">{t.income}</TabsTrigger>
+          <TabsTrigger value="expense">{t.expense}</TabsTrigger>
+        </TabsList>
+      </Tabs>
 
       <div className="mt-3 flex flex-wrap gap-1.5">
-        {TREND_MONTH_LIMIT_OPTIONS.map((option) => {
-          const active = option === trendMonthLimit;
-          return (
-            <button
-              key={option}
-              type="button"
-              onClick={() => setTrendMonthLimit(option)}
-              className="rounded-full px-2.5 py-1 text-[11px] font-semibold"
-              style={{
-                background: active ? '#132119' : themeTokens.chipBg,
-                color: active ? '#EFFCF4' : themeTokens.chipText,
-              }}
-            >
-              {option} {t.monthsUnit}
-            </button>
-          );
-        })}
+        {TREND_MONTH_LIMIT_OPTIONS.map((option) => (
+          <Button
+            key={option}
+            variant={option === trendMonthLimit ? 'default' : 'secondary'}
+            size="xs"
+            className="rounded-full"
+            onClick={() => setTrendMonthLimit(option)}
+          >
+            {option} {t.monthsUnit}
+          </Button>
+        ))}
       </div>
 
       {legend.length > 0 && (
@@ -211,7 +189,7 @@ export const TrendChart = ({
                     if (!segment) return null;
                     return (
                       <div
-                        className="pointer-events-none absolute left-1/2 top-full z-10 -translate-x-1/2 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-center shadow-lg"
+                        className="pointer-events-none absolute left-1/2 top-full z-10 -translate-x-1/2 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-center shadow-md"
                         style={{
                           marginTop: 6,
                           background: themeTokens.cardBg,

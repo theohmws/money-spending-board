@@ -1,3 +1,6 @@
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import type { PublicStats } from '@/hooks/usePublicStats';
 import type { useSpendingBoard } from '@/hooks/useSpendingBoard';
 
@@ -5,7 +8,7 @@ import { CountUp } from './CountUp';
 
 type Props = Pick<
   ReturnType<typeof useSpendingBoard>,
-  't' | 'lang' | 'toggleLang' | 'themeTokens'
+  't' | 'lang' | 'toggleLang'
 > & {
   stats: PublicStats | null;
   onGetStarted: () => void;
@@ -16,7 +19,6 @@ export const LandingPage = ({
   t,
   lang,
   toggleLang,
-  themeTokens,
   stats,
   onGetStarted,
   onSignIn,
@@ -31,142 +33,82 @@ export const LandingPage = ({
   );
 
   return (
-    <div className="flex w-full flex-1 flex-col px-6 pb-10 pt-8">
+    <div className="flex w-full flex-1 flex-col px-4 pb-10 pt-6 sm:px-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <img src="/icon-512.png" alt="" className="size-9 rounded-xl" />
-          <span
-            className="hidden whitespace-nowrap font-manrope text-[15px] font-extrabold sm:inline"
-            style={{ color: themeTokens.text }}
-          >
+          <span className="hidden whitespace-nowrap text-base font-semibold sm:inline">
             {t.landingTagline}
           </span>
         </div>
-        <div className="flex items-center gap-2.5">
-          <button
-            type="button"
-            onClick={toggleLang}
-            className="rounded-lg px-2.5 py-1.5 text-xs font-bold"
-            style={{ background: 'rgba(0,0,0,0.06)', color: '#4A554D' }}
-          >
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={toggleLang}>
             {lang === 'th' ? 'EN' : 'TH'}
-          </button>
-          <button
-            type="button"
-            onClick={onSignIn}
-            className="whitespace-nowrap rounded-lg px-3 py-1.5 text-[13px] font-semibold"
-            style={{ color: themeTokens.text }}
-          >
+          </Button>
+          <Button variant="ghost" size="sm" onClick={onSignIn}>
             {t.landingSignIn}
-          </button>
+          </Button>
         </div>
       </div>
 
       <div className="mx-auto mt-14 max-w-screen-sm text-center">
-        <h1
-          className="font-manrope text-[32px] font-extrabold leading-tight"
-          style={{ color: themeTokens.text }}
-        >
+        <h1 className="text-balance text-3xl font-semibold leading-tight tracking-tight">
           {t.landingHeadline}
         </h1>
-        <p
-          className="mt-3.5 text-[15px] leading-relaxed"
-          style={{ color: themeTokens.subtext }}
-        >
+        <p className="mt-3 text-base leading-relaxed text-muted-foreground">
           {t.landingSubhead}
         </p>
-        <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
-          <button
-            type="button"
-            onClick={onGetStarted}
-            className="rounded-xl px-6 py-3.5 text-[15px] font-semibold"
-            style={{ background: '#132119', color: '#EFFCF4' }}
-          >
+        <div className="mt-6 flex flex-col justify-center gap-2 sm:flex-row">
+          <Button size="lg" onClick={onGetStarted} className="px-5">
             {t.landingGetStarted}
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
+            variant="outline"
+            size="lg"
             onClick={onSignIn}
-            className="rounded-xl border px-6 py-3.5 text-[15px] font-semibold"
-            style={{
-              borderColor: themeTokens.inputBorder,
-              color: themeTokens.text,
-            }}
+            className="px-5"
           >
             {t.landingSignIn}
-          </button>
+          </Button>
         </div>
       </div>
 
       {visibleStats.length > 0 && (
-        <dl className="mx-auto mt-12 flex w-full max-w-screen-sm justify-center gap-4">
+        <dl className="mx-auto mt-12 flex w-full max-w-screen-sm gap-3">
           {visibleStats.map((stat) => (
-            <div
+            <Card
               key={stat.label}
-              className="flex flex-1 flex-col-reverse rounded-2xl border px-4 py-5 text-center"
-              style={{ borderColor: themeTokens.inputBorder }}
+              className="flex-1 flex-col-reverse items-center gap-1 text-center"
             >
-              <dt
-                className="mt-1 text-[13px]"
-                style={{ color: themeTokens.subtext }}
-              >
-                {stat.label}
-              </dt>
-              <dd
-                className="font-manrope text-[30px] font-extrabold"
-                style={{ color: '#0E8F5F' }}
-              >
+              <dt className="text-sm text-muted-foreground">{stat.label}</dt>
+              <dd className="text-3xl font-semibold text-primary">
                 <CountUp value={stat.value} suffix="+" />
               </dd>
-            </div>
+            </Card>
           ))}
         </dl>
       )}
 
-      <h2
-        className="mt-14 font-manrope text-lg font-extrabold"
-        style={{ color: themeTokens.text }}
-      >
-        {t.landingFeaturesTitle}
-      </h2>
-      <ul className="mt-4 grid gap-3.5 sm:grid-cols-2">
+      <h2 className="mt-14 text-lg font-semibold">{t.landingFeaturesTitle}</h2>
+      <ul className="mt-3 grid gap-3 sm:grid-cols-2">
         {t.landingFeatures.map((feature) => (
-          <li
-            key={feature.title}
-            className="rounded-2xl border p-4"
-            style={{ borderColor: themeTokens.inputBorder }}
-          >
-            <div className="text-2xl" aria-hidden="true">
-              {feature.icon}
-            </div>
-            <div
-              className="mt-2 text-[15px] font-bold"
-              style={{ color: themeTokens.text }}
-            >
-              {feature.title}
-            </div>
-            {feature.pill && (
-              <span
-                className="mt-1.5 inline-block rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold"
-                style={{ background: '#FDF3E2', color: '#8A5A00' }}
-              >
-                {feature.pill}
-              </span>
-            )}
-            <div
-              className="mt-1 text-[13.5px] leading-relaxed"
-              style={{ color: themeTokens.subtext }}
-            >
-              {feature.desc}
-            </div>
+          <li key={feature.title}>
+            <Card className="h-full gap-1.5">
+              <div className="flex items-center gap-2 px-4">
+                <span className="text-base font-medium">{feature.title}</span>
+                {feature.pill && (
+                  <Badge variant="secondary">{feature.pill}</Badge>
+                )}
+              </div>
+              <div className="px-4 text-sm leading-relaxed text-muted-foreground">
+                {feature.desc}
+              </div>
+            </Card>
           </li>
         ))}
       </ul>
 
-      <div
-        className="pt-8 text-center text-[11.5px]"
-        style={{ color: themeTokens.subtext3 }}
-      >
+      <div className="pt-8 text-center text-xs text-muted-foreground">
         {t.footerAuth}
       </div>
     </div>
