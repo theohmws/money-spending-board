@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/theohmws/money-spending-board/compare/v1.7.0...v1.8.0) (2026-10-07)
+
+
+### Features
+
+* replace app icon with sloth mascot ([a6750be](https://github.com/theohmws/money-spending-board/commit/a6750be29539a71024e2eafbd14ed7a77e222aeb))
+
 # [1.7.0](https://github.com/theohmws/money-spending-board/compare/v1.6.0...v1.7.0) (2026-10-04)
 
 
