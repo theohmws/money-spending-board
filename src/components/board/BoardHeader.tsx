@@ -85,7 +85,7 @@ export const BoardHeader = ({
           value={selectedMonth}
           onChange={(e) => onMonthChange(e.target.value)}
           aria-label={t.available}
-          className="h-7 w-auto"
+          className="h-9 w-auto py-0 leading-normal"
         >
           {monthOptions.map((option) => (
             <option key={option.value} value={option.value}>
