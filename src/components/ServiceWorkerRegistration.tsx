@@ -2,13 +2,51 @@
 
 import { useEffect, useState } from 'react';
 
+import { useUpdateCheck } from '@/hooks/useUpdateCheck';
+
 export const canRegisterServiceWorker = () =>
   process.env.NODE_ENV === 'production' &&
   typeof navigator !== 'undefined' &&
   'serviceWorker' in navigator;
 
+const COPY = {
+  th: {
+    update: 'มีเวอร์ชันใหม่ของแอป',
+    reload: 'อัปเดต',
+    icon: 'ไอคอนแอปมีการเปลี่ยนแปลง ลบแอปออกจากหน้าจอหลักแล้วเพิ่มใหม่เพื่อดูไอคอนใหม่',
+    dismiss: 'ปิด',
+  },
+  en: {
+    update: 'A new version of the app is available.',
+    reload: 'Update',
+    icon: 'The app icon has changed. Remove the app from your home screen and add it again to see it.',
+    dismiss: 'Dismiss',
+  },
+};
+
+const readLang = (): keyof typeof COPY => {
+  try {
+    return localStorage.getItem('msb_lang') === 'en' ? 'en' : 'th';
+  } catch {
+    return 'th';
+  }
+};
+
+const applyUpdate = async () => {
+  try {
+    const reg = await navigator.serviceWorker?.getRegistration();
+    await reg?.update();
+  } catch {
+    // reload anyway
+  }
+  window.location.reload();
+};
+
 export const ServiceWorkerRegistration = () => {
   const [updateAvailable, setUpdateAvailable] = useState(false);
+  const { outdated, iconOutdated, dismissed, dismiss } = useUpdateCheck(
+    canRegisterServiceWorker()
+  );
 
   useEffect(() => {
     if (!canRegisterServiceWorker()) {
@@ -44,6 +82,36 @@ export const ServiceWorkerRegistration = () => {
         onControllerChange
       );
   }, []);
+
+  if (!updateAvailable && !dismissed && (outdated || iconOutdated)) {
+    const copy = COPY[readLang()];
+    return (
+      <div
+        role="status"
+        className="fixed inset-x-0 bottom-0 z-50 flex flex-wrap items-center justify-center gap-3 px-4 py-3 text-center text-[13.5px]"
+        style={{ background: '#132119', color: '#EFFCF4' }}
+      >
+        <span>{outdated ? copy.update : copy.icon}</span>
+        {outdated && (
+          <button
+            type="button"
+            onClick={applyUpdate}
+            className="rounded-lg px-3 py-1.5 text-[12.5px] font-bold"
+            style={{ background: '#EFFCF4', color: '#132119' }}
+          >
+            {copy.reload}
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={dismiss}
+          className="rounded-lg px-3 py-1.5 text-[12.5px] font-bold underline"
+        >
+          {copy.dismiss}
+        </button>
+      </div>
+    );
+  }
 
   if (!updateAvailable) {
     return null;

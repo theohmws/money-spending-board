@@ -5,7 +5,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
 
-const { version } = require('./package.json');
+const { version, iconVersion } = require('./package.json');
 
 // Prefer Vercel's own system env var (set on every build, no git checkout
 // depth to worry about) and fall back to shelling out to git for local/
@@ -30,6 +30,7 @@ module.exports = withBundleAnalyzer({
   reactStrictMode: true,
   env: {
     NEXT_PUBLIC_APP_VERSION: version,
+    NEXT_PUBLIC_ICON_VERSION: String(iconVersion),
     NEXT_PUBLIC_BUILD_COMMIT: getBuildCommit(),
     // Minute precision, not just the date: a redeploy of the same commit on
     // the same day must still produce a different label (every deploy gets
