@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { useUpdateCheck } from '@/hooks/useUpdateCheck';
+import { CURRENT_ICON_VERSION, useUpdateCheck } from '@/hooks/useUpdateCheck';
 
 export const canRegisterServiceWorker = () =>
   process.env.NODE_ENV === 'production' &&
@@ -32,7 +32,19 @@ const readLang = (): keyof typeof COPY => {
   }
 };
 
-const applyUpdate = async () => {
+// An icon change can't be applied by an update (iOS keeps the home-screen
+// copy), so when updating past one, remember to still show the "re-add the
+// app" notice on the freshly loaded version.
+const ICON_NOTICE_KEY = 'msb_icon_notice';
+
+const applyUpdate = async (latestIconVersion: string) => {
+  try {
+    if (latestIconVersion && latestIconVersion !== CURRENT_ICON_VERSION) {
+      localStorage.setItem(ICON_NOTICE_KEY, latestIconVersion);
+    }
+  } catch {
+    // storage unavailable — the icon notice is best-effort
+  }
   try {
     const reg = await navigator.serviceWorker?.getRegistration();
     await reg?.update();
@@ -44,9 +56,30 @@ const applyUpdate = async () => {
 
 export const ServiceWorkerRegistration = () => {
   const [updateAvailable, setUpdateAvailable] = useState(false);
-  const { outdated, iconOutdated, dismissed, dismiss } = useUpdateCheck(
-    canRegisterServiceWorker()
-  );
+  const [iconNoticePending, setIconNoticePending] = useState(false);
+  const { outdated, iconOutdated, latestIconVersion, dismissed, dismiss } =
+    useUpdateCheck(canRegisterServiceWorker());
+
+  useEffect(() => {
+    try {
+      setIconNoticePending(
+        localStorage.getItem(ICON_NOTICE_KEY) === CURRENT_ICON_VERSION
+      );
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const showIcon = iconOutdated || iconNoticePending;
+  const onDismiss = () => {
+    try {
+      localStorage.removeItem(ICON_NOTICE_KEY);
+    } catch {
+      // ignore
+    }
+    setIconNoticePending(false);
+    dismiss();
+  };
 
   useEffect(() => {
     if (!canRegisterServiceWorker()) {
@@ -83,7 +116,7 @@ export const ServiceWorkerRegistration = () => {
       );
   }, []);
 
-  if (!updateAvailable && !dismissed && (outdated || iconOutdated)) {
+  if (!updateAvailable && !dismissed && (outdated || showIcon)) {
     const copy = COPY[readLang()];
     return (
       <div
@@ -91,11 +124,15 @@ export const ServiceWorkerRegistration = () => {
         className="fixed inset-x-0 bottom-0 z-50 flex flex-wrap items-center justify-center gap-3 px-4 py-3 text-center text-[13.5px]"
         style={{ background: '#132119', color: '#EFFCF4' }}
       >
-        <span>{outdated ? copy.update : copy.icon}</span>
+        <span>
+          {[outdated && copy.update, showIcon && copy.icon]
+            .filter(Boolean)
+            .join(' ')}
+        </span>
         {outdated && (
           <button
             type="button"
-            onClick={applyUpdate}
+            onClick={() => applyUpdate(latestIconVersion)}
             className="rounded-lg px-3 py-1.5 text-[12.5px] font-bold"
             style={{ background: '#EFFCF4', color: '#132119' }}
           >
@@ -104,7 +141,7 @@ export const ServiceWorkerRegistration = () => {
         )}
         <button
           type="button"
-          onClick={dismiss}
+          onClick={onDismiss}
           className="rounded-lg px-3 py-1.5 text-[12.5px] font-bold underline"
         >
           {copy.dismiss}
