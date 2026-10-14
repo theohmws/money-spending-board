@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/theohmws/money-spending-board/compare/v1.8.1...v1.9.0) (2026-10-14)
+
+
+### Features
+
+* **pwa:** notify when the app version or icon is outdated ([#38](https://github.com/theohmws/money-spending-board/issues/38)) ([add7d2b](https://github.com/theohmws/money-spending-board/commit/add7d2bd5d64137d865d152665b8f8203a861c89))
+
 ## [1.8.1](https://github.com/theohmws/money-spending-board/compare/v1.8.0...v1.8.1) (2026-10-12)
 
 
