@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/theohmws/money-spending-board/compare/v1.9.0...v1.9.1) (2026-10-14)
+
+
+### Bug Fixes
+
+* **pwa:** keep the icon notice after updating and bump iconVersion ([#39](https://github.com/theohmws/money-spending-board/issues/39)) ([5f920e2](https://github.com/theohmws/money-spending-board/commit/5f920e2412a6223bd45afbd56e95066ab7991222))
+
 # [1.9.0](https://github.com/theohmws/money-spending-board/compare/v1.8.1...v1.9.0) (2026-10-14)
 
 
