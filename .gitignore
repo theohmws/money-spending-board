@@ -47,3 +47,4 @@ local
 
 # Secret
 secrets/
+public/version.json

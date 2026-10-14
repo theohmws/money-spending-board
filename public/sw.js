@@ -50,6 +50,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  if (url.pathname === '/version.json') {
+    // Update-check poll (src/hooks/useUpdateCheck.ts) must always see the
+    // freshly deployed file, never a cached copy.
+    return;
+  }
+
   if (request.mode === 'navigate') {
     // `cache: 'no-store'` (and fetching the URL rather than the original
     // Request) ensures a truly offline network fails here instead of

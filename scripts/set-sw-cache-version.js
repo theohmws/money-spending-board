@@ -5,7 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const { version } = require('../package.json');
+const { version, iconVersion } = require('../package.json');
 
 const swPath = path.join(__dirname, '..', 'public', 'sw.js');
 const sw = fs.readFileSync(swPath, 'utf8');
@@ -16,3 +16,13 @@ const updated = sw.replace(
 );
 
 fs.writeFileSync(swPath, updated);
+
+// Published alongside the app so open/installed copies can poll it (no-store,
+// bypassing the service worker) and notice they're outdated — see
+// src/hooks/useUpdateCheck.ts. `iconVersion` (package.json) is bumped by hand
+// when the app icon artwork changes: installed home-screen icons never
+// refresh themselves on iOS, so users must be told to re-add the app.
+fs.writeFileSync(
+  path.join(__dirname, '..', 'public', 'version.json'),
+  `${JSON.stringify({ version, iconVersion: String(iconVersion) })}\n`
+);
