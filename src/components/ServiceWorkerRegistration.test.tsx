@@ -131,4 +131,20 @@ describe('ServiceWorkerRegistration', () => {
 
     expect(reloadSpy).toHaveBeenCalled();
   });
+
+  it('shows the icon notice after updating past an icon change, until dismissed', () => {
+    jest.replaceProperty(process.env, 'NODE_ENV', 'production');
+    // CURRENT_ICON_VERSION is '' under jest (no next.config env).
+    localStorage.setItem('msb_icon_notice', '');
+    global.fetch = jest.fn().mockRejectedValue(new Error('offline'));
+
+    render(<ServiceWorkerRegistration />);
+
+    expect(screen.getByText(/ไอคอนแอป/)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /ปิด/ }));
+
+    expect(screen.queryByText(/ไอคอนแอป/)).not.toBeInTheDocument();
+    expect(localStorage.getItem('msb_icon_notice')).toBeNull();
+  });
 });
