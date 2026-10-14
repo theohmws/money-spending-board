@@ -1,3 +1,10 @@
+## [1.8.1](https://github.com/theohmws/money-spending-board/compare/v1.8.0...v1.8.1) (2026-10-12)
+
+
+### Bug Fixes
+
+* **board:** align month select text in balance card ([7bcc55b](https://github.com/theohmws/money-spending-board/commit/7bcc55bedc6093625f6ab83aafc881f11049a6d7))
+
 # [1.8.0](https://github.com/theohmws/money-spending-board/compare/v1.7.0...v1.8.0) (2026-10-07)
 
 
