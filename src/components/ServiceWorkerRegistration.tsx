@@ -33,18 +33,12 @@ const readLang = (): keyof typeof COPY => {
 };
 
 // An icon change can't be applied by an update (iOS keeps the home-screen
-// copy), so when updating past one, remember to still show the "re-add the
-// app" notice on the freshly loaded version.
-const ICON_NOTICE_KEY = 'msb_icon_notice';
+// copy), so remember the icon version this device last loaded. When a later
+// load carries a different one, tell the user once to re-add the app — this
+// works whether or not the old version was still open when the deploy landed.
+const ICON_SEEN_KEY = 'msb_icon_seen';
 
-const applyUpdate = async (latestIconVersion: string) => {
-  try {
-    if (latestIconVersion && latestIconVersion !== CURRENT_ICON_VERSION) {
-      localStorage.setItem(ICON_NOTICE_KEY, latestIconVersion);
-    }
-  } catch {
-    // storage unavailable — the icon notice is best-effort
-  }
+const applyUpdate = async () => {
   try {
     const reg = await navigator.serviceWorker?.getRegistration();
     await reg?.update();
@@ -57,26 +51,25 @@ const applyUpdate = async (latestIconVersion: string) => {
 export const ServiceWorkerRegistration = () => {
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const [iconNoticePending, setIconNoticePending] = useState(false);
-  const { outdated, iconOutdated, latestIconVersion, dismissed, dismiss } =
-    useUpdateCheck(canRegisterServiceWorker());
+  const { outdated, iconOutdated, dismissed, dismiss } = useUpdateCheck(
+    canRegisterServiceWorker()
+  );
 
   useEffect(() => {
     try {
-      setIconNoticePending(
-        localStorage.getItem(ICON_NOTICE_KEY) === CURRENT_ICON_VERSION
-      );
+      const seen = localStorage.getItem(ICON_SEEN_KEY);
+      // First load on this device: nothing to compare with, just record it.
+      if (seen !== null && seen !== CURRENT_ICON_VERSION) {
+        setIconNoticePending(true);
+      }
+      localStorage.setItem(ICON_SEEN_KEY, CURRENT_ICON_VERSION);
     } catch {
-      // ignore
+      // storage unavailable — the icon notice is best-effort
     }
   }, []);
 
   const showIcon = iconOutdated || iconNoticePending;
   const onDismiss = () => {
-    try {
-      localStorage.removeItem(ICON_NOTICE_KEY);
-    } catch {
-      // ignore
-    }
     setIconNoticePending(false);
     dismiss();
   };
@@ -132,7 +125,7 @@ export const ServiceWorkerRegistration = () => {
         {outdated && (
           <button
             type="button"
-            onClick={() => applyUpdate(latestIconVersion)}
+            onClick={applyUpdate}
             className="rounded-lg px-3 py-1.5 text-[12.5px] font-bold"
             style={{ background: '#EFFCF4', color: '#132119' }}
           >

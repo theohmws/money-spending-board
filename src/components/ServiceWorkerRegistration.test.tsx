@@ -132,19 +132,34 @@ describe('ServiceWorkerRegistration', () => {
     expect(reloadSpy).toHaveBeenCalled();
   });
 
-  it('shows the icon notice after updating past an icon change, until dismissed', () => {
-    jest.replaceProperty(process.env, 'NODE_ENV', 'production');
-    // CURRENT_ICON_VERSION is '' under jest (no next.config env).
-    localStorage.setItem('msb_icon_notice', '');
-    global.fetch = jest.fn().mockRejectedValue(new Error('offline'));
+  describe('icon notice', () => {
+    beforeEach(() => {
+      jest.replaceProperty(process.env, 'NODE_ENV', 'production');
+      localStorage.removeItem('msb_icon_seen');
+      global.fetch = jest.fn().mockRejectedValue(new Error('offline'));
+    });
 
-    render(<ServiceWorkerRegistration />);
+    it('stays silent on the first load and records the icon version', () => {
+      render(<ServiceWorkerRegistration />);
 
-    expect(screen.getByText(/ไอคอนแอป/)).toBeInTheDocument();
+      expect(screen.queryByText(/ไอคอนแอป/)).not.toBeInTheDocument();
+      // CURRENT_ICON_VERSION is '' under jest (no next.config env).
+      expect(localStorage.getItem('msb_icon_seen')).toBe('');
+    });
 
-    fireEvent.click(screen.getByRole('button', { name: /ปิด/ }));
+    it('shows once when the icon version changed since the last load', () => {
+      localStorage.setItem('msb_icon_seen', 'old');
 
-    expect(screen.queryByText(/ไอคอนแอป/)).not.toBeInTheDocument();
-    expect(localStorage.getItem('msb_icon_notice')).toBeNull();
+      const { unmount } = render(<ServiceWorkerRegistration />);
+
+      expect(screen.getByText(/ไอคอนแอป/)).toBeInTheDocument();
+
+      fireEvent.click(screen.getByRole('button', { name: /ปิด/ }));
+      expect(screen.queryByText(/ไอคอนแอป/)).not.toBeInTheDocument();
+
+      unmount();
+      render(<ServiceWorkerRegistration />);
+      expect(screen.queryByText(/ไอคอนแอป/)).not.toBeInTheDocument();
+    });
   });
 });

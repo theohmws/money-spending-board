@@ -56,7 +56,6 @@ export const useUpdateCheck = (enabled: boolean) => {
   return {
     outdated,
     iconOutdated,
-    latestIconVersion: remote?.iconVersion ?? '',
     dismissed,
     dismiss,
   };
