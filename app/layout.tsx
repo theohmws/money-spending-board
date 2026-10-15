@@ -6,6 +6,7 @@ import type { ReactNode } from 'react';
 
 import { ServiceWorkerRegistration } from '@/components/ServiceWorkerRegistration';
 import { AppConfig } from '@/utils/AppConfig';
+import { iconUrl } from '@/utils/iconUrl';
 
 const fontPlex = IBM_Plex_Sans({
   subsets: ['latin'],
@@ -37,10 +38,10 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: iconUrl('/favicon-32x32.png'), sizes: '32x32', type: 'image/png' },
+      { url: iconUrl('/favicon-16x16.png'), sizes: '16x16', type: 'image/png' },
     ],
-    apple: '/apple-touch-icon.png',
+    apple: iconUrl('/apple-touch-icon.png'),
   },
   openGraph: {
     title: AppConfig.title,
