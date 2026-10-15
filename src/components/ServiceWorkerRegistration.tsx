@@ -13,13 +13,23 @@ const COPY = {
   th: {
     update: 'มีเวอร์ชันใหม่ของแอป',
     reload: 'อัปเดต',
-    icon: 'ไอคอนแอปมีการเปลี่ยนแปลง ลบแอปออกจากหน้าจอหลักแล้วเพิ่มใหม่เพื่อดูไอคอนใหม่',
+    icon: 'ไอคอนแอปมีการเปลี่ยนแปลง หากต้องการเห็นไอคอนใหม่ ให้เพิ่มแอปลงหน้าจอโฮมใหม่:',
+    iconSteps: [
+      'กดไอคอนแอปค้างบนหน้าจอโฮม แล้วเลือก “ลบแอป”',
+      'เปิด Safari แล้วเข้าเว็บนี้อีกครั้ง',
+      'กดปุ่มแชร์ แล้วเลือก “เพิ่มลงหน้าจอโฮม”',
+    ],
     dismiss: 'ปิด',
   },
   en: {
     update: 'A new version of the app is available.',
     reload: 'Update',
-    icon: 'The app icon has changed. Remove the app from your home screen and add it again to see it.',
+    icon: 'The app icon has changed. To see the new one, add the app to your home screen again:',
+    iconSteps: [
+      'Press and hold the app icon on your home screen, then choose “Remove App”.',
+      'Open Safari and visit this site again.',
+      'Tap the Share button, then choose “Add to Home Screen”.',
+    ],
     dismiss: 'Dismiss',
   },
 };
@@ -117,11 +127,19 @@ export const ServiceWorkerRegistration = () => {
         className="fixed inset-x-0 bottom-0 z-50 flex flex-wrap items-center justify-center gap-3 px-4 py-3 text-center text-[13.5px]"
         style={{ background: '#132119', color: '#EFFCF4' }}
       >
-        <span>
-          {[outdated && copy.update, showIcon && copy.icon]
-            .filter(Boolean)
-            .join(' ')}
-        </span>
+        <div className="flex max-w-md flex-col gap-1.5">
+          {outdated && <span>{copy.update}</span>}
+          {showIcon && (
+            <>
+              <span>{copy.icon}</span>
+              <ol className="list-inside list-decimal text-left text-[12.5px] leading-relaxed">
+                {copy.iconSteps.map((step) => (
+                  <li key={step}>{step}</li>
+                ))}
+              </ol>
+            </>
+          )}
+        </div>
         {outdated && (
           <button
             type="button"

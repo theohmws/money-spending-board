@@ -142,7 +142,9 @@ describe('ServiceWorkerRegistration', () => {
     it('stays silent on the first load and records the icon version', () => {
       render(<ServiceWorkerRegistration />);
 
-      expect(screen.queryByText(/ไอคอนแอป/)).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(/ไอคอนแอปมีการเปลี่ยนแปลง/)
+      ).not.toBeInTheDocument();
       // CURRENT_ICON_VERSION is '' under jest (no next.config env).
       expect(localStorage.getItem('msb_icon_seen')).toBe('');
     });
@@ -152,14 +154,19 @@ describe('ServiceWorkerRegistration', () => {
 
       const { unmount } = render(<ServiceWorkerRegistration />);
 
-      expect(screen.getByText(/ไอคอนแอป/)).toBeInTheDocument();
+      expect(screen.getByText(/ไอคอนแอปมีการเปลี่ยนแปลง/)).toBeInTheDocument();
+      expect(screen.getAllByRole('listitem')).toHaveLength(3);
 
       fireEvent.click(screen.getByRole('button', { name: /ปิด/ }));
-      expect(screen.queryByText(/ไอคอนแอป/)).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(/ไอคอนแอปมีการเปลี่ยนแปลง/)
+      ).not.toBeInTheDocument();
 
       unmount();
       render(<ServiceWorkerRegistration />);
-      expect(screen.queryByText(/ไอคอนแอป/)).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(/ไอคอนแอปมีการเปลี่ยนแปลง/)
+      ).not.toBeInTheDocument();
     });
   });
 });
