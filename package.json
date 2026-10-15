@@ -1,6 +1,6 @@
 {
   "name": "money-spending-board",
-  "version": "1.9.1",
+  "version": "1.9.2",
   "iconVersion": 2,
   "engines": {
     "node": ">=20"

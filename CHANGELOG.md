@@ -1,3 +1,10 @@
+## [1.9.2](https://github.com/theohmws/money-spending-board/compare/v1.9.1...v1.9.2) (2026-10-15)
+
+
+### Bug Fixes
+
+* **pwa:** cache-bust icon URLs with iconVersion ([#40](https://github.com/theohmws/money-spending-board/issues/40)) ([dc94e75](https://github.com/theohmws/money-spending-board/commit/dc94e75587be3e414e6dd0770bfd186b94972e1a))
+
 ## [1.9.1](https://github.com/theohmws/money-spending-board/compare/v1.9.0...v1.9.1) (2026-10-14)
 
 
