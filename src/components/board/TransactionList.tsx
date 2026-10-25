@@ -1,10 +1,10 @@
-import { ChevronDown, Plus, Upload, X } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { ChevronDown, Image as ImageIcon, Plus, Upload, X } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { useSpendingBoard } from '@/hooks/useSpendingBoard';
-import { fmtSignedMoney } from '@/utils/boardHelpers';
+import { fmtSignedMoney, isIosDevice } from '@/utils/boardHelpers';
 
 type Props = Pick<
   ReturnType<typeof useSpendingBoard>,
@@ -41,6 +41,13 @@ export const TransactionList = ({
   const sourceColor = isDark
     ? badgeColors.source.color
     : badgeColors.source.dark;
+
+  // Slip links only make sense on an iPhone (the Shortcut + the photo live
+  // there); checked after mount so server/static HTML and hydration match.
+  const [isIos, setIsIos] = useState(false);
+  useEffect(() => {
+    setIsIos(isIosDevice(navigator.userAgent, navigator.maxTouchPoints));
+  }, []);
 
   const [collapsedDays, setCollapsedDays] = useState<Record<string, boolean>>(
     {}
@@ -222,6 +229,17 @@ export const TransactionList = ({
                     >
                       {tx.amountLabel}
                     </div>
+                    {tx.slipUrl && isIos && (
+                      <a
+                        href={tx.slipUrl}
+                        onClick={(e) => e.stopPropagation()}
+                        aria-label={t.openSlipLabel}
+                        title={t.openSlipLabel}
+                        className="inline-flex size-6 items-center justify-center rounded-md text-muted-foreground outline-none hover:bg-muted focus-visible:ring focus-visible:ring-ring/50"
+                      >
+                        <ImageIcon className="size-4" />
+                      </a>
+                    )}
                     <Button
                       variant="ghost"
                       size="icon-xs"

@@ -41,7 +41,15 @@ export type Transaction = {
   // true for an imported row the user hasn't cleaned up in the preview
   // step yet; always false for a manually-entered row.
   needs_review: boolean;
+  // The slip photo's creation timestamp, set only by the Shortcuts slip
+  // upload. Lets the iPhone that took the photo reopen it (see
+  // `slipShortcutUrl`); meaningless on any other device.
+  slip_ref?: string | null;
 };
+
+// Name of the companion Shortcut (finds the photo by `slip_ref`, shows it)
+// that the user creates once on their iPhone.
+export const SLIP_VIEWER_SHORTCUT = 'Open Slip';
 
 export type ImportCategoryRule = {
   id: string;
@@ -333,6 +341,8 @@ export type I18nDict = {
   apiUsageUpdateHint: string;
   shortcutBadgeLabel: string;
   slipBadgeLabel: string;
+  openSlipLabel: string;
+  apiUsageSlipViewer: string;
 };
 
 export const I18N: Record<Lang, I18nDict> = {
@@ -555,6 +565,8 @@ export const I18N: Record<Lang, I18nDict> = {
       'ต้องมีแค่ amount ส่วนช่องอื่นไม่บังคับ ถ้าใส่ id จะเป็นการแก้ไขรายการเดิมแทน โดยเปลี่ยนเฉพาะช่องที่ส่งมา:',
     shortcutBadgeLabel: 'Shortcut',
     slipBadgeLabel: 'สลิป',
+    openSlipLabel: 'เปิดรูปสลิป',
+    apiUsageSlipViewer: `เปิดรูปสลิปจากรายการ: สร้าง Shortcut ชื่อ "${SLIP_VIEWER_SHORTCUT}" ที่รับข้อความ → ค้นหารูปภาพที่ "วันที่สร้าง" ตรงกับข้อความนั้น → แสดงผล (Quick Look) ปุ่มจะแสดงเฉพาะบน iPhone และใช้ได้เฉพาะเครื่องที่เก็บรูปสลิปไว้`,
   },
   en: {
     loadingLabel: 'Loading…',
@@ -778,5 +790,7 @@ export const I18N: Record<Lang, I18nDict> = {
       'Only amount is required. Include an id to update an existing transaction instead — only the fields you send are changed:',
     shortcutBadgeLabel: 'Shortcut',
     slipBadgeLabel: 'Slip',
+    openSlipLabel: 'Open slip photo',
+    apiUsageSlipViewer: `Opening a slip photo from a transaction: create a Shortcut named "${SLIP_VIEWER_SHORTCUT}" that takes text input → Find Photos where Date Created matches that text → Quick Look. The button only shows on iPhone and only works on the device that holds the slip photo.`,
   },
 };

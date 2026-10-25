@@ -1,4 +1,29 @@
-import { previousMonthKey } from '@/utils/boardHelpers';
+import {
+  isIosDevice,
+  previousMonthKey,
+  slipShortcutUrl,
+} from '@/utils/boardHelpers';
+
+describe('slipShortcutUrl', () => {
+  it('encodes the shortcut name and photo timestamp', () => {
+    expect(slipShortcutUrl('Open Slip', '2026-09-28T14:05:00+07:00')).toBe(
+      'shortcuts://run-shortcut?name=Open%20Slip&input=text&text=2026-09-28T14%3A05%3A00%2B07%3A00'
+    );
+  });
+});
+
+describe('isIosDevice', () => {
+  it('detects iPhone and iPadOS-as-Mac, but not desktop Mac or Android', () => {
+    expect(isIosDevice('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0)')).toBe(true);
+    expect(isIosDevice('Mozilla/5.0 (Macintosh; Intel Mac OS X)', 5)).toBe(
+      true
+    );
+    expect(isIosDevice('Mozilla/5.0 (Macintosh; Intel Mac OS X)', 0)).toBe(
+      false
+    );
+    expect(isIosDevice('Mozilla/5.0 (Linux; Android 14)')).toBe(false);
+  });
+});
 
 describe('previousMonthKey', () => {
   it('returns the prior month within the same year', () => {

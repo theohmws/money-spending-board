@@ -207,6 +207,9 @@ export const ApiTokensModal = ({
             {t.apiUsageUpdateHint}
           </p>
           <pre className={codeClass}>{EXAMPLE_UPDATE}</pre>
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            {t.apiUsageSlipViewer}
+          </p>
         </section>
       </DialogContent>
     </Dialog>
