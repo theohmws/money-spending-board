@@ -154,6 +154,11 @@ Deno.serve(async (req) => {
         typeof slipBody?.ts === 'string' && slipBody.ts.trim()
           ? slipBody.ts.trim()
           : null,
+      // Which device's Photos library holds it (the Shortcut's "Device Name").
+      slip_device:
+        typeof slipBody?.device === 'string' && slipBody.device.trim()
+          ? slipBody.device.trim().slice(0, 100)
+          : null,
     };
     const { data, error } = await admin
       .from('transactions')

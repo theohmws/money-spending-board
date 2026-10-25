@@ -45,6 +45,9 @@ export type Transaction = {
   // upload. Lets the iPhone that took the photo reopen it (see
   // `slipShortcutUrl`); meaningless on any other device.
   slip_ref?: string | null;
+  // Name of the device that uploaded the slip. null on older rows, which
+  // therefore can't be tied to one device.
+  slip_device?: string | null;
 };
 
 // Name of the companion Shortcut (finds the photo by `slip_ref`, shows it)
@@ -343,6 +346,9 @@ export type I18nDict = {
   slipBadgeLabel: string;
   openSlipLabel: string;
   apiUsageSlipViewer: string;
+  deviceNameLabel: string;
+  deviceNamePlaceholder: string;
+  deviceNameHint: string;
 };
 
 export const I18N: Record<Lang, I18nDict> = {
@@ -566,7 +572,11 @@ export const I18N: Record<Lang, I18nDict> = {
     shortcutBadgeLabel: 'Shortcut',
     slipBadgeLabel: 'สลิป',
     openSlipLabel: 'เปิดรูปสลิป',
-    apiUsageSlipViewer: `เปิดรูปสลิปจากรายการ: สร้าง Shortcut ชื่อ "${SLIP_VIEWER_SHORTCUT}" ที่รับข้อความ → ค้นหารูปภาพที่ "วันที่สร้าง" ตรงกับข้อความนั้น → แสดงผล (Quick Look) ปุ่มจะแสดงเฉพาะบน iPhone และใช้ได้เฉพาะเครื่องที่เก็บรูปสลิปไว้`,
+    apiUsageSlipViewer: `เปิดรูปสลิปจากรายการ: สร้าง Shortcut ชื่อ "${SLIP_VIEWER_SHORTCUT}" ที่รับข้อความ → ค้นหารูปภาพที่ "วันที่สร้าง" ตรงกับข้อความนั้น → แสดงผล (Quick Look) ปุ่มจะแสดงเฉพาะบน iPhone และใช้ได้เฉพาะเครื่องที่เก็บรูปสลิปไว้ — เพิ่มฟิลด์ "device" (การทำงาน "รับรายละเอียดอุปกรณ์" → ชื่ออุปกรณ์) ในคำขอ Upload Bank Slip ด้วย`,
+    deviceNameLabel: 'ชื่ออุปกรณ์เครื่องนี้',
+    deviceNamePlaceholder: 'เช่น iPhone ของ Apisith',
+    deviceNameHint:
+      'ตั้งค่า → ทั่วไป → เกี่ยวกับ → ชื่อ ใส่ให้ตรงกับชื่อที่ Shortcut ส่งมา เพื่อให้ปุ่มเปิดรูปสลิปแสดงเฉพาะเครื่องที่เก็บรูปไว้ (เก็บไว้ในเบราว์เซอร์นี้เท่านั้น)',
   },
   en: {
     loadingLabel: 'Loading…',
@@ -791,6 +801,10 @@ export const I18N: Record<Lang, I18nDict> = {
     shortcutBadgeLabel: 'Shortcut',
     slipBadgeLabel: 'Slip',
     openSlipLabel: 'Open slip photo',
-    apiUsageSlipViewer: `Opening a slip photo from a transaction: create a Shortcut named "${SLIP_VIEWER_SHORTCUT}" that takes text input → Find Photos where Date Created matches that text → Quick Look. The button only shows on iPhone and only works on the device that holds the slip photo.`,
+    apiUsageSlipViewer: `Opening a slip photo from a transaction: create a Shortcut named "${SLIP_VIEWER_SHORTCUT}" that takes text input → Find Photos where Date Created matches that text → Quick Look. The button only shows on iPhone and only works on the device that holds the slip photo. Also add a "device" field (Get Device Details → Device Name) to the Upload Bank Slip request.`,
+    deviceNameLabel: "This device's name",
+    deviceNamePlaceholder: "e.g. Apisith's iPhone",
+    deviceNameHint:
+      'Settings → General → About → Name. Enter it exactly as the Shortcut sends it so the slip button shows only on the device that holds the photo (stored in this browser only).',
   },
 };

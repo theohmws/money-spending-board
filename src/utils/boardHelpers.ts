@@ -32,6 +32,26 @@ export const slipShortcutUrl = (shortcutName: string, slipRef: string) =>
     shortcutName
   )}&input=text&text=${encodeURIComponent(slipRef)}`;
 
+const normalizeDeviceName = (name: string) =>
+  name
+    .normalize('NFKC')
+    .replace(/[’‘]/g, "'")
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+
+// A slip photo can only be opened on the device that uploaded it. Rows that
+// predate `slip_device` have no device to compare, so they keep the old
+// behaviour (offered on any iOS device).
+export const slipLinkAvailable = (
+  slipDevice: string | null | undefined,
+  thisDevice: string
+) => {
+  if (!slipDevice) return true;
+  if (!thisDevice.trim()) return false;
+  return normalizeDeviceName(slipDevice) === normalizeDeviceName(thisDevice);
+};
+
 export const isIosDevice = (userAgent: string, maxTouchPoints = 0) =>
   /iPhone|iPad|iPod/.test(userAgent) ||
   // iPadOS 13+ reports as a Mac.

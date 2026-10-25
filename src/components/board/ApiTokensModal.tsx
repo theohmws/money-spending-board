@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import type { useSpendingBoard } from '@/hooks/useSpendingBoard';
 
 type Props = Pick<
@@ -29,6 +30,8 @@ type Props = Pick<
   | 'dismissRevealedToken'
   | 'apiTokenError'
   | 'shortcutEndpoint'
+  | 'deviceName'
+  | 'onDeviceNameChange'
   | 'isOnline'
 >;
 
@@ -61,6 +64,8 @@ export const ApiTokensModal = ({
   dismissRevealedToken,
   apiTokenError,
   shortcutEndpoint,
+  deviceName,
+  onDeviceNameChange,
   isOnline,
 }: Props) => {
   const [copied, setCopied] = useState<'endpoint' | 'token' | null>(null);
@@ -209,6 +214,16 @@ export const ApiTokensModal = ({
           <pre className={codeClass}>{EXAMPLE_UPDATE}</pre>
           <p className="text-sm leading-relaxed text-muted-foreground">
             {t.apiUsageSlipViewer}
+          </p>
+          <Label htmlFor="device-name">{t.deviceNameLabel}</Label>
+          <Input
+            id="device-name"
+            value={deviceName}
+            onChange={(e) => onDeviceNameChange(e.target.value)}
+            placeholder={t.deviceNamePlaceholder}
+          />
+          <p className="text-xs leading-relaxed text-muted-foreground">
+            {t.deviceNameHint}
           </p>
         </section>
       </DialogContent>

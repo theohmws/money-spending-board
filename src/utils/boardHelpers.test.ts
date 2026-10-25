@@ -1,6 +1,7 @@
 import {
   isIosDevice,
   previousMonthKey,
+  slipLinkAvailable,
   slipShortcutUrl,
 } from '@/utils/boardHelpers';
 
@@ -9,6 +10,21 @@ describe('slipShortcutUrl', () => {
     expect(slipShortcutUrl('Open Slip', '2026-09-28T14:05:00+07:00')).toBe(
       'shortcuts://run-shortcut?name=Open%20Slip&input=text&text=2026-09-28T14%3A05%3A00%2B07%3A00'
     );
+  });
+});
+
+describe('slipLinkAvailable', () => {
+  it('shows legacy rows (no device recorded) on any device', () => {
+    expect(slipLinkAvailable(null, '')).toBe(true);
+    expect(slipLinkAvailable(undefined, 'iPad')).toBe(true);
+  });
+
+  it('shows device-tagged rows only on the matching device', () => {
+    expect(slipLinkAvailable('Apisith’s iPhone', "apisith's  iPhone ")).toBe(
+      true
+    );
+    expect(slipLinkAvailable("Apisith's iPhone", "Apisith's iPad")).toBe(false);
+    expect(slipLinkAvailable("Apisith's iPhone", '')).toBe(false);
   });
 });
 

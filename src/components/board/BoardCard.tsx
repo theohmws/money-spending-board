@@ -338,6 +338,8 @@ export const BoardCard = () => {
         dismissRevealedToken={board.dismissRevealedToken}
         apiTokenError={board.apiTokenError}
         shortcutEndpoint={board.shortcutEndpoint}
+        deviceName={board.deviceName}
+        onDeviceNameChange={board.onDeviceNameChange}
         isOnline={board.isOnline}
       />
     </div>
