@@ -1,7 +1,7 @@
 ## 1. Schema
 - [x] 1.1 Migration `20261025090000_transactions_slip_ref.sql`: nullable `slip_ref text` on `spending_board.transactions`.
 - [x] 1.1b Migration `20261025100000_transactions_slip_device.sql`: nullable `slip_device text`.
-- [ ] 1.2 Apply the migration to the Supabase project (Supabase MCP was unreachable in the build session).
+- [x] 1.2 Applied both migrations via Supabase MCP to `yjphlaymjjmbinhmdcqj` (`transactions_slip_ref`, `transactions_slip_device`); columns verified with `list_tables`.
 
 ## 2. Edge function
 - [x] 2.1 `index.ts`: store trimmed `ts` as `slip_ref` on slip rows.
