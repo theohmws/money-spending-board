@@ -41,7 +41,18 @@ export type Transaction = {
   // true for an imported row the user hasn't cleaned up in the preview
   // step yet; always false for a manually-entered row.
   needs_review: boolean;
+  // The slip photo's creation timestamp, set only by the Shortcuts slip
+  // upload. Lets the iPhone that took the photo reopen it (see
+  // `slipShortcutUrl`); meaningless on any other device.
+  slip_ref?: string | null;
+  // Name of the device that uploaded the slip. null on older rows, which
+  // therefore can't be tied to one device.
+  slip_device?: string | null;
 };
+
+// Name of the companion Shortcut (finds the photo by `slip_ref`, shows it)
+// that the user creates once on their iPhone.
+export const SLIP_VIEWER_SHORTCUT = 'Open Slip';
 
 export type ImportCategoryRule = {
   id: string;
@@ -333,6 +344,11 @@ export type I18nDict = {
   apiUsageUpdateHint: string;
   shortcutBadgeLabel: string;
   slipBadgeLabel: string;
+  openSlipLabel: string;
+  apiUsageSlipViewer: string;
+  deviceCodeLabel: string;
+  deviceCodePlaceholder: string;
+  deviceCodeHint: string;
 };
 
 export const I18N: Record<Lang, I18nDict> = {
@@ -555,6 +571,12 @@ export const I18N: Record<Lang, I18nDict> = {
       'ต้องมีแค่ amount ส่วนช่องอื่นไม่บังคับ ถ้าใส่ id จะเป็นการแก้ไขรายการเดิมแทน โดยเปลี่ยนเฉพาะช่องที่ส่งมา:',
     shortcutBadgeLabel: 'Shortcut',
     slipBadgeLabel: 'สลิป',
+    openSlipLabel: 'เปิดรูปสลิป',
+    apiUsageSlipViewer: `เปิดรูปสลิปจากรายการ: สร้าง Shortcut ชื่อ "${SLIP_VIEWER_SHORTCUT}" ที่รับข้อความ → ค้นหารูปภาพที่ "วันที่สร้าง" ตรงกับข้อความนั้น → แสดงผล (Quick Look) ปุ่มจะแสดงเฉพาะบน iPhone และใช้ได้เฉพาะเครื่องที่เก็บรูปสลิปไว้ — ใส่ฟิลด์ "device" (รหัสอุปกรณ์) ในคำขอ Upload Bank Slip ด้วย`,
+    deviceCodeLabel: 'รหัสอุปกรณ์เครื่องนี้',
+    deviceCodePlaceholder: 'เช่น 1761370000-482913',
+    deviceCodeHint:
+      'ใน Shortcut Upload Bank Slip: ดึงไฟล์ device-code.txt จาก “ในเครื่อง iPhone” (ไม่ใช่ iCloud Drive ไม่งั้นทุกเครื่องจะได้รหัสเดียวกัน) ถ้ายังไม่มี ให้สร้างข้อความ “วันที่ปัจจุบัน (Unix) - เลขสุ่ม” แล้วบันทึกเป็นไฟล์นั้น จากนั้นส่งรหัสเป็นฟิลด์ "device" และนำรหัสเดียวกันมาวางที่นี่ ปุ่มเปิดรูปสลิปจะแสดงเฉพาะเครื่องที่รหัสตรงกัน (เก็บไว้ในเบราว์เซอร์นี้เท่านั้น)',
   },
   en: {
     loadingLabel: 'Loading…',
@@ -778,5 +800,11 @@ export const I18N: Record<Lang, I18nDict> = {
       'Only amount is required. Include an id to update an existing transaction instead — only the fields you send are changed:',
     shortcutBadgeLabel: 'Shortcut',
     slipBadgeLabel: 'Slip',
+    openSlipLabel: 'Open slip photo',
+    apiUsageSlipViewer: `Opening a slip photo from a transaction: create a Shortcut named "${SLIP_VIEWER_SHORTCUT}" that takes text input → Find Photos where Date Created matches that text → Quick Look. The button only shows on iPhone and only works on the device that holds the slip photo. Also add a "device" field (this device's code) to the Upload Bank Slip request.`,
+    deviceCodeLabel: "This device's code",
+    deviceCodePlaceholder: 'e.g. 1761370000-482913',
+    deviceCodeHint:
+      'In the Upload Bank Slip Shortcut: Get File device-code.txt from On My iPhone (not iCloud Drive, or every device would share one code). If it is missing, build Text "current date (Unix) - random number" and save it as that file. Send the code as the "device" field and paste the same code here. The slip button then shows only on the device whose code matches (stored in this browser only).',
   },
 };

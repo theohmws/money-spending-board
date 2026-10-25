@@ -23,6 +23,41 @@ export const uid = () =>
 
 export const todayStr = () => new Date().toISOString().slice(0, 10);
 
+// Deep link that runs the user's companion Shortcut with the slip's photo
+// timestamp as text input. iOS gives no URL for a specific Photos asset, so
+// the Shortcut does the lookup — which is also why it only works on the
+// iPhone that holds the photo.
+export const slipShortcutUrl = (shortcutName: string, slipRef: string) =>
+  `shortcuts://run-shortcut?name=${encodeURIComponent(
+    shortcutName
+  )}&input=text&text=${encodeURIComponent(slipRef)}`;
+
+const normalizeDeviceCode = (name: string) =>
+  name
+    .normalize('NFKC')
+    .replace(/[’‘]/g, "'")
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+
+// `thisDevice` is the code the user pasted for this browser.
+// A slip photo can only be opened on the device that uploaded it. Rows that
+// predate `slip_device` have no device to compare, so they keep the old
+// behaviour (offered on any iOS device).
+export const slipLinkAvailable = (
+  slipDevice: string | null | undefined,
+  thisDevice: string
+) => {
+  if (!slipDevice) return true;
+  if (!thisDevice.trim()) return false;
+  return normalizeDeviceCode(slipDevice) === normalizeDeviceCode(thisDevice);
+};
+
+export const isIosDevice = (userAgent: string, maxTouchPoints = 0) =>
+  /iPhone|iPad|iPod/.test(userAgent) ||
+  // iPadOS 13+ reports as a Mac.
+  (/Macintosh/.test(userAgent) && maxTouchPoints > 1);
+
 // U+2212 MINUS SIGN, not a hyphen — a hyphen sits at half the cap-height and
 // collides visually with the tall, already-crossed ฿ glyph right next to it
 // (reads like a strikethrough). The real minus sign is wider and vertically

@@ -11,6 +11,7 @@ import {
   IMPORT_SOURCES,
   useCreditCardImport,
 } from '@/hooks/useCreditCardImport';
+import { useDeviceCode } from '@/hooks/useDeviceCode';
 import { useI18n } from '@/hooks/useI18n';
 import { useImportCategoryRules } from '@/hooks/useImportCategoryRules';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
@@ -27,12 +28,15 @@ import {
   GROUPS,
   ICON_MAP,
   PALETTE,
+  SLIP_VIEWER_SHORTCUT,
 } from '@/utils/BoardConfig';
 import {
   fmtMoney,
   fmtSignedMoney,
   monthKey,
   previousMonthKey,
+  slipLinkAvailable,
+  slipShortcutUrl,
   todayStr,
 } from '@/utils/boardHelpers';
 
@@ -94,6 +98,7 @@ export const useSpendingBoard = () => {
     t
   );
   const apiTokensSlice = useApiTokens(clientRefLocal, resolvedUserId, t);
+  const { deviceCode, onDeviceCodeChange } = useDeviceCode();
   const creditCardImportSlice = useCreditCardImport(
     t,
     txSlice.transactions,
@@ -474,6 +479,10 @@ export const useSpendingBoard = () => {
             tx.type === 'income' ? 'var(--chart-2)' : themeTokens.text,
           needsReview: tx.needs_review,
           sourceLabel: sourceLabelFor(tx.source),
+          slipUrl:
+            tx.slip_ref && slipLinkAvailable(tx.slip_device, deviceCode)
+              ? slipShortcutUrl(SLIP_VIEWER_SHORTCUT, tx.slip_ref)
+              : null,
           ariaLabel: tx.needs_review
             ? `${title}, ${t.needsReviewBadgeAriaSuffix}`
             : title,
@@ -490,6 +499,7 @@ export const useSpendingBoard = () => {
     theme,
     deleteTx,
     openEditModal,
+    deviceCode,
     t,
   ]);
 
@@ -846,6 +856,8 @@ export const useSpendingBoard = () => {
     dismissRevealedToken,
     apiTokenError,
     shortcutEndpoint,
+    deviceCode,
+    onDeviceCodeChange,
 
     startImport,
     importStatus,

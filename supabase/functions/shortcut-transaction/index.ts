@@ -149,6 +149,17 @@ Deno.serve(async (req) => {
       source: slipSource(slip.bank, album || null),
       // OCR is a best guess — flag it for the board's "Needs review" filter.
       needs_review: true,
+      // The photo's own timestamp, so the board can reopen it on this phone.
+      slip_ref:
+        typeof slipBody?.ts === 'string' && slipBody.ts.trim()
+          ? slipBody.ts.trim()
+          : null,
+      // Which device's Photos library holds it: the code that device's
+      // Shortcut keeps in a local file and sends as `device`.
+      slip_device:
+        typeof slipBody?.device === 'string' && slipBody.device.trim()
+          ? slipBody.device.trim().slice(0, 100)
+          : null,
     };
     const { data, error } = await admin
       .from('transactions')
