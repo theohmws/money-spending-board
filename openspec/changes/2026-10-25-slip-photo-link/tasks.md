@@ -6,7 +6,7 @@
 ## 2. Edge function
 - [x] 2.1 `index.ts`: store trimmed `ts` as `slip_ref` on slip rows.
 - [x] 2.1b `index.ts`: store trimmed `device` as `slip_device`.
-- [ ] 2.2 Redeploy `shortcut-transaction`.
+- [x] 2.2 Redeployed `shortcut-transaction` via Supabase MCP (v6, `verify_jwt: false`, ACTIVE); deployed source read back and checked.
 
 ## 3. Board UI
 - [x] 3.1 `Transaction.slip_ref?` and `SLIP_VIEWER_SHORTCUT` in `BoardConfig.ts`.
