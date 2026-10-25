@@ -22,7 +22,7 @@ The board SHALL show an "Open slip photo" button on a transaction row that has a
 - **THEN** the row shows the button and activating it does not open the edit modal
 
 #### Scenario: Row uploaded from a different device
-- **WHEN** a row's `slip_device` differs from the device name entered on this device (or none is entered)
+- **WHEN** a row's `slip_device` differs from the device code entered on this device (or none is entered)
 - **THEN** no button is shown
 
 #### Scenario: Row uploaded before device tracking

@@ -11,7 +11,7 @@ import {
   IMPORT_SOURCES,
   useCreditCardImport,
 } from '@/hooks/useCreditCardImport';
-import { useDeviceName } from '@/hooks/useDeviceName';
+import { useDeviceCode } from '@/hooks/useDeviceCode';
 import { useI18n } from '@/hooks/useI18n';
 import { useImportCategoryRules } from '@/hooks/useImportCategoryRules';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
@@ -98,7 +98,7 @@ export const useSpendingBoard = () => {
     t
   );
   const apiTokensSlice = useApiTokens(clientRefLocal, resolvedUserId, t);
-  const { deviceName, onDeviceNameChange } = useDeviceName();
+  const { deviceCode, onDeviceCodeChange } = useDeviceCode();
   const creditCardImportSlice = useCreditCardImport(
     t,
     txSlice.transactions,
@@ -480,7 +480,7 @@ export const useSpendingBoard = () => {
           needsReview: tx.needs_review,
           sourceLabel: sourceLabelFor(tx.source),
           slipUrl:
-            tx.slip_ref && slipLinkAvailable(tx.slip_device, deviceName)
+            tx.slip_ref && slipLinkAvailable(tx.slip_device, deviceCode)
               ? slipShortcutUrl(SLIP_VIEWER_SHORTCUT, tx.slip_ref)
               : null,
           ariaLabel: tx.needs_review
@@ -499,7 +499,7 @@ export const useSpendingBoard = () => {
     theme,
     deleteTx,
     openEditModal,
-    deviceName,
+    deviceCode,
     t,
   ]);
 
@@ -856,8 +856,8 @@ export const useSpendingBoard = () => {
     dismissRevealedToken,
     apiTokenError,
     shortcutEndpoint,
-    deviceName,
-    onDeviceNameChange,
+    deviceCode,
+    onDeviceCodeChange,
 
     startImport,
     importStatus,

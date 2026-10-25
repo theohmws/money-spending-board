@@ -30,8 +30,8 @@ type Props = Pick<
   | 'dismissRevealedToken'
   | 'apiTokenError'
   | 'shortcutEndpoint'
-  | 'deviceName'
-  | 'onDeviceNameChange'
+  | 'deviceCode'
+  | 'onDeviceCodeChange'
   | 'isOnline'
 >;
 
@@ -64,8 +64,8 @@ export const ApiTokensModal = ({
   dismissRevealedToken,
   apiTokenError,
   shortcutEndpoint,
-  deviceName,
-  onDeviceNameChange,
+  deviceCode,
+  onDeviceCodeChange,
   isOnline,
 }: Props) => {
   const [copied, setCopied] = useState<'endpoint' | 'token' | null>(null);
@@ -215,15 +215,15 @@ export const ApiTokensModal = ({
           <p className="text-sm leading-relaxed text-muted-foreground">
             {t.apiUsageSlipViewer}
           </p>
-          <Label htmlFor="device-name">{t.deviceNameLabel}</Label>
+          <Label htmlFor="device-code">{t.deviceCodeLabel}</Label>
           <Input
-            id="device-name"
-            value={deviceName}
-            onChange={(e) => onDeviceNameChange(e.target.value)}
-            placeholder={t.deviceNamePlaceholder}
+            id="device-code"
+            value={deviceCode}
+            onChange={(e) => onDeviceCodeChange(e.target.value)}
+            placeholder={t.deviceCodePlaceholder}
           />
           <p className="text-xs leading-relaxed text-muted-foreground">
-            {t.deviceNameHint}
+            {t.deviceCodeHint}
           </p>
         </section>
       </DialogContent>

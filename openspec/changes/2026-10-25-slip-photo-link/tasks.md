@@ -14,8 +14,8 @@
 - [x] 3.3 `transactionRows` exposes `slipUrl`; `TransactionList` renders the iOS-only button.
 - [x] 3.4 Thai/English strings (`openSlipLabel`, `apiUsageSlipViewer`) and the note in `ApiTokensModal`.
 
-- [x] 3.5 `slipLinkAvailable` + `useDeviceName` hook; device-name field in `ApiTokensModal`; `slipUrl` gated by device match; tests.
+- [x] 3.5 `slipLinkAvailable` + `useDeviceCode` hook; device-code field in `ApiTokensModal`; `slipUrl` gated by device match; tests.
 
 ## 4. Verification
 - [x] 4.1 `check-types`, `lint`, `test` pass.
-- [ ] 4.2 On a real iPhone: create the "Open Slip" Shortcut, add a `device` field (Device Name) to the upload request, enter the device name in the board, upload a slip, tap the button, confirm the photo opens (adjust the Find Photos date window if needed).
+- [ ] 4.2 On a real iPhone: create the "Open Slip" Shortcut, add a `device` field (Device Name) to the upload request, paste the device code in the board, upload a slip, tap the button, confirm the photo opens (adjust the Find Photos date window if needed).

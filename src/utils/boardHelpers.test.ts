@@ -20,11 +20,13 @@ describe('slipLinkAvailable', () => {
   });
 
   it('shows device-tagged rows only on the matching device', () => {
-    expect(slipLinkAvailable('Apisith’s iPhone', "apisith's  iPhone ")).toBe(
+    expect(slipLinkAvailable('1761370000-ABC123', ' 1761370000-abc123 ')).toBe(
       true
     );
-    expect(slipLinkAvailable("Apisith's iPhone", "Apisith's iPad")).toBe(false);
-    expect(slipLinkAvailable("Apisith's iPhone", '')).toBe(false);
+    expect(slipLinkAvailable('1761370000-ABC123', '1761370999-ZZZ999')).toBe(
+      false
+    );
+    expect(slipLinkAvailable('1761370000-ABC123', '')).toBe(false);
   });
 });
 

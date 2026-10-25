@@ -32,7 +32,7 @@ export const slipShortcutUrl = (shortcutName: string, slipRef: string) =>
     shortcutName
   )}&input=text&text=${encodeURIComponent(slipRef)}`;
 
-const normalizeDeviceName = (name: string) =>
+const normalizeDeviceCode = (name: string) =>
   name
     .normalize('NFKC')
     .replace(/[’‘]/g, "'")
@@ -40,6 +40,7 @@ const normalizeDeviceName = (name: string) =>
     .trim()
     .toLowerCase();
 
+// `thisDevice` is the code the user pasted for this browser.
 // A slip photo can only be opened on the device that uploaded it. Rows that
 // predate `slip_device` have no device to compare, so they keep the old
 // behaviour (offered on any iOS device).
@@ -49,7 +50,7 @@ export const slipLinkAvailable = (
 ) => {
   if (!slipDevice) return true;
   if (!thisDevice.trim()) return false;
-  return normalizeDeviceName(slipDevice) === normalizeDeviceName(thisDevice);
+  return normalizeDeviceCode(slipDevice) === normalizeDeviceCode(thisDevice);
 };
 
 export const isIosDevice = (userAgent: string, maxTouchPoints = 0) =>
