@@ -1,3 +1,12 @@
+# [1.10.0](https://github.com/theohmws/money-spending-board/compare/v1.9.2...v1.10.0) (2026-10-25)
+
+
+### Features
+
+* **shortcuts:** identify the slip's device with a Shortcut-generated code ([636770d](https://github.com/theohmws/money-spending-board/commit/636770d2af4b4244669cb402b65774352c72acdb))
+* **shortcuts:** link transactions to their slip photo on the uploading iPhone ([4e334f9](https://github.com/theohmws/money-spending-board/commit/4e334f9eab00e32b9aedba00993973b4b168c5b4))
+* **shortcuts:** show slip photo button only on the uploading device ([985f93d](https://github.com/theohmws/money-spending-board/commit/985f93da585e5352a114aec3f9989eb6f1b015d5))
+
 ## [1.9.2](https://github.com/theohmws/money-spending-board/compare/v1.9.1...v1.9.2) (2026-10-15)
 
 
