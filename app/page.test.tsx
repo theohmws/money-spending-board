@@ -77,7 +77,7 @@ describe('Index page', () => {
       expect(screen.getByText('แบ่งงบ 50/30/20')).toBeInTheDocument();
       expect(screen.getByText('รองรับเฉพาะ KTC')).toBeInTheDocument();
       expect(
-        screen.getByText('รองรับ K PLUS และ BBL เท่านั้น')
+        screen.getByText('รองรับ K PLUS, BBL และ TTB')
       ).toBeInTheDocument();
       expect(screen.queryByLabelText('อีเมล')).not.toBeInTheDocument();
     });
