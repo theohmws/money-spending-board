@@ -1,3 +1,11 @@
+# [1.11.0](https://github.com/theohmws/money-spending-board/compare/v1.10.0...v1.11.0) (2026-11-01)
+
+
+### Features
+
+* **landing:** name TTB Touch app and uppercase TTB label ([f65e2a0](https://github.com/theohmws/money-spending-board/commit/f65e2a0f11d0f06928cfba2a3a5bcb5bd88bde75))
+* **shortcut:** recognize ttb bank in slip OCR ([7f51477](https://github.com/theohmws/money-spending-board/commit/7f51477f4d6dc2433870a3f2d7751c9944a7f387))
+
 # [1.10.0](https://github.com/theohmws/money-spending-board/compare/v1.9.2...v1.10.0) (2026-10-25)
 
 
