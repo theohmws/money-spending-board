@@ -60,7 +60,37 @@ TUSSANEE WONGSON
 2026092821573023002929008
 สแกนเพื่อตรวจสอบ`;
 
+// ttb touch transfer slip. NOTE: synthetic, modelled on the usual ttb layout
+// (not a captured OCR sample) -- replace with a real one when available.
+const TTB_SLIP = `ttb touch
+โอนเงินสำเร็จ
+28 ก.ย. 2569 - 14:05
+จาก
+นาย สมชาย ใจดี
+ทีทีบี xxx-x-x1234-x
+ไปยัง
+น.ส. สมหญิง รักดี
+ธนาคารไทยพาณิชย์ xxx-x-x5678-x
+จำนวนเงิน
+1,250.00 บาท
+ค่าธรรมเนียม 0.00 บาท
+บันทึกช่วยจำ ค่าอาหาร
+รหัสอ้างอิง
+2026092814050012345678`;
+
 describe('parseSlipText', () => {
+  it('parses a ttb transfer slip', () => {
+    expect(parseSlipText(TTB_SLIP)).toEqual({
+      amount: 1250,
+      date: '2026-09-28',
+      reference: '2026092814050012345678',
+      memo: 'ค่าอาหาร',
+      recipient: 'น.ส. สมหญิง รักดี',
+      sender: 'นาย สมชาย ใจดี',
+      bank: 'ttb',
+    });
+  });
+
   it('parses a Bangkok Bank transfer slip', () => {
     expect(parseSlipText(BBL_SLIP)).toEqual({
       amount: 3000,

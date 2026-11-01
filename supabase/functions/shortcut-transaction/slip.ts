@@ -32,7 +32,7 @@ const BANKS: [string, RegExp][] = [
   ['SCB', /ไทยพาณิชย์|siam commercial|\bscb\b/i],
   ['KTB', /กรุงไทย|krungthai|\bktb\b/i],
   ['Krungsri', /กรุงศรี|krungsri/i],
-  ['ttb', /ทหารไทยธนชาต|tmbthanachart|\bttb\b/i],
+  ['ttb', /ทหารไทยธนชาต|ทีทีบี|ทีเอ็มบี|tmbthanachart|\bttb\b/i],
   ['GSB', /ออมสิน|\bgsb\b|\bmymo\b/i],
   ['GHB', /อาคารสงเคราะห์|\bghb\b/i],
   ['BAAC', /เพื่อการเกษตร|ธ\.ก\.ส|\bbaac\b/i],
