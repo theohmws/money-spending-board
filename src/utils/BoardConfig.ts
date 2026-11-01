@@ -402,8 +402,8 @@ export const I18N: Record<Lang, I18nDict> = {
       {
         icon: '📱',
         title: 'iOS Shortcuts และสลิปธนาคาร',
-        desc: 'ส่งรายการเข้าบอร์ดอัตโนมัติจากสลิป K PLUS, Bangkok Bank หรือ ttb ผ่านโทเคน API',
-        pill: 'รองรับ K PLUS, BBL และ ttb',
+        desc: 'ส่งรายการเข้าบอร์ดอัตโนมัติจากสลิป K PLUS, Bangkok Bank หรือ TTB Touch ผ่านโทเคน API',
+        pill: 'รองรับ K PLUS, BBL และ TTB',
       },
       {
         icon: '🌐',
@@ -628,8 +628,8 @@ export const I18N: Record<Lang, I18nDict> = {
       {
         icon: '📱',
         title: 'iOS Shortcuts & bank slips',
-        desc: 'Send K PLUS, Bangkok Bank or ttb slips straight to your board via an API token.',
-        pill: 'K PLUS, BBL and ttb',
+        desc: 'Send K PLUS, Bangkok Bank or TTB Touch slips straight to your board via an API token.',
+        pill: 'K PLUS, BBL and TTB',
       },
       {
         icon: '🌐',

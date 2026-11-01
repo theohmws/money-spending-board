@@ -60,9 +60,9 @@ TUSSANEE WONGSON
 2026092821573023002929008
 สแกนเพื่อตรวจสอบ`;
 
-// ttb touch transfer slip. NOTE: synthetic, modelled on the usual ttb layout
+// TTB Touch transfer slip. NOTE: synthetic, modelled on the usual ttb layout
 // (not a captured OCR sample) -- replace with a real one when available.
-const TTB_SLIP = `ttb touch
+const TTB_SLIP = `TTB Touch
 โอนเงินสำเร็จ
 28 ก.ย. 2569 - 14:05
 จาก
@@ -79,7 +79,7 @@ const TTB_SLIP = `ttb touch
 2026092814050012345678`;
 
 describe('parseSlipText', () => {
-  it('parses a ttb transfer slip', () => {
+  it('parses a TTB Touch transfer slip', () => {
     expect(parseSlipText(TTB_SLIP)).toEqual({
       amount: 1250,
       date: '2026-09-28',
@@ -87,7 +87,7 @@ describe('parseSlipText', () => {
       memo: 'ค่าอาหาร',
       recipient: 'น.ส. สมหญิง รักดี',
       sender: 'นาย สมชาย ใจดี',
-      bank: 'ttb',
+      bank: 'TTB',
     });
   });
 
