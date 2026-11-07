@@ -28,6 +28,8 @@ module.exports = withBundleAnalyzer({
   trailingSlash: true,
   basePath: '',
   reactStrictMode: true,
+  // Hide the Next.js dev-tools "N" badge (dev server only; never shipped in the static export).
+  devIndicators: false,
   env: {
     NEXT_PUBLIC_APP_VERSION: version,
     NEXT_PUBLIC_ICON_VERSION: String(iconVersion),
