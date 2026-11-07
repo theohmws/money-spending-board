@@ -6,7 +6,9 @@ A personal budgeting app built with Next.js 16 (App Router), TypeScript, and Tai
 
 <video src="docs/media/launch.mp4" poster="docs/media/launch-poster.png" controls muted width="100%"></video>
 
-[▶ Watch the 20-second launch video](docs/media/launch.mp4) · source in [`docs/media/launch-video/`](docs/media/launch-video/)
+[▶ Watch the 40-second launch video](docs/media/launch.mp4) · source in [`docs/media/launch-video/`](docs/media/launch-video/)
+
+The board footage was recorded from the real UI with a mocked Supabase backend and sample data, so no real account data appears in it.
 
 ### Features
 

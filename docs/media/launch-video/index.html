@@ -30,7 +30,7 @@
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="main" data-start="0" data-duration="20" data-width="1920" data-height="1080">
+    <div id="root" data-composition-id="main" data-start="0" data-duration="41.5" data-width="1920" data-height="1080">
 
       <!-- 0–3.5 s: hook -->
       <div id="hook" class="clip fill center" data-start="0" data-duration="3.6" data-track-index="1" style="z-index:1">
@@ -43,25 +43,11 @@
         <img id="shot" class="clip" src="assets/landing-en.png" alt="Money Spending Board landing page" />
       </div>
 
-      <!-- 9.5–16 s: three capabilities, one at a time -->
-      <div id="pt-1" class="clip fill center" data-start="9.5" data-duration="2.2" data-track-index="3" style="z-index:3">
-        <div class="pill">Budget</div>
-        <div class="big">50 / 30 / 20</div>
-        <div class="desc">Needs, savings and wants, split the way you want.</div>
-      </div>
-      <div id="pt-2" class="clip fill center" data-start="11.7" data-duration="2.2" data-track-index="3" style="z-index:3">
-        <div class="pill">Insight</div>
-        <div class="big">Trend &amp; compare</div>
-        <div class="desc">See months of spending, and this month against last, per category.</div>
-      </div>
-      <div id="pt-3" class="clip fill center" data-start="13.9" data-duration="2.1" data-track-index="3" style="z-index:3">
-        <div class="pill">Import</div>
-        <div class="big">Slips &amp; statements</div>
-        <div class="desc">KTC statements, plus K PLUS, Bangkok Bank and TTB slips via iOS Shortcuts.</div>
-      </div>
+      <!-- 9.5–37.3 s: real recording of the board (sample data, 2x speed) -->
+      <video id="flow" class="clip fill" src="assets/board-flow.mp4" muted playsinline data-start="9.5" data-duration="27.77" data-track-index="3" style="z-index:3; width:1920px; height:1080px; object-fit:cover; opacity:0"></video>
 
-      <!-- 16–20 s: end card, real icon and the real dev command -->
-      <div id="end" class="clip fill center" data-start="16" data-duration="4" data-track-index="4" style="z-index:4">
+      <!-- 37.5–41.5 s: end card, real icon and the real dev command -->
+      <div id="end" class="clip fill center" data-start="37.5" data-duration="4" data-track-index="4" style="z-index:4">
         <img id="end-mark" class="clip" src="assets/icon.svg" alt="" />
         <div id="wordmark">Money Spending Board</div>
         <div id="cmd">npm install &amp;&amp; npm run dev</div>
@@ -82,19 +68,13 @@
       tl.to("#shot", { scale: 1.32, duration: 5, ease: "power1.inOut" }, 4.1);
       tl.to("#shot-wrap", { opacity: 0, duration: 0.4, ease: "power2.in" }, 9.1);
 
-      // Capability beats
-      const beats = [["#pt-1", 9.5], ["#pt-2", 11.7], ["#pt-3", 13.9]];
-      beats.forEach(([id, t]) => {
-        tl.fromTo(`${id} .pill`, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, t + 0.05);
-        tl.fromTo(`${id} .big`, { opacity: 0, y: 50, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.6, ease: "power4.out" }, t + 0.15);
-        tl.fromTo(`${id} .desc`, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, t + 0.4);
-        if (id !== "#pt-3") tl.to(id, { opacity: 0, duration: 0.3, ease: "power2.in" }, t + 1.9);
-      });
+      // Real board recording: cross-fade in from the landing page
+      tl.to("#flow", { opacity: 1, duration: 0.4, ease: "power2.out" }, 9.5);
 
       // End card
-      tl.fromTo("#end-mark", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.6)" }, 16.1);
-      tl.fromTo("#wordmark", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 16.5);
-      tl.fromTo("#cmd", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 17.0);
+      tl.fromTo("#end-mark", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.6)" }, 37.6);
+      tl.fromTo("#wordmark", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 38.0);
+      tl.fromTo("#cmd", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 38.5);
 
       window.__timelines["main"] = tl;
       tl.seek(0);
