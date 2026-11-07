@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      :root {
+        --ground: #fdfcf8;
+        --ink: #1f2a1f;
+        --muted: #5b6658;
+        --accent: #2f6b2f;
+        --font-display: "Inter", sans-serif;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--ground); }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--ground); font-family: var(--font-display); color: var(--ink); }
+      .fill { position: absolute; inset: 0; }
+      #shot { width: 1920px; height: 1080px; object-fit: cover; transform-origin: 50% 55%; }
+      .center { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+      h1 { font-size: 112px; font-weight: 900; letter-spacing: -0.035em; line-height: 1.02; }
+      .eyebrow { font-size: 30px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+      .sub { font-size: 40px; font-weight: 400; color: var(--muted); margin-top: 28px; }
+      .pill { display: inline-block; font-size: 30px; font-weight: 700; color: var(--accent); background: #e6efe1; border-radius: 999px; padding: 14px 30px; margin-bottom: 36px; }
+      .big { font-size: 128px; font-weight: 900; letter-spacing: -0.04em; line-height: 1.0; }
+      .desc { font-size: 40px; color: var(--muted); margin-top: 32px; max-width: 1200px; line-height: 1.35; }
+      #end-mark { width: 200px; height: 200px; }
+      #wordmark { font-size: 96px; font-weight: 900; letter-spacing: -0.03em; margin-top: 36px; }
+      #cmd { font-family: "JetBrains Mono", monospace; font-size: 46px; background: var(--ink); color: #fdfcf8; border-radius: 18px; padding: 26px 48px; margin-top: 48px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="20" data-width="1920" data-height="1080">
+
+      <!-- 0–3.5 s: hook -->
+      <div id="hook" class="clip fill center" data-start="0" data-duration="3.6" data-track-index="1" style="z-index:1">
+        <div class="eyebrow" id="hook-eyebrow">Money Spending Board</div>
+        <h1 id="hook-title" style="margin-top:24px">Every baht you spend,<br />in one place.</h1>
+      </div>
+
+      <!-- 3.5–9.5 s: the real landing page, pushing into the feature grid -->
+      <div id="shot-wrap" class="clip fill" data-start="3.5" data-duration="6" data-track-index="2" style="z-index:2; overflow:hidden">
+        <img id="shot" class="clip" src="assets/landing-en.png" alt="Money Spending Board landing page" />
+      </div>
+
+      <!-- 9.5–16 s: three capabilities, one at a time -->
+      <div id="pt-1" class="clip fill center" data-start="9.5" data-duration="2.2" data-track-index="3" style="z-index:3">
+        <div class="pill">Budget</div>
+        <div class="big">50 / 30 / 20</div>
+        <div class="desc">Needs, savings and wants, split the way you want.</div>
+      </div>
+      <div id="pt-2" class="clip fill center" data-start="11.7" data-duration="2.2" data-track-index="3" style="z-index:3">
+        <div class="pill">Insight</div>
+        <div class="big">Trend &amp; compare</div>
+        <div class="desc">See months of spending, and this month against last, per category.</div>
+      </div>
+      <div id="pt-3" class="clip fill center" data-start="13.9" data-duration="2.1" data-track-index="3" style="z-index:3">
+        <div class="pill">Import</div>
+        <div class="big">Slips &amp; statements</div>
+        <div class="desc">KTC statements, plus K PLUS, Bangkok Bank and TTB slips via iOS Shortcuts.</div>
+      </div>
+
+      <!-- 16–20 s: end card, real icon and the real dev command -->
+      <div id="end" class="clip fill center" data-start="16" data-duration="4" data-track-index="4" style="z-index:4">
+        <img id="end-mark" class="clip" src="assets/icon.svg" alt="" />
+        <div id="wordmark">Money Spending Board</div>
+        <div id="cmd">npm install &amp;&amp; npm run dev</div>
+      </div>
+
+    </div>
+
+    <script>
+      const tl = gsap.timeline({ paused: true });
+
+      // Hook
+      tl.fromTo("#hook-eyebrow", { y: 20 }, { y: 0, duration: 0.5, ease: "power3.out" }, 0);
+      tl.fromTo("#hook-title", { y: 40, filter: "blur(8px)" }, { y: 0, filter: "blur(0px)", duration: 0.7, ease: "power4.out" }, 0.1);
+      tl.to("#hook", { opacity: 0, duration: 0.35, ease: "power2.in" }, 3.25);
+
+      // Landing page: fade in, then push toward the feature grid
+      tl.fromTo("#shot", { opacity: 0, scale: 1.06 }, { opacity: 1, scale: 1, duration: 0.6, ease: "power3.out" }, 3.5);
+      tl.to("#shot", { scale: 1.32, duration: 5, ease: "power1.inOut" }, 4.1);
+      tl.to("#shot-wrap", { opacity: 0, duration: 0.4, ease: "power2.in" }, 9.1);
+
+      // Capability beats
+      const beats = [["#pt-1", 9.5], ["#pt-2", 11.7], ["#pt-3", 13.9]];
+      beats.forEach(([id, t]) => {
+        tl.fromTo(`${id} .pill`, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, t + 0.05);
+        tl.fromTo(`${id} .big`, { opacity: 0, y: 50, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.6, ease: "power4.out" }, t + 0.15);
+        tl.fromTo(`${id} .desc`, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, t + 0.4);
+        if (id !== "#pt-3") tl.to(id, { opacity: 0, duration: 0.3, ease: "power2.in" }, t + 1.9);
+      });
+
+      // End card
+      tl.fromTo("#end-mark", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.6)" }, 16.1);
+      tl.fromTo("#wordmark", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 16.5);
+      tl.fromTo("#cmd", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 17.0);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

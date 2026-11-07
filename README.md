@@ -2,6 +2,12 @@
 
 A personal budgeting app built with Next.js 16 (App Router), TypeScript, and Tailwind CSS. Track transactions, split your budget across an editable needs/savings/wants ratio (50/30/20 by default), view trend and compare spending charts, and switch between Thai and English — all backed by a fixed Supabase project configured via environment variables.
 
+### Launch video
+
+<video src="docs/media/launch.mp4" poster="docs/media/launch-poster.png" controls muted width="100%"></video>
+
+[▶ Watch the 20-second launch video](docs/media/launch.mp4) · source in [`docs/media/launch-video/`](docs/media/launch-video/)
+
 ### Features
 
 - 🔐 Email/password + Google OAuth sign-in via [Supabase](https://supabase.com) (other providers configurable via env var)
