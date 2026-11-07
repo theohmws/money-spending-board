@@ -48,3 +48,10 @@ local
 # Secret
 secrets/
 public/version.json
+
+# hyperframes skill: installed via skills-lock.json, not vendored
+/.agents/skills/hyperframes
+/.claude/skills/hyperframes
+
+# hyperframes render output
+/renders
