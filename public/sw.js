@@ -3,7 +3,7 @@
 // scripts/set-sw-cache-version.js (run as part of `npm run build`), so a
 // version bump alone is enough for `activate` to clear out the previous
 // version's cache — don't hand-edit this line, it gets overwritten on build.
-const CACHE_NAME = 'msb-shell-v0.0.3';
+const CACHE_NAME = 'msb-shell-v1.11.0';
 
 const SHELL_URLS = [
   '/',
