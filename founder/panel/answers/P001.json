@@ -2,12 +2,12 @@
   "id": "P001",
   "buys": false,
   "purchases_first_month": 0,
-  "reason_code": "habit",
-  "reason": "I already keep a spreadsheet and it works. Typing a transaction takes me a minute and I know my numbers. I would try the free part to see, but I do not see why I would pay 69 baht a month to save that minute.",
-  "objection": "The spreadsheet already does the job, and I do not trust an app to read my bank slips and statements correctly without me checking every line anyway.",
-  "would_change_my_mind": "If I tried the statement import for a month and it filled in the categories correctly with almost no fixes, saving me real time every month.",
-  "price_too_cheap": 10,
-  "price_cheap": 25,
-  "price_expensive": 45,
-  "price_too_expensive": 60
+  "reason_code": "trust",
+  "reason": "I would try the free 14 days because I already screenshot every transfer, so the slip part fits how I work. But I would not pay 69 baht until I know it reads slips from my own bank and my own card, and this only names K PLUS, Bangkok Bank and TTB.",
+  "objection": "I don't know if it works with my bank or my card. If it misreads a slip or the card statement, I will end up typing things by hand anyway, so I am not paying for that.",
+  "would_change_my_mind": "A clear list or demo showing it reads my bank's slips and my card's statement format, before I have to pay.",
+  "price_too_cheap": 15,
+  "price_cheap": 35,
+  "price_expensive": 79,
+  "price_too_expensive": 129
 }

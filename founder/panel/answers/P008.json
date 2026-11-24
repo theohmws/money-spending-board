@@ -1,13 +1,13 @@
 {
   "id": "P008",
-  "buys": false,
-  "purchases_first_month": 0,
-  "reason_code": "habit",
-  "reason": "I tried a budget app and quit within weeks because typing everything was a chore, and this still depends on me remembering to photograph every slip. The statement import sounds useful once a month, but I doubt I'd keep up the daily part long enough to pay for it.",
-  "objection": "I'll forget to scan the slips every day, and then the whole thing is empty again like the last app.",
-  "would_change_my_mind": "If it picked up the transactions without me doing a daily step, for example by reading the monthly statement I already get and filling it in automatically.",
-  "price_too_cheap": 10,
+  "buys": true,
+  "purchases_first_month": 1,
+  "reason_code": "convenience",
+  "reason": "I transfer through K PLUS, BBL and TTB most weeks, and typing each slip into a budget by hand is the part I always skip. If the slip reading saves me that, 69 baht to keep it is fine, but only after the trial shows it works.",
+  "objection": "I don't know if it works with my bank or my card, and I don't want to spend the trial setting up a Shortcut that quietly misreads my slips.",
+  "would_change_my_mind": "A clear list showing that the slip reading works on my own K PLUS, BBL and TTB slips, and that the card statement import works with my card, before I have to pay anything.",
+  "price_too_cheap": 9,
   "price_cheap": 29,
-  "price_expensive": 69,
-  "price_too_expensive": 150
+  "price_expensive": 59,
+  "price_too_expensive": 99
 }

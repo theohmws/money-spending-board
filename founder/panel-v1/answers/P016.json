@@ -1,0 +1,13 @@
+{
+  "id": "P016",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "I'd try the free trial, but I wouldn't pay until I see it reading my own card statement and my bank's slips correctly. The page only names K PLUS, Bangkok Bank and TTB for slips and doesn't say which cards the statement import works with, so I can't tell if it's for me.",
+  "objection": "I don't know if it works with my bank or my card, and I don't want to spend time setting it up only to find it doesn't read my statement.",
+  "would_change_my_mind": "Seeing my own card statement and my K PLUS slips import correctly during the free trial, with the categories mostly right.",
+  "price_too_cheap": 10,
+  "price_cheap": 29,
+  "price_expensive": 99,
+  "price_too_expensive": 199
+}

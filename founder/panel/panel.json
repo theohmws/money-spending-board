@@ -1,6 +1,6 @@
 {
  "n": 20,
- "seed": 726582,
+ "seed": 48943,
  "customer": {
   "business": "Money Spending Board (personal budgeting web app, Thai and English)",
   "target": "Thai adults who want to track everyday spending from their bank slips and credit-card statements without typing every transaction by hand",
@@ -68,11 +68,11 @@
    }
   ],
   "objections": [
-   "I'd have to upload my bank slips and statements to a website, is my data safe?",
+   "Is my bank information safe if the app reads my slips?",
    "My bank app already shows my history",
    "I already keep a spreadsheet and it works",
    "I'll forget to scan the slips every day",
-   "The iPhone Shortcut setup looks complicated",
+   "The iPhone Shortcut setup looks complicated, even with a video",
    "Free budget apps already do this",
    "I don't know if it works with my bank or my card"
   ],
@@ -83,5 +83,5 @@
    "you use an iPhone"
   ]
  },
- "pitch": "Money Spending Board: a budgeting web app for Thai and English users.\nFree: track spending by hand, split income into needs / savings / wants (50/30/20), see monthly trend and month-to-month comparison charts.\nFree 14-day trial of the two paid features: save bank slips from K PLUS, Bangkok Bank and TTB with an iPhone Shortcut, and import credit-card statement PDFs with categories filled in.\nAfter the trial: 69 baht to keep the Shortcut and statement import.\nYour data stays in your own account."
+ "pitch": "Money Spending Board: a budgeting web app for Thai and English users.\nFree: track spending by hand, split income into needs / savings / wants (50/30/20), see monthly trend and month-to-month comparison charts.\nFree 14-day trial of two paid features:\n- Slip capture: a one-time iPhone Shortcut reads the text of your bank slip (K PLUS, Bangkok Bank, TTB) with iOS text recognition on your phone. Setup takes one time and a video guide is included. Only the transaction details are saved to your account, not the slip photo.\n- Credit-card statement import: upload your card statement PDF, which is read in your browser, and the categories are filled in for you.\nAfter the trial: 69 baht to keep both features."
 }

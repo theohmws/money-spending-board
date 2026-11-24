@@ -2,12 +2,12 @@
   "id": "P005",
   "buys": false,
   "purchases_first_month": 0,
-  "reason_code": "convenience",
-  "reason": "The free part already gives me the 50/30/20 split and the charts, and that is what I actually check each month. The paid part is about saving slips and statements automatically, which I would like, but I would not pay 69 baht before I know the setup works.",
-  "objection": "The iPhone Shortcut setup looks complicated, and I do not want to spend an evening getting it wrong with my bank app.",
-  "would_change_my_mind": "A setup that takes a few minutes with clear screenshots, and a trial where my first K PLUS slip actually lands in the app without me touching anything.",
-  "price_too_cheap": 20,
-  "price_cheap": 35,
-  "price_expensive": 90,
-  "price_too_expensive": 150
+  "reason_code": "habit",
+  "reason": "I already keep a spreadsheet of my spending and it works, so I do not see why I would switch. The slip capture sounds handy, but I would have to set up an iPhone Shortcut and trust it with my bank slips before I know it saves me any real time.",
+  "objection": "Setting up a Shortcut and a new app for something my spreadsheet already does. I do not want to spend an evening fixing a setup that breaks, and I am not sure the trial is long enough to show it saves time.",
+  "would_change_my_mind": "If the Shortcut setup took a couple of minutes and it reliably turned my slips into entries without me retyping anything, I would keep the paid part after the trial.",
+  "price_too_cheap": 9,
+  "price_cheap": 29,
+  "price_expensive": 59,
+  "price_too_expensive": 99
 }

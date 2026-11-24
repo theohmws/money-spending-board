@@ -1,0 +1,13 @@
+{
+  "id": "P010",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "I'd try the free part and maybe the 14-day trial, but I don't know if the slips or my card statement will actually read properly, and I already quit one budget app after a few weeks. Paying 69 baht for something I'm not sure works with my bank is hard to justify on my salary.",
+  "objection": "I don't know if it works with my bank or my card. The offer only names K PLUS, Bangkok Bank, TTB and a credit-card statement, and I'm not sure mine is covered.",
+  "would_change_my_mind": "Seeing a clear list of the banks and cards it reads, or finding that my own slip or statement comes out right during the free trial.",
+  "price_too_cheap": 10,
+  "price_cheap": 30,
+  "price_expensive": 60,
+  "price_too_expensive": 90
+}

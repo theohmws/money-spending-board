@@ -1,0 +1,13 @@
+{
+  "id": "P019",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "I'd have to upload my bank slips and credit-card statements to a website, and I don't know who else can see them. My Google Sheet already does the job for free, so I'd only switch if I trusted the site with my account data.",
+  "objection": "Is my data safe? Bank slips and statements show everything about my money, and nothing in the offer tells me how it's stored or who can read it.",
+  "would_change_my_mind": "A clear explanation of where my data is stored, who can access it, and that I can delete everything, plus a trial where I can check it works before I upload anything real.",
+  "price_too_cheap": 5,
+  "price_cheap": 29,
+  "price_expensive": 69,
+  "price_too_expensive": 150
+}
