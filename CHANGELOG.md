@@ -1,3 +1,16 @@
+## [1.11.1](https://github.com/theohmws/money-spending-board/compare/v1.11.0...v1.11.1) (2026-11-24)
+
+
+### Chores
+
+* **skills:** add hyperframes skill from heygen-com/hyperframes ([3b94135](https://github.com/theohmws/money-spending-board/commit/3b94135))
+* **skills:** stop tracking hyperframes skill and ignore render output ([adac4aa](https://github.com/theohmws/money-spending-board/commit/adac4aa))
+* **skills:** install founder skill pack into .claude/skills ([fc897c2](https://github.com/theohmws/money-spending-board/commit/fc897c2))
+
+### Documentation
+
+* add 20s launch video to README ([2c1bd2f](https://github.com/theohmws/money-spending-board/commit/2c1bd2f))
+
 # [1.11.0](https://github.com/theohmws/money-spending-board/compare/v1.10.0...v1.11.0) (2026-11-01)
 
 
