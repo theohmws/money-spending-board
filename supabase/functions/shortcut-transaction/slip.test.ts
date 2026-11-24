@@ -78,7 +78,35 @@ const TTB_SLIP = `TTB Touch
 รหัสอ้างอิง
 2026092814050012345678`;
 
+// Real TTB Touch transfer slip OCR text. Names, account numbers and the
+// reference number are mocked; the layout (incl. the KBANK recipient line
+// and "Reference no." label) is kept exactly as OCR produced it.
+const TTB_SLIP_REAL = `ttb
+Transfer successful
+25 Nov 26, 1:53 AM
+50.00
+Fee 0.00
+นาย ทดสอบ ตัวอย่าง
+XXX-X-XX111-1
+ttb
+นาย ทดสอบ ตัวอย่าง
+XXX-X-XX222-2
+KBANK
+Reference no.: 261125000000000001`;
+
 describe('parseSlipText', () => {
+  it('parses a real TTB Touch slip (mocked values)', () => {
+    expect(parseSlipText(TTB_SLIP_REAL)).toEqual({
+      amount: 50,
+      date: '2026-11-25',
+      reference: '261125000000000001',
+      memo: null,
+      recipient: 'นาย ทดสอบ ตัวอย่าง',
+      sender: 'นาย ทดสอบ ตัวอย่าง',
+      bank: 'TTB',
+    });
+  });
+
   it('parses a TTB Touch transfer slip', () => {
     expect(parseSlipText(TTB_SLIP)).toEqual({
       amount: 1250,
