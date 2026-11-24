@@ -1,0 +1,13 @@
+{
+  "id": "P014",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "convenience",
+  "reason": "I move money through K PLUS, BBL and TTB most weeks and I do want to stop typing everything in, but an iPhone Shortcut setup sounds like a fiddly thing I would have to babysit every month. I would rather use the banking app's own history or just type the few entries I care about.",
+  "objection": "Setting up the Shortcut looks complicated, and if it breaks on an update or a new slip format I will be stuck with a half-working budget app.",
+  "would_change_my_mind": "A setup that takes a few minutes with step-by-step screenshots in Thai, and a free trial I can cancel without anything being charged.",
+  "price_too_cheap": 0,
+  "price_cheap": 29,
+  "price_expensive": 49,
+  "price_too_expensive": 69
+}

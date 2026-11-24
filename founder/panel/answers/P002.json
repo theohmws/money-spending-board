@@ -1,0 +1,13 @@
+{
+  "id": "P002",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "I like the idea of having my slips in one place, but the first thing I think of is uploading my bank slips and statements to a website. The offer says my data stays in my own account, but I'd still need to understand what gets stored and who can see it before I'd pay for anything.",
+  "objection": "Is my data safe? I'd be uploading bank slips and statements, and nothing here explains what gets kept, where, or whether I can delete it.",
+  "would_change_my_mind": "A plain explanation, in Thai, of exactly what is stored from my slips and statements, who can access it, and how to delete it all.",
+  "price_too_cheap": 10,
+  "price_cheap": 29,
+  "price_expensive": 89,
+  "price_too_expensive": 139
+}

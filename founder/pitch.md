@@ -1,4 +1,5 @@
 Money Spending Board: a budgeting web app for Thai and English users.
-Take a screenshot of a bank slip (K PLUS, Bangkok Bank or TTB), share it to the iPhone Shortcut, and the transaction is saved for you to review.
-Import a credit-card statement PDF, then see your spending by month and category, with a 50/30/20 needs / savings / wants split.
-Price: not yet set. Free to sign up. Your data stays in your own account.
+Free: track spending by hand, split income into needs / savings / wants (50/30/20), see monthly trend and month-to-month comparison charts.
+Free 14-day trial of the two paid features: save bank slips from K PLUS, Bangkok Bank and TTB with an iPhone Shortcut, and import credit-card statement PDFs with categories filled in.
+After the trial: 69 baht to keep the Shortcut and statement import.
+Your data stays in your own account.

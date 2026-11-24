@@ -1,0 +1,13 @@
+{
+  "id": "P018",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "I'd have to upload my bank slips and credit-card statements to a site I've never heard of before. Tracking by hand is annoying but it doesn't ask me to hand over my bank data, and 69 baht doesn't buy back that risk for me.",
+  "objection": "Is my data safe? Who can read my statements once they're uploaded, and can I really delete them?",
+  "would_change_my_mind": "A clear, plain-language answer that the statement PDF itself never leaves my phone or browser, only the transaction lines get saved, and I can delete everything with one tap.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 40,
+  "price_too_expensive": 50
+}

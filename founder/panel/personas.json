@@ -1,0 +1,222 @@
+[
+ {
+  "id": "P001",
+  "name": "Marco",
+  "age": 28,
+  "segment": "Early-career employee",
+  "income": 38000,
+  "behaviour": "Card-statement reviewer",
+  "behaviour_how": "Reads the monthly credit-card statement and wants categories without retyping.",
+  "objection": "I already keep a spreadsheet and it works",
+  "habit": "you have a monthly salary and try to save something each month"
+ },
+ {
+  "id": "P002",
+  "name": "Ava",
+  "age": 27,
+  "segment": "Mid-career employee",
+  "income": 73000,
+  "behaviour": "Slip keeper",
+  "behaviour_how": "Screenshots every bank transfer and wants them in one place.",
+  "objection": "I'd have to upload my bank slips and statements to a website, is my data safe?",
+  "habit": "you have a monthly salary and try to save something each month"
+ },
+ {
+  "id": "P003",
+  "name": "Kira",
+  "age": 39,
+  "segment": "Early-career employee",
+  "income": 16000,
+  "behaviour": "Slip keeper",
+  "behaviour_how": "Screenshots every bank transfer and wants them in one place.",
+  "objection": "I don't know if it works with my bank or my card",
+  "habit": "you use an iPhone"
+ },
+ {
+  "id": "P004",
+  "name": "Seth",
+  "age": 31,
+  "segment": "Early-career employee",
+  "income": 23000,
+  "behaviour": "Tried and quit",
+  "behaviour_how": "Downloaded a budget app before, stopped after a few weeks because of manual entry.",
+  "objection": "I'll forget to scan the slips every day",
+  "habit": "you have a monthly salary and try to save something each month"
+ },
+ {
+  "id": "P005",
+  "name": "Hamza",
+  "age": 27,
+  "segment": "Early-career employee",
+  "income": 38000,
+  "behaviour": "Budget planner",
+  "behaviour_how": "Wants a simple needs / savings / wants split and checks it monthly.",
+  "objection": "The iPhone Shortcut setup looks complicated",
+  "habit": "you have a monthly salary and try to save something each month"
+ },
+ {
+  "id": "P006",
+  "name": "Alma",
+  "age": 36,
+  "segment": "Early-career employee",
+  "income": 37000,
+  "behaviour": "Slip keeper",
+  "behaviour_how": "Screenshots every bank transfer and wants them in one place.",
+  "objection": "I'd have to upload my bank slips and statements to a website, is my data safe?",
+  "habit": "you transfer money to family and friends through K PLUS, BBL or TTB most weeks"
+ },
+ {
+  "id": "P007",
+  "name": "Sam",
+  "age": 34,
+  "segment": "Freelancer or small business owner",
+  "income": 33000,
+  "behaviour": "Budget planner",
+  "behaviour_how": "Wants a simple needs / savings / wants split and checks it monthly.",
+  "objection": "I don't know if it works with my bank or my card",
+  "habit": "you transfer money to family and friends through K PLUS, BBL or TTB most weeks"
+ },
+ {
+  "id": "P008",
+  "name": "Sara",
+  "age": 33,
+  "segment": "Mid-career employee",
+  "income": 59000,
+  "behaviour": "Tried and quit",
+  "behaviour_how": "Downloaded a budget app before, stopped after a few weeks because of manual entry.",
+  "objection": "I'll forget to scan the slips every day",
+  "habit": "you get a credit-card statement at the end of each month"
+ },
+ {
+  "id": "P009",
+  "name": "Darius",
+  "age": 28,
+  "segment": "Mid-career employee",
+  "income": 88000,
+  "behaviour": "Privacy-cautious",
+  "behaviour_how": "Unwilling to share bank data or upload statements to a new app.",
+  "objection": "I'll forget to scan the slips every day",
+  "habit": "you get a credit-card statement at the end of each month"
+ },
+ {
+  "id": "P010",
+  "name": "Grace",
+  "age": 34,
+  "segment": "Early-career employee",
+  "income": 26000,
+  "behaviour": "Tried and quit",
+  "behaviour_how": "Downloaded a budget app before, stopped after a few weeks because of manual entry.",
+  "objection": "I don't know if it works with my bank or my card",
+  "habit": "you have a monthly salary and try to save something each month"
+ },
+ {
+  "id": "P011",
+  "name": "Leila",
+  "age": 22,
+  "segment": "Freelancer or small business owner",
+  "income": 31000,
+  "behaviour": "Slip keeper",
+  "behaviour_how": "Screenshots every bank transfer and wants them in one place.",
+  "objection": "My bank app already shows my history",
+  "habit": "you use an iPhone"
+ },
+ {
+  "id": "P012",
+  "name": "Hana",
+  "age": 24,
+  "segment": "Early-career employee",
+  "income": 27000,
+  "behaviour": "Tried and quit",
+  "behaviour_how": "Downloaded a budget app before, stopped after a few weeks because of manual entry.",
+  "objection": "The iPhone Shortcut setup looks complicated",
+  "habit": "you use an iPhone"
+ },
+ {
+  "id": "P013",
+  "name": "Kofi",
+  "age": 40,
+  "segment": "Early-career employee",
+  "income": 20000,
+  "behaviour": "Spreadsheet user",
+  "behaviour_how": "Already tracks in Google Sheets or Excel and does not want to switch.",
+  "objection": "I'd have to upload my bank slips and statements to a website, is my data safe?",
+  "habit": "you have a monthly salary and try to save something each month"
+ },
+ {
+  "id": "P014",
+  "name": "Ruby",
+  "age": 27,
+  "segment": "Mid-career employee",
+  "income": 50000,
+  "behaviour": "Budget planner",
+  "behaviour_how": "Wants a simple needs / savings / wants split and checks it monthly.",
+  "objection": "The iPhone Shortcut setup looks complicated",
+  "habit": "you transfer money to family and friends through K PLUS, BBL or TTB most weeks"
+ },
+ {
+  "id": "P015",
+  "name": "Ana",
+  "age": 38,
+  "segment": "Mid-career employee",
+  "income": 89000,
+  "behaviour": "Card-statement reviewer",
+  "behaviour_how": "Reads the monthly credit-card statement and wants categories without retyping.",
+  "objection": "I'd have to upload my bank slips and statements to a website, is my data safe?",
+  "habit": "you get a credit-card statement at the end of each month"
+ },
+ {
+  "id": "P016",
+  "name": "Levi",
+  "age": 40,
+  "segment": "Freelancer or small business owner",
+  "income": 113000,
+  "behaviour": "Spreadsheet user",
+  "behaviour_how": "Already tracks in Google Sheets or Excel and does not want to switch.",
+  "objection": "I don't know if it works with my bank or my card",
+  "habit": "you get a credit-card statement at the end of each month"
+ },
+ {
+  "id": "P017",
+  "name": "Dev",
+  "age": 38,
+  "segment": "Early-career employee",
+  "income": 22000,
+  "behaviour": "Slip keeper",
+  "behaviour_how": "Screenshots every bank transfer and wants them in one place.",
+  "objection": "The iPhone Shortcut setup looks complicated",
+  "habit": "you have a monthly salary and try to save something each month"
+ },
+ {
+  "id": "P018",
+  "name": "Nadia",
+  "age": 22,
+  "segment": "Mid-career employee",
+  "income": 54000,
+  "behaviour": "Privacy-cautious",
+  "behaviour_how": "Unwilling to share bank data or upload statements to a new app.",
+  "objection": "I'd have to upload my bank slips and statements to a website, is my data safe?",
+  "habit": "you have a monthly salary and try to save something each month"
+ },
+ {
+  "id": "P019",
+  "name": "Noah",
+  "age": 39,
+  "segment": "Freelancer or small business owner",
+  "income": 39000,
+  "behaviour": "Spreadsheet user",
+  "behaviour_how": "Already tracks in Google Sheets or Excel and does not want to switch.",
+  "objection": "I'd have to upload my bank slips and statements to a website, is my data safe?",
+  "habit": "you have a monthly salary and try to save something each month"
+ },
+ {
+  "id": "P020",
+  "name": "Kenji",
+  "age": 32,
+  "segment": "Mid-career employee",
+  "income": 48000,
+  "behaviour": "Card-statement reviewer",
+  "behaviour_how": "Reads the monthly credit-card statement and wants categories without retyping.",
+  "objection": "I'll forget to scan the slips every day",
+  "habit": "you have a monthly salary and try to save something each month"
+ }
+]

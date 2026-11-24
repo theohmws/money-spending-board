@@ -1,0 +1,13 @@
+{
+  "id": "P005",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "convenience",
+  "reason": "The free part already gives me the 50/30/20 split and the charts, and that is what I actually check each month. The paid part is about saving slips and statements automatically, which I would like, but I would not pay 69 baht before I know the setup works.",
+  "objection": "The iPhone Shortcut setup looks complicated, and I do not want to spend an evening getting it wrong with my bank app.",
+  "would_change_my_mind": "A setup that takes a few minutes with clear screenshots, and a trial where my first K PLUS slip actually lands in the app without me touching anything.",
+  "price_too_cheap": 20,
+  "price_cheap": 35,
+  "price_expensive": 90,
+  "price_too_expensive": 150
+}

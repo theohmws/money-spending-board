@@ -1,0 +1,13 @@
+{
+  "id": "P011",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "My bank app already shows my transfer history, so paying to track the same slips again feels like paying twice for one thing. I would use the free trial to see if the Shortcut actually saves me time, but I would not keep it after that.",
+  "objection": "I do not see what this shows me that K PLUS does not already show, and I do not want to hand my slips and statements to another app just to get a chart.",
+  "would_change_my_mind": "If it combined my K PLUS, Bangkok Bank and credit-card spending in one view that my bank apps cannot show, and the trial proved the Shortcut saves me real typing.",
+  "price_too_cheap": 10,
+  "price_cheap": 30,
+  "price_expensive": 100,
+  "price_too_expensive": 150
+}
