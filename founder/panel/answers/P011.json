@@ -2,12 +2,12 @@
   "id": "P011",
   "buys": false,
   "purchases_first_month": 0,
-  "reason_code": "convenience",
-  "reason": "The slip reading would fix the typing I hate, but a Shortcut on my iPhone with a video to set up feels like a chore I'd have to do before I even see any benefit. I already quit a budget app over manual entry, so I'm wary of starting something that asks more of me up front.",
-  "objection": "If the setup is fiddly and breaks when the bank changes its slip layout, I'll be back to typing everything by hand within a month.",
-  "would_change_my_mind": "A setup that takes a couple of minutes with no video, and proof it keeps working on my K PLUS slips after a few weeks.",
-  "price_too_cheap": 9,
-  "price_cheap": 29,
-  "price_expensive": 69,
-  "price_too_expensive": 120
+  "reason_code": "trust",
+  "reason": "The free trial is fine to try, but I don't know if it reads my K PLUS slips or my card statement properly, and the only banks listed are K PLUS, Bangkok Bank and TTB. I already quit one budget app after a few weeks, so I would not pay until I've seen it work on my own slips for the full 14 days.",
+  "objection": "Will it even read my bank and my card, and do I want my money data stored in someone's database even if it is encrypted?",
+  "would_change_my_mind": "Seeing it correctly read three or four of my own real K PLUS slips and a real card statement during the free trial, with my bank clearly supported.",
+  "price_too_cheap": 15,
+  "price_cheap": 35,
+  "price_expensive": 90,
+  "price_too_expensive": 150
 }

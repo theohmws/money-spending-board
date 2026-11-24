@@ -2,12 +2,12 @@
   "id": "P004",
   "buys": false,
   "purchases_first_month": 0,
-  "reason_code": "trust",
-  "reason": "I already have free budget apps, and I don't want to upload my credit-card statement or hand over my bank slips to a new website just to see my spending. The 69 baht is small, but the trust cost is what stops me.",
-  "objection": "Why would I give a new app my card statement when my bank apps and free budget apps already show me this? I don't know who reads the PDF or what happens to the data after the trial.",
-  "would_change_my_mind": "Slip capture that works entirely on my phone with no upload and no statement needed, plus a clear written promise that nothing leaves my device except the transaction details, and a way to delete everything.",
-  "price_too_cheap": 5,
-  "price_cheap": 20,
-  "price_expensive": 50,
-  "price_too_expensive": 90
+  "reason_code": "need",
+  "reason": "My bank app already shows my history, so I don't see what this adds beyond it. I'd maybe try the free trial to see, but I'm not paying for slip reading I could just look up in my banking app.",
+  "objection": "I'll set up the Shortcut, use it for a couple of weeks, and then stop like I did with the last budget app. The setup is the easy part; keeping it going is what I never managed.",
+  "would_change_my_mind": "A monthly breakdown by category that my bank app doesn't give me, built automatically from my slips and card statement, that I actually kept using for a full month during the trial.",
+  "price_too_cheap": 10,
+  "price_cheap": 30,
+  "price_expensive": 69,
+  "price_too_expensive": 150
 }

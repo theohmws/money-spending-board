@@ -2,12 +2,12 @@
   "id": "P009",
   "buys": false,
   "purchases_first_month": 0,
-  "reason_code": "convenience",
-  "reason": "The card statement part sounds useful since I already check my KTC bill every month, but the slip capture needs an iPhone Shortcut set up before it works, and I do not want to fight with a setup on my phone when I only have one evening a week to sort my money out. I would use the free trial to look at it, then probably stop.",
-  "objection": "If the Shortcut setup takes me more than a few minutes, or breaks after an iOS update, I will just go back to typing things in by hand.",
-  "would_change_my_mind": "If the card statement import reads my real KTC PDF correctly the first time and the slip capture works on my first try with no fiddling.",
-  "price_too_cheap": 5,
-  "price_cheap": 19,
-  "price_expensive": 39,
-  "price_too_expensive": 49
+  "reason_code": "habit",
+  "reason": "I already track everything in my Google Sheet and it works, so I don't see why I'd pay to move to something new. I'd maybe use the free 14 days to see if the slip and statement features are actually faster, but I'd probably drop it once the trial ends.",
+  "objection": "Free budget apps already do this, and I don't want to rebuild my spreadsheet somewhere else just to save a bit of typing.",
+  "would_change_my_mind": "If the trial showed that the statement import and slip capture cut my monthly entry time to almost nothing, with accurate categories and no fiddling.",
+  "price_too_cheap": 10,
+  "price_cheap": 30,
+  "price_expensive": 90,
+  "price_too_expensive": 150
 }

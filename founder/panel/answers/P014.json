@@ -3,11 +3,11 @@
   "buys": false,
   "purchases_first_month": 0,
   "reason_code": "habit",
-  "reason": "I already keep a spreadsheet and it works for me. The last budget app I tried, I stopped after a few weeks, so I would not pay for something I am likely to drop again.",
-  "objection": "Will I actually keep using it after the trial? Setting up the iPhone Shortcut and the PDF upload is one more thing to learn, and I have quit apps before.",
-  "would_change_my_mind": "If during the free trial the card statement import filled in my real month's categories correctly and saved me an hour of typing, I would pay the 69 baht.",
+  "reason": "I already keep a spreadsheet and it works, and it is free. I screenshot my slips anyway, so the trial would just be one more shortcut to set up, and I do not see why I should pay 69 baht a month to replace something that already does the job.",
+  "objection": "Setting up an iPhone Shortcut and letting an app read my bank slips and card statements does not feel worth the hassle or the trust, even if the data is encrypted.",
+  "would_change_my_mind": "If it saved me real time every week, with setup no harder than the video, and it did something my spreadsheet cannot do on its own.",
   "price_too_cheap": 10,
-  "price_cheap": 20,
-  "price_expensive": 60,
-  "price_too_expensive": 100
+  "price_cheap": 35,
+  "price_expensive": 50,
+  "price_too_expensive": 90
 }

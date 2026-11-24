@@ -1,0 +1,13 @@
+{
+  "id": "P019",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "My bank app already shows my transaction history, and I only check my spending once a month anyway. I don't want to pay for a second place to track the same money, and I'd have to set up an iPhone Shortcut just to get it started.",
+  "objection": "Why would I pay 69 baht to copy numbers my bank already has? If the trial ends and I forget to cancel, I'm charged for something I stopped using.",
+  "would_change_my_mind": "If the app pulled my spending from the bank and card statements by itself, with no setup and no screenshots, and showed me something my bank app doesn't, like the needs/savings/wants split.",
+  "price_too_cheap": 0,
+  "price_cheap": 20,
+  "price_expensive": 49,
+  "price_too_expensive": 69
+}

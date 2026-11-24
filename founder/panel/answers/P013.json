@@ -2,12 +2,12 @@
   "id": "P013",
   "buys": false,
   "purchases_first_month": 0,
-  "reason_code": "trust",
-  "reason": "The 69 baht is nothing, but I still don't know if this reads my bank or my card. The offer names K PLUS, Bangkok Bank and TTB, and I don't see my bank listed, so I'd spend the trial finding out instead of tracking anything.",
-  "objection": "Whether it works with my own bank and card. If it only reads three banks, the slip feature is useless to me, and I'm not going to photograph slips and run a shortcut to find that out.",
-  "would_change_my_mind": "A clear list of supported banks and cards that includes mine, or a working trial on my own slip or statement.",
+  "reason_code": "habit",
+  "reason": "The free part already gives me the 50/30/20 split and the charts, which is what I actually check each month. The paid part only works if I scan every slip the day I make a transfer, and I already forget to type things in by hand, so I would be paying for something I would stop using after the trial.",
+  "objection": "I'll forget to scan the slips every day, and then the thing I paid for just sits there unused.",
+  "would_change_my_mind": "A way to import my K PLUS or BBL transactions automatically, with no daily scanning from me.",
   "price_too_cheap": 10,
-  "price_cheap": 29,
-  "price_expensive": 99,
-  "price_too_expensive": 200
+  "price_cheap": 25,
+  "price_expensive": 50,
+  "price_too_expensive": 60
 }

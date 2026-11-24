@@ -1,0 +1,162 @@
+{
+ "business": "Money Spending Board (personal budgeting web app, Thai and English)",
+ "seed": 48943,
+ "dealt": 20,
+ "answered": 20,
+ "skipped": [],
+ "buys": 2,
+ "passes": 18,
+ "buy_rate": 0.1,
+ "by_segment": [
+  [
+   "Mid-career employee",
+   7,
+   0.2857142857142857
+  ],
+  [
+   "Freelancer or small business owner",
+   4,
+   0.0
+  ],
+  [
+   "Early-career employee",
+   9,
+   0.0
+  ]
+ ],
+ "by_behaviour": [
+  [
+   "Budget planner",
+   3,
+   0.3333333333333333
+  ],
+  [
+   "Slip keeper",
+   5,
+   0.2
+  ],
+  [
+   "Card-statement reviewer",
+   3,
+   0.0
+  ],
+  [
+   "Privacy-cautious",
+   2,
+   0.0
+  ],
+  [
+   "Spreadsheet user",
+   3,
+   0.0
+  ],
+  [
+   "Tried and quit",
+   4,
+   0.0
+  ]
+ ],
+ "by_income": [
+  [
+   "$56,000 and up",
+   7,
+   0.2857142857142857
+  ],
+  [
+   "under $30,000",
+   6,
+   0.0
+  ],
+  [
+   "$30,000 to $56,000",
+   7,
+   0.0
+  ]
+ ],
+ "why_not": [
+  [
+   "habit",
+   8,
+   [
+    "I already keep a spreadsheet and it works, so I would have to change how I do things before I see a benefit. The slip and statement features sound useful, but I would need to set up an iPhone Shortcut and trust a new app with my statements, and I would probably not bother once the free trial ends.",
+    "I already keep a spreadsheet of my spending and it works, so I do not see why I would switch. The slip capture sounds handy, but I would have to set up an iPhone Shortcut and trust it with my bank slips before I know it saves me any real time."
+   ],
+   [
+    "P003",
+    "P005"
+   ]
+  ],
+  [
+   "trust",
+   6,
+   [
+    "I would try the free 14 days because I already screenshot every transfer, so the slip part fits how I work. But I would not pay 69 baht until I know it reads slips from my own bank and my own card, and this only names K PLUS, Bangkok Bank and TTB.",
+    "I already have free budget apps, and I don't want to upload my credit-card statement or hand over my bank slips to a new website just to see my spending. The 69 baht is small, but the trust cost is what stops me."
+   ],
+   [
+    "P001",
+    "P004"
+   ]
+  ],
+  [
+   "need",
+   2,
+   [
+    "Free budget apps already do this, and I can already see my bank transfers in my bank app. Paying 69 baht for the slip Shortcut only makes sense if setting it up is quick and it saves me real time, and a one-time setup with a video does not convince me that it will.",
+    "My bank app already shows my transaction history, and I only check my spending once a month anyway. I don't want to pay for a second place to track the same money, and I'd have to set up an iPhone Shortcut just to get it started."
+   ],
+   [
+    "P002",
+    "P019"
+   ]
+  ],
+  [
+   "convenience",
+   2,
+   [
+    "The card statement part sounds useful since I already check my KTC bill every month, but the slip capture needs an iPhone Shortcut set up before it works, and I do not want to fight with a setup on my phone when I only have one evening a week to sort my money out. I would use the free trial to look at it, then probably stop.",
+    "The slip reading would fix the typing I hate, but a Shortcut on my iPhone with a video to set up feels like a chore I'd have to do before I even see any benefit. I already quit a budget app over manual entry, so I'm wary of starting something that asks more of me up front."
+   ],
+   [
+    "P009",
+    "P011"
+   ]
+  ]
+ ],
+ "why_yes": [
+  [
+   "convenience",
+   2,
+   [
+    "I transfer through K PLUS, BBL and TTB most weeks, and typing each slip into a budget by hand is the part I always skip. If the slip reading saves me that, 69 baht to keep it is fine, but only after the trial shows it works.",
+    "I already screenshot every K PLUS, BBL and TTB slip and dump them in one place, so a tool that reads them for me saves a real chore. I would only keep it if it actually saves me time after the trial."
+   ],
+   [
+    "P008",
+    "P018"
+   ]
+  ]
+ ],
+ "flip": [
+  "A clear list or demo showing it reads my bank's slips and my card's statement format, before I have to pay.",
+  "A free app that does not do this, or proof that the Shortcut reads my K PLUS slips correctly with almost no setup, so it saves me real typing every month.",
+  "If during the free trial the slip capture saved me from retyping my weekly K PLUS and BBL transfers with almost no setup, and the statement import clearly sorted my categories correctly.",
+  "Slip capture that works entirely on my phone with no upload and no statement needed, plus a clear written promise that nothing leaves my device except the transaction details, and a way to delete everything.",
+  "If the Shortcut setup took a couple of minutes and it reliably turned my slips into entries without me retyping anything, I would keep the paid part after the trial.",
+  "A clear list showing my own bank and card are supported, plus a way to export my data back to a spreadsheet so I'm not locked in.",
+  "If it imported my existing Google Sheet or Excel file and kept it in sync, so I didn't have to scan slips at all.",
+  "If the card statement import reads my real KTC PDF correctly the first time and the slip capture works on my first try with no fiddling.",
+  "If the free trial imported my own statement PDF correctly, with the categories right, in under five minutes, and the Shortcut setup was clearly shorter than retyping a month.",
+  "A setup that takes a couple of minutes with no video, and proof it keeps working on my K PLUS slips after a few weeks.",
+  "A clear, short explanation of what is stored and where, plus a setup that takes a few minutes and works on my phone without a lot of steps.",
+  "A clear list of supported banks and cards that includes mine, or a working trial on my own slip or statement.",
+  "If during the free trial the card statement import filled in my real month's categories correctly and saved me an hour of typing, I would pay the 69 baht.",
+  "A way to check for myself, without trusting their word, that the statement and slip text never leave my phone or browser, plus a free trial I can use without uploading anything real.",
+  "A clear list of the banks and card issuers the statement import supports, so I can check mine before setting anything up.",
+  "A plain explanation of where my transaction data is stored, who can access it, and how to delete it, plus a trial where I see my own K PLUS slip come through and stay useful for a few weeks.",
+  "If the app pulled my spending from the bank and card statements by itself, with no setup and no screenshots, and showed me something my bank app doesn't, like the needs/savings/wants split.",
+  "If the free trial showed me a full week where scanning took under a minute and the categories were right without me fixing them, I would keep it."
+ ],
+ "purchases_first_month_per_buyer": 1.0,
+ "price_answers": 20
+}

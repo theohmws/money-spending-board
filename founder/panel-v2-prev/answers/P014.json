@@ -1,0 +1,13 @@
+{
+  "id": "P014",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "I already keep a spreadsheet and it works for me. The last budget app I tried, I stopped after a few weeks, so I would not pay for something I am likely to drop again.",
+  "objection": "Will I actually keep using it after the trial? Setting up the iPhone Shortcut and the PDF upload is one more thing to learn, and I have quit apps before.",
+  "would_change_my_mind": "If during the free trial the card statement import filled in my real month's categories correctly and saved me an hour of typing, I would pay the 69 baht.",
+  "price_too_cheap": 10,
+  "price_cheap": 20,
+  "price_expensive": 60,
+  "price_too_expensive": 100
+}

@@ -1,0 +1,13 @@
+{
+  "id": "P012",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "I already screenshot every transfer and keep a spreadsheet that does the job, so the free part is enough for me. I would have to set up an iPhone Shortcut and hand my bank and card details to a new app, and for that effort I would rather just keep my spreadsheet going.",
+  "objection": "Why would I give a new app my bank slips and card statement when my own spreadsheet already works and I know exactly where my data is?",
+  "would_change_my_mind": "A clear, short explanation of what is stored and where, plus a setup that takes a few minutes and works on my phone without a lot of steps.",
+  "price_too_cheap": 10,
+  "price_cheap": 29,
+  "price_expensive": 99,
+  "price_too_expensive": 199
+}

@@ -1,0 +1,13 @@
+{
+  "id": "P008",
+  "buys": true,
+  "purchases_first_month": 1,
+  "reason_code": "convenience",
+  "reason": "I transfer through K PLUS, BBL and TTB most weeks, and typing each slip into a budget by hand is the part I always skip. If the slip reading saves me that, 69 baht to keep it is fine, but only after the trial shows it works.",
+  "objection": "I don't know if it works with my bank or my card, and I don't want to spend the trial setting up a Shortcut that quietly misreads my slips.",
+  "would_change_my_mind": "A clear list showing that the slip reading works on my own K PLUS, BBL and TTB slips, and that the card statement import works with my card, before I have to pay anything.",
+  "price_too_cheap": 9,
+  "price_cheap": 29,
+  "price_expensive": 59,
+  "price_too_expensive": 99
+}

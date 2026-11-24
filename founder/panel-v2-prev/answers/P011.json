@@ -1,0 +1,13 @@
+{
+  "id": "P011",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "convenience",
+  "reason": "The slip reading would fix the typing I hate, but a Shortcut on my iPhone with a video to set up feels like a chore I'd have to do before I even see any benefit. I already quit a budget app over manual entry, so I'm wary of starting something that asks more of me up front.",
+  "objection": "If the setup is fiddly and breaks when the bank changes its slip layout, I'll be back to typing everything by hand within a month.",
+  "would_change_my_mind": "A setup that takes a couple of minutes with no video, and proof it keeps working on my K PLUS slips after a few weeks.",
+  "price_too_cheap": 9,
+  "price_cheap": 29,
+  "price_expensive": 69,
+  "price_too_expensive": 120
+}

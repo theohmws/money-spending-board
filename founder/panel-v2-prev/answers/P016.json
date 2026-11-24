@@ -1,0 +1,13 @@
+{
+  "id": "P016",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "The slip and card import sound like exactly what I wanted, since I quit the budget app because typing everything was a chore. But the offer only names K PLUS, Bangkok Bank and TTB for slips, and it says nothing about which cards the statement import reads, so I can't tell if my bank is covered until I've set up the Shortcut and tried it.",
+  "objection": "I don't know if it works with my bank or my card, and I'd have to do the Shortcut setup before I find out.",
+  "would_change_my_mind": "A clear list of the banks and card issuers the statement import supports, so I can check mine before setting anything up.",
+  "price_too_cheap": 10,
+  "price_cheap": 30,
+  "price_expensive": 69,
+  "price_too_expensive": 120
+}

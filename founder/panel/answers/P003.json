@@ -3,11 +3,11 @@
   "buys": false,
   "purchases_first_month": 0,
   "reason_code": "habit",
-  "reason": "I already keep a spreadsheet and it works, so I would have to change how I do things before I see a benefit. The slip and statement features sound useful, but I would need to set up an iPhone Shortcut and trust a new app with my statements, and I would probably not bother once the free trial ends.",
-  "objection": "The setup for the Shortcut and the upload of my card statement into a new app takes effort, and my spreadsheet already does the job for free.",
-  "would_change_my_mind": "If during the free trial the slip capture saved me from retyping my weekly K PLUS and BBL transfers with almost no setup, and the statement import clearly sorted my categories correctly.",
+  "reason": "The card statement import would save me some retyping once a month, but I only do that job once a month and it takes me about ten minutes anyway, so 69 baht a month for it is hard to justify. The slip part needs me to remember to scan every day, and I already know I won't keep that up.",
+  "objection": "I'll forget to scan the slips every day, and then the whole thing sits unused like my other budget apps.",
+  "would_change_my_mind": "If the statement import alone cost much less, or if scanning a slip took a couple of seconds at the moment I pay, so I didn't have to remember it later.",
   "price_too_cheap": 10,
-  "price_cheap": 39,
-  "price_expensive": 99,
-  "price_too_expensive": 149
+  "price_cheap": 25,
+  "price_expensive": 40,
+  "price_too_expensive": 60
 }

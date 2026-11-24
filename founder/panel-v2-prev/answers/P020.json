@@ -1,0 +1,13 @@
+{
+  "id": "P020",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "I like that it is cheap and that I would not have to type everything in, but I already keep my spending in a spreadsheet and I know I would forget to scan the slips most days. Then the app is just a half-filled list that I would stop opening.",
+  "objection": "I'll forget to scan the slips every day, and then the numbers are wrong and I go back to my spreadsheet.",
+  "would_change_my_mind": "If the free trial showed me a full week where scanning took under a minute and the categories were right without me fixing them, I would keep it.",
+  "price_too_cheap": 10,
+  "price_cheap": 25,
+  "price_expensive": 49,
+  "price_too_expensive": 90
+}

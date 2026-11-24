@@ -1,13 +1,13 @@
 {
   "id": "P008",
-  "buys": true,
-  "purchases_first_month": 1,
-  "reason_code": "convenience",
-  "reason": "I transfer through K PLUS, BBL and TTB most weeks, and typing each slip into a budget by hand is the part I always skip. If the slip reading saves me that, 69 baht to keep it is fine, but only after the trial shows it works.",
-  "objection": "I don't know if it works with my bank or my card, and I don't want to spend the trial setting up a Shortcut that quietly misreads my slips.",
-  "would_change_my_mind": "A clear list showing that the slip reading works on my own K PLUS, BBL and TTB slips, and that the card statement import works with my card, before I have to pay anything.",
-  "price_too_cheap": 9,
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "My bank app already shows my transfer history, so I don't feel I'm missing anything. I'd have to set up a Shortcut on my iPhone and log into another app just to see slips I can already find in one place.",
+  "objection": "Why add another app when my bank app already has my history? I don't see what this gives me that I don't already have.",
+  "would_change_my_mind": "If it pulled my K PLUS and credit-card spending into one list that my bank app doesn't show, and the setup took only a few minutes.",
+  "price_too_cheap": 10,
   "price_cheap": 29,
-  "price_expensive": 59,
-  "price_too_expensive": 99
+  "price_expensive": 49,
+  "price_too_expensive": 79
 }
