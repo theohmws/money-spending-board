@@ -1,14 +1,14 @@
 ## 0. Confirm before any write
 
 - [ ] 0.1 Owner confirms the Supabase account and project `yjphlaymjjmbinhmdcqj` (`money-spending-board`) is the one to change. It is under `Apis's Org`, and a second account also exists.
-- [ ] 0.2 Confirm Vault / pgsodium availability and pricing on this project, and the recommended AEAD API from current docs.
+- [x] 0.2 Vault rejected for cost uncertainty (owner asked for no extra cost). Using AES-GCM in an Edge Function with an Edge Function secret instead; see design.md Decision 1.
 - [ ] 0.3 Snapshot the pre-change totals: row count of `transactions`, sum of `amount`, and the `monthlyIncome` values.
 
 ## 1. Schema (migration A, no data change)
 
-- [ ] 1.1 Create the Vault key and the `encrypt_amount` / `decrypt_amount` helpers, `SECURITY DEFINER`, with `search_path` pinned.
+- [ ] 1.1 Create the `encrypt-fields` Edge Function with AES-GCM helpers and the `ENCRYPTION_KEY` secret. No database key.
 - [ ] 1.2 Add `transactions.amount_enc bytea` (nullable).
-- [ ] 1.3 Create `list_transactions`, `write_transaction`, `update_transaction` RPCs with `auth.uid()` ownership checks.
+- [ ] 1.3 Create `list_transactions`, `write_transaction`, `update_transaction` SQL functions with `auth.uid()` ownership checks, returning and accepting ciphertext only.
 - [ ] 1.4 Revoke direct access to `amount` from `authenticated` and `anon` (keep `service_role` for the Edge Function's RPC call only).
 
 ## 2. Backfill (migration B, after 0.1–0.3)
@@ -24,7 +24,7 @@
 - [ ] 3.3 `shortcut-transaction`: insert and update through `write_transaction` with the token's `user_id`. Keep the existing response shape.
 - [ ] 3.4 Grep for direct `from('transactions')` and `monthlyIncome` reads; move any remaining callers.
 - [ ] 3.5 Unit tests for the mapping layer and the Edge Function payload path. Run `npm run test`, `npm run lint`, `npm run check-types`.
-- [ ] 3.6 Deploy the Edge Function via Supabase MCP and smoke-test one insert and one update.
+- [ ] 3.6 Deploy `encrypt-fields` and `shortcut-transaction` via Supabase MCP. Smoke-test one insert, one update, and one month read. Record read latency.
 
 ## 4. Drop plaintext (migration C, after verification)
 
