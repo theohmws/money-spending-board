@@ -29,7 +29,7 @@ Consequences:
 
 ## Decision 4: migration and rollback
 
-1. Migration A: add `amount_enc` and `monthlyIncome_enc`, create the Vault key and the functions. No data change.
+1. Migration A: add `amount_enc` and `monthlyIncome_enc`, create the SQL functions and the `encrypt-fields` function. No data change.
 2. Backfill (separate migration, run after owner confirms the project): encrypt every existing row, then verify the count of rows with a null `amount_enc` is zero and that the sum of decrypted amounts equals the plaintext sum captured beforehand.
 3. Switch the app and the Edge Function to the RPCs and deploy.
 4. Migration B, only after a verification period: drop plaintext `amount` and the income field from the JSON.

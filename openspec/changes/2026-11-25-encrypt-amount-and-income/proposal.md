@@ -4,9 +4,9 @@ Transaction amounts and the user's monthly income are stored as plain `numeric` 
 
 ## What Changes
 
-- Encrypt `spending_board.transactions.amount` at the column level, using Supabase Vault / pgsodium with a key that never leaves the database. The plaintext `amount` column is removed once the backfill is verified.
+- Encrypt `spending_board.transactions.amount` at the column level, using AES-GCM in an Edge Function with its key stored as an Edge Function secret, so the key never reaches the database or the browser. The plaintext `amount` column is removed once the backfill is verified.
 - Encrypt `board_settings.profile.monthlyIncome` the same way. Other profile fields (`name`, `avatarColor`) stay plain.
-- Reads and writes of encrypted fields go through `SECURITY DEFINER` RPCs that check `auth.uid()` before decrypting. Direct table access to the encrypted columns is revoked from `authenticated` and `anon`.
+- Reads and writes of encrypted fields go through the `encrypt-fields` Edge Function, which checks the caller and does the crypto. The SQL functions it calls check `auth.uid()`. Direct table access to the encrypted columns is revoked from `authenticated` and `anon`.
 - The `shortcut-transaction` Edge Function writes through the same RPC with the service role, scoped to the token's `user_id`.
 - Existing rows are backfilled in one migration, run only after the owner confirms the target project.
 - Monthly totals, Trend and Compare charts keep working because they already aggregate in the browser; only the fetch path changes.
